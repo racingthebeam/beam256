@@ -42,6 +42,11 @@ export const OpRet = 0x43;
 export const OpIRet = 0x44;
 export const OpRRet = 0x45;
 
+export const OpRPush = 0x46;
+export const OpIPush = 0x47;
+export const OpRPop = 0x48;
+export const OpPop = 0x49;
+
 // Comparison/flow control
 export const OpCmp = 0x50;
 export const OpJmp = 0x51;
@@ -116,7 +121,19 @@ export function RSV(nLocals) { return mk_reg(OpReserve, nLocals); }
 
 // TODO(rtb): review this return stuff, doesn't feel right...
 
-// RET() returns from the previous CALL(), returning no value
+// IPUSH() pushes an immediate value onto the stack
+export function IPUSH(val) { return mk_u16(OpIPush, val); }
+
+// RPUSH() pushes a register onto the stack
+export function RPUSH(reg) { return mk_reg(OpRPush, reg); }
+
+// RPOP() pops a value into the specified register
+export function RPOP(reg) { return mk_reg(OpRPop, reg); }
+
+// POP() pops a value from stack, discarding it
+export function POP() { return mk(OpPop); }
+
+// RET() returns from the previous CALL(), returning 0
 export function RET() { return mk(OpRet); }
 
 // IRET(val) returns from the previous CALL() with an immediate 16-bit value

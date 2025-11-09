@@ -4,13 +4,6 @@ import * as O from "./opcodes.js";
 // const FlagZero = 0x01;
 // const FlagCarry = 0x02;
 
-// OK what do we need here?
-// Most of the data should live in memory
-//
-// instruction pointer - points to a memory address
-// flags - internal to the vCPU
-
-
 class Frame {
     // ip - address of next instruction to be executed
     //      (absolute offset into main memory)
@@ -81,10 +74,22 @@ export class Machine {
                     this.#set(rd, this.#add(this.#get(r1), this.#get(r2)));
                     break;
                 }
+            case O.OpMul:
+                {
+                    const [rd, r1, r2] = decode_reg3(op);
+                    this.#set(rd, this.#mul(this.#get(r1), this.#get(r2)));
+                    break;
+                }
 
             //
             // Stack
 
+            case O.OpIPush:
+                {
+                    const [v] = decode_u16(op);
+                    this.#push(v);
+                    break;
+                }
             case O.OpRPush:
                 {
                     const [r] = decode_reg(op);
@@ -166,10 +171,8 @@ export class Machine {
                     break;
                 }
 
-
-
             default:
-                throw new Error(`unknown opcode: ${O.opcode(op)}`);
+                throw new Error(`unknown opcode: 0x${O.opcode(op).toString(16)}`);
         }
     }
 
@@ -178,6 +181,13 @@ export class Machine {
         // I'm inclined to say fuck it and rewrite this
         // all in WASM once the prototype is done.
         return l + r;
+    }
+
+    #mul(l, r) {
+        // TODO: this needs to work like a 32 bit arch
+        // I'm inclined to say fuck it and rewrite this
+        // all in WASM once the prototype is done.
+        return l * r;
     }
 
     #setl(reg, v) {
@@ -217,7 +227,8 @@ export class Machine {
 }
 
 function decode_u16(op) {
-
+    const v = (op >> 8) & 0xFFFF;
+    return [v];
 }
 
 function decode_reg_u16(op) {
