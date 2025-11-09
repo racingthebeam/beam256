@@ -1,5 +1,13 @@
 # NOTES
 
+Graphics modes?
+  - bitmap display
+    - indexed colour palette
+      - 4bpp
+      - 8bpp
+    - Gameboy-style tile renderer?
+    - Display list?
+
 ## CHIP8
 
 4K, 512B for interpreter, top 256B = display
