@@ -125,19 +125,18 @@ function reg(str) {
     }
 }
 
-// extract label name from "label:"
-function label(str) {
-    return str.substring(0, str.length - 1);
-}
+// extract label name from "label:" => "label"
+function label(str) { return str.substring(0, str.length - 1); }
 
-// extract directive name from ".directive"
-function dir(str) {
-    return str.substring(1);
-}
+// extract directive name from ".directive" => "directive"
+function directive(str) { return str.substring(1); }
 
-// TODO: parse hex
-// TODO: parse binary
-// TODO: parse integer
+function intVal(str) { return parseInt(ru(str), 10); }
+function binVal(str) { return parseInt(ru(str.substring(2)), 2); }
+function hexVal(str) { return parseInt(ru(str.substring(2)), 16); }
+
+// remove underscores
+function ru(s) { return s.replaceAll("_", ""); }
 
 function digit_p(ch) {
     return ch >= '0' && ch <= '9';
