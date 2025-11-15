@@ -30,8 +30,8 @@ empty_space:
 MOV r1, r2
 
 # supported formats for immediate values are binary, hex, and decimal
-MOV r1, 0b101010
-MOV r1, 0x1234
+MOV r52, 0b101010
+MOV r100, 0x1234
 MOV r2, 16384
 MOV r1, -10
 

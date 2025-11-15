@@ -31,6 +31,7 @@ function tokenizer(text) {
     const matcher = /(\.[a-z]+|[a-z_][a-z0-9_]*:|,|-|\[r\d+\]|r\d+|0x[0-9a-f_]+|0b[01_]+|[0-9_]+|[a-z][a-z0-9_]*)/iy;
 
     let rp = 0;
+    let line = 1;
 
     // skip whitespace and comments
     // don't skip newlines, since these are tokens
@@ -53,7 +54,7 @@ function tokenizer(text) {
         matcher.lastIndex = rp;
         const m = matcher.exec(text);
         if (m === null) {
-            throw new Error("tokenization error");
+            throw new Error(`tokenization error on line ${line}`);
         }
         rp = matcher.lastIndex;
         return m[1];
@@ -74,10 +75,12 @@ function tokenizer(text) {
                     rp++;
                 }
                 skip();
+                line++;
                 return [T_NL, "\n"];
             } else if (text[rp] === '\n') {
                 rp++;
                 skip();
+                line++;
                 return [T_NL, "\n"];
             }
 
@@ -112,6 +115,29 @@ function tokenizer(text) {
         }
     }
 }
+
+// extract register number from either "rX" or "[rX]"
+function reg(str) {
+    if (str[0] === "[") {
+        return parseInt(str.substring(2, str.length - 1));
+    } else {
+        return parseInt(str.substring(1), 10);
+    }
+}
+
+// extract label name from "label:"
+function label(str) {
+    return str.substring(0, str.length - 1);
+}
+
+// extract directive name from ".directive"
+function dir(str) {
+    return str.substring(1);
+}
+
+// TODO: parse hex
+// TODO: parse binary
+// TODO: parse integer
 
 function digit_p(ch) {
     return ch >= '0' && ch <= '9';
