@@ -1,12 +1,21 @@
-## Stream 4
+## Day 5
 
-  - [ ] Implement basic graphics output (read from memory, 4bpp, palette, fixed resolution)
+  - [ ] Assembler: parser
+  - [ ] Assembler: basic codegen
 
 ## Offstream
 
-  - [ ] Consolidate all of the notes and design decisions so far into a coherent document
+  - [ ] Set up TypeScript/JavaScript project
 
-## Stream 3
+## Day 4
+
+  - [x] Assembler: tokenizer
+
+## Offstream
+
+  - [x] Create spreadsheet of instructions, opcodes, operands etc
+
+## Day 3
 
   - [x] Emu - data structures for frames etc
   - [x] Emu - methods for getting/setting registers (frame-relative)
