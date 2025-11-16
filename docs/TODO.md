@@ -12,7 +12,7 @@
 
   - [x] Assembler: parser
   - [x] Assembler: parser labels
-  - [ ] Assembler: typechecking framework
+  - [x] Assembler: typechecking framework
 
 ## Day 4
 
