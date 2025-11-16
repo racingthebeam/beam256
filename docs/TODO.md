@@ -1,3 +1,9 @@
+## Upcoming Streams
+
+  - [ ] Refactor AST to be concrete types
+  - [ ] Rework parser so AST is annotated with line numbers
+  - [ ] Assembler: codegen
+
 ## Offstream
 
   - [ ] Set up proper TypeScript/JavaScript project
@@ -5,7 +11,8 @@
 ## Day 5
 
   - [x] Assembler: parser
-  - [ ] Assembler: basic codegen
+  - [x] Assembler: parser labels
+  - [ ] Assembler: typechecking framework
 
 ## Day 4
 

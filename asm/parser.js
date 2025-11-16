@@ -69,13 +69,13 @@ export function parse(text) {
             case "ORG":
                 out = {
                     type: "dir-org",
-                    addr: parsePositiveNumber()
+                    addr: parsePositiveNumber().val
                 };
                 break;
             case "Z":
                 out = {
                     type: "dir-zero",
-                    count: parsePositiveNumber()
+                    count: parsePositiveNumber().val
                 };
                 break;
             case "B":
@@ -110,7 +110,7 @@ export function parse(text) {
             case "ALIGN":
                 out = {
                     type: "dir-align",
-                    addr: parsePositiveNumber()
+                    align: parsePositiveNumber().val
                 };
                 break;
             default:
@@ -144,10 +144,10 @@ export function parse(text) {
 
         switch (curr[0]) {
             case T_HEX:
-                out = { type: 'hex', str: curr[1], val: hexVal(curr[1]) };
+                out = { type: 'hex', str: curr[1], val: hexVal(curr[1]), negative: false };
                 break;
             case T_BIN:
-                out = { type: 'bin', str: curr[1], val: binVal(curr[1]) };
+                out = { type: 'bin', str: curr[1], val: binVal(curr[1]), negative: false };
                 break;
             case T_INT:
                 out = { type: 'int', str: curr[1], val: intVal(curr[1]), negative: false };
@@ -192,7 +192,7 @@ export function parse(text) {
                     return out;
                 }
             case T_IDENT:
-                out = { type: 'ident', val: curr[1] };
+                out = { type: 'ident', name: curr[1] };
                 break;
             default:
                 throwWithLine(curr, `Unexpected token ${tokenName(curr)} while attempting to parse operand`);
@@ -203,44 +203,43 @@ export function parse(text) {
         return out;
     }
 
-    function parseLine() {
-        if (at(T_LABEL)) {
-            const name = label(curr[1]);
-            // TODO: hook up the label to whatever...
-            accept();
-            if (at(T_NL)) {
-                accept();
-                return;
-            }
-        }
-
-        let out;
-
+    function parseStatement() {
         if (at(T_DIRECTIVE)) {
-            out = parseDirective();
+            return parseDirective();
         } else if (at(T_IDENT)) {
-            out = parseInstruction();
+            return parseInstruction();
         } else {
             throwWithLine(curr, `Unexpected token ${tokenName(curr)}`);
         }
-
-        accept(T_NL);
-
-        return out;
     }
 
+    const labels = {};
     const lines = [];
 
     while (!at(T_EOF)) {
-        // skip blank lines
+        // any line can start with a label
+        if (at(T_LABEL)) {
+            const name = label(curr[1]);
+            labels[name] = lines.length;
+            lines.push({ type: "label", name: name });
+            accept();
+        }
+
+        // skip EOL
         if (at(T_NL)) {
             accept();
             continue;
         }
-        lines.push(parseLine());
+
+        lines.push(parseStatement());
+
+        accept(T_NL);
     }
 
-    return lines;
+    return {
+        labels: labels,
+        lines: lines,
+    };
 }
 
 function createTokenizer(text) {

@@ -1,3 +1,5 @@
+import * as O from "./optypes.js";
+
 // Argument types:
 // reg - register reference (7-bit, 0-127)
 // s17 - signed 17 bit number 
@@ -18,7 +20,7 @@ export const Instructions = {
             // because the human-written representation favours destination-
             // first, whereas the native representation is chosen so as to
             // minimise the total number of encodings.
-            args: ["reg", "reg"],
+            args: [O.Reg, O.Reg],
 
             // This defines how the instructions are encoded
             // If encoding order matches the argument order, this can be
@@ -26,34 +28,34 @@ export const Instructions = {
             enc: null,
         },
         {
-            args: ["reg", "s17"],
+            args: [O.Reg, O.S17],
         }
     ],
     "MOVH": [
         {
-            args: ["reg", "u16"]
+            args: [O.Reg, O.U16]
         },
     ],
     "MOVL": [
         {
-            args: ["reg", "u16"]
+            args: [O.Reg, O.U16]
         }
     ],
     "STORE": [
         {
-            args: ["addr", "reg"]
+            args: [O.Addr, O.Reg]
         },
         {
-            args: ["raddr", "reg"]
+            args: [O.RegAddr, O.Reg]
         }
     ],
     "LOAD": [
         {
-            args: ["reg", "addr"],
+            args: [O.Reg, O.Addr],
             enc: [1, 0]
         },
         {
-            args: ["reg", "raddr"]
+            args: [O.Reg, O.RegAddr],
         }
     ]
 }
