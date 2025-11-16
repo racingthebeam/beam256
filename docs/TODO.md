@@ -1,11 +1,11 @@
-## Day 5
-
-  - [ ] Assembler: parser
-  - [ ] Assembler: basic codegen
-
 ## Offstream
 
-  - [ ] Set up TypeScript/JavaScript project
+  - [ ] Set up proper TypeScript/JavaScript project
+
+## Day 5
+
+  - [x] Assembler: parser
+  - [ ] Assembler: basic codegen
 
 ## Day 4
 
