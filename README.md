@@ -1,0 +1,23 @@
+# BEAM256
+
+BEAM256 is a work-in-progress fantasy console that is being [developed live on Twitch](https://www.twitch.tv/racingthebeam). The goal is to create an ISA, embedded hardware implementation, and a suite of browser-based dev tools (including an emulator). An FPGA implementation is a distant stretch goal.
+
+Overview:
+
+  - 256KB RAM
+  - 320x200 (4bpp) and 160x200 (4 + 8bpp) palettised graphics modes
+  - "hardware" accelerated drawing operations
+
+Target platform will be either ESP32 or RP2040. I'd like to get WiFi on there for ease of loading games, plus this would allow the device to host its own dev environment.
+
+Audio functionality is TBC and will likely be punted down the road until we have a working MCU version so we know what the available CPU budget is.
+
+## Project Layout
+
+  - `asm/`: assembler (JavaScript)
+  - `src/`: C source code, including VM, HW-specific code, and WASM interop
+  - `emu/`: emulator (JavaScript)
+
+## Resources
+
+  - [Instruction Set](https://docs.google.com/spreadsheets/d/1TSFjvukii5MzUIKGg3EUjjwCWSFNfceQ0CGCDAwPIgI/edit?gid=0#gid=0)
