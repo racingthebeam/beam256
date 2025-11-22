@@ -1,12 +1,13 @@
 ## Upcoming Streams
 
+  - [ ] Set up proper TypeScript/JavaScript project
   - [ ] Refactor AST to be concrete types
   - [ ] Rework parser so AST is annotated with line numbers
   - [ ] Assembler: codegen
 
-## Offstream
+## Day 6
 
-  - [ ] Set up proper TypeScript/JavaScript project
+  - [x] Basic framebuffer output
 
 ## Day 5
 
