@@ -20,4 +20,8 @@ Audio functionality is TBC and will likely be punted down the road until we have
 
 ## Resources
 
+  - [Design](./docs/DESIGN.md) - design document; a bit of a mess right now
+  - [Devlog](./docs/DEVLOG.md) - this is a record of what's worked on each stream
   - [Instruction Set](https://docs.google.com/spreadsheets/d/1TSFjvukii5MzUIKGg3EUjjwCWSFNfceQ0CGCDAwPIgI/edit?gid=0#gid=0)
+  - [References](./docs/REFERENCE_NOTES.md) - write ups on things I've taken inspiration from (e.g. CHIP8, CHIP16)
+  - [Ramblings](./docs/RAMBLINGS.md) - random thoughts that occur during livestreams

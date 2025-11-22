@@ -1,4 +1,8 @@
-## Upcoming Streams
+## Upcoming Work
+
+  - [ ] Port emulator core to C
+  - [ ] Set up Emscripten for building WASM core
+  - [ ] Rework JS emulator to use WASM core
 
   - [ ] Set up proper TypeScript/JavaScript project
   - [ ] Refactor AST to be concrete types
@@ -29,4 +33,3 @@
   - [x] Emu - methods for getting/setting registers (frame-relative)
   - [x] Emu - implement methods to dump registers
   - [x] CALL / RET / RSV
-

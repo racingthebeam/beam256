@@ -13,9 +13,7 @@ Currently we're parsing the ASM file into what's basically an AST; the problem w
 
 I'll do 3.
 
-
-
-
+--
 
 # Offstream Thoughts
 
@@ -27,24 +25,7 @@ I'll do 3.
   - i think i want the device to have 128KiB of RAM instead of the previous 64 - will allow for higher-resolution framebuffer. unfortunately this means the simple instruction encoding of (op:u8, reg:u8, addr:u16) no longer works; instead we need to change register numbers to 7-bit allowing us to expand to 17 bits for literal memory addresses. would rather not reduce the size of opcodes since we already have a lot of ops and that's before we've even got to IO. AND we're going to have to double the number of math/bitwise ops so we can control whether the flag register is updated
 - this autocompletion popup is annoying
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+--
 
 64KiB yeh?
 
