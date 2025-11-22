@@ -1,6 +1,12 @@
 import { MemorySize, LittleEndian, StackSize, FrameStackSize } from "./constants.js";
 import * as O from "./opcodes.js";
 
+// Register offsets in the register file
+export const REG_GRAPHICS_FRAMEBUFFER_ADDR = 1;
+export const REG_GRAPHICS_PALETTE_ADDR = 2;
+export const REG_GRAPHICS_MODE = 3;
+const REG_COUNT = 3;
+
 // const FlagZero = 0x01;
 // const FlagCarry = 0x02;
 
@@ -24,6 +30,12 @@ export class Machine {
         // system memory
         this.memory = new Uint8Array(MemorySize);
 
+        // register file
+        this.reg = new Array(REG_COUNT + 1);
+        this.#initRegisters();
+
+        this.#initMemory();
+
         // we use a view into the memory for accessing
         // instructions, which will always be 4-byte
         // aligned. this makes it easy to deal with
@@ -43,6 +55,7 @@ export class Machine {
 
         // we'll worry about flags later
         // this.flags = 0;
+        //
 
         this.halted = false;
     }
@@ -223,6 +236,59 @@ export class Machine {
 
     #activeFrame() {
         return this.frames[this.activeFrame];
+    }
+
+    #initRegisters() {
+        this.reg[REG_GRAPHICS_FRAMEBUFFER_ADDR] = 0xC000;
+        this.reg[REG_GRAPHICS_PALETTE_ADDR] = 0xFFC0;
+        this.reg[REG_GRAPHICS_MODE] = 0;
+    }
+
+    #initMemory() {
+        let wp, end;
+
+        // Write garbage to the framebuffer
+        wp = this.reg[REG_GRAPHICS_FRAMEBUFFER_ADDR];
+        end = wp + (160 * 200) / 2;
+        while (wp < end) {
+            this.memory[wp++] = Math.floor(Math.random() * 256);
+        }
+
+        const fromHex = (str) => {
+            return {
+                r: parseInt(str.substring(1, 3), 16) >> 2,
+                g: parseInt(str.substring(3, 5), 16) >> 2,
+                b: parseInt(str.substring(5, 7), 16) >> 2,
+            }
+        }
+
+        const initialPalette = [
+            fromHex("#0F0E00"),
+            fromHex("#182403"),
+            fromHex("#133707"),
+            fromHex("#0A4A14"),
+            fromHex("#125F3E"),
+            fromHex("#1D726F"),
+            fromHex("#286385"),
+            fromHex("#384F9B"),
+            fromHex("#5948AD"),
+            fromHex("#9158BC"),
+            fromHex("#C46DC7"),
+            fromHex("#D387B7"),
+            fromHex("#DC9FAE"),
+            fromHex("#E8BFB7"),
+            fromHex("#F6E9D7"),
+            fromHex("#FDFDF2"),
+        ];
+
+        wp = this.reg[REG_GRAPHICS_PALETTE_ADDR];
+        for (let i = 0; i < 16; i++) {
+            const ent = initialPalette[i];
+            this.memory[wp++] = ent.r;
+            this.memory[wp++] = ent.g;
+            this.memory[wp++] = ent.b;
+            this.memory[wp++] = 0;
+        }
     }
 }
 

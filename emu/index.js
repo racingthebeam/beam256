@@ -38,12 +38,20 @@ const program = makeInstructions([
     ops.RRET(2),
 ]);
 
+
 const machine = new Machine();
 machine.memory.set(program, 0);
 
 const emulator = new Emulator({
-    machine: machine
+    machine: machine,
+    display: document.querySelector('canvas#display'),
 });
+
+window.memory = machine.memory;
+
+window.dump = (start, length) => {
+    console.log(machine.memory.subarray(start, start + length));
+}
 
 emulator.start();
 

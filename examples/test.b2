@@ -1,0 +1,51 @@
+# TODO: function definitions
+# TODO: local variables
+
+# this is a comment
+# comments are ignored
+# comments may appear anywhere on a line
+
+# any line that starts with . is an assembler directive
+# assembler directives do not produce code
+
+# .org moves the assembler's write-pointer to the specified address
+.org 0
+
+# this is a label; the assembler associates it with the current value
+# of the write pointer.
+eight_values:
+
+# .b allows literal bytes to be inserted into the output
+# TODO: expand to allow for words and half-words
+.b 0, 1, 2, 3, 4, 5, 6, 7
+
+empty_space:
+
+# .z inserts the given number of zeroes at the write pointer
+.z 128
+
+# basic instruction form
+# r0-r127 are register references and are parsed distinct
+# from other identifiers
+MOV r1, r2
+
+# supported formats for immediate values are binary, hex, and decimal
+#MOV r52, 0b101010
+#MOV r100, 0x1234
+#MOV r2, 16384
+#MOV r1, -10
+
+STORE 0x1000, r1
+
+# any identifier is assumed to be a label and the assembler will
+# replace it with the label's address.
+# the assembler is multi-pass so there's no requirement for labels
+# to appear before use.
+STORE empty_space, r1
+
+# to use a register as a memory location use the [rx] form
+STORE [r1], r2
+
+LOAD r1, 0x2000
+LOAD r1, [r10]
+

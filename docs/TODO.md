@@ -1,12 +1,29 @@
-## Stream 4
+## Upcoming Streams
 
-  - [ ] Implement basic graphics output (read from memory, 4bpp, palette, fixed resolution)
+  - [ ] Set up proper TypeScript/JavaScript project
+  - [ ] Refactor AST to be concrete types
+  - [ ] Rework parser so AST is annotated with line numbers
+  - [ ] Assembler: codegen
+
+## Day 6
+
+  - [x] Basic framebuffer output
+
+## Day 5
+
+  - [x] Assembler: parser
+  - [x] Assembler: parser labels
+  - [x] Assembler: typechecking framework
+
+## Day 4
+
+  - [x] Assembler: tokenizer
 
 ## Offstream
 
-  - [ ] Consolidate all of the notes and design decisions so far into a coherent document
+  - [x] Create spreadsheet of instructions, opcodes, operands etc
 
-## Stream 3
+## Day 3
 
   - [x] Emu - data structures for frames etc
   - [x] Emu - methods for getting/setting registers (frame-relative)

@@ -1,3 +1,22 @@
+# Assembler Thoughts
+
+Tokenizer and parser are working well.
+Need to write some unit tests
+Need a proper TypeScript project setup, will do this off-stream coz it's fucking boring.
+
+Need to work out how we handle labels; specifically, how do we keep track of where they point.
+Currently we're parsing the ASM file into what's basically an AST; the problem with this is that labels have nothing to point to. Options:
+
+  1. map of labels, each one points to the length of the program array at the time the label was created
+  2. each label is itself an entry in the program array
+  3. do both; label is inserted into the program array, and an auxiliary map maps labels to these indices.
+
+I'll do 3.
+
+
+
+
+
 # Offstream Thoughts
 
   - can we implement flags efficiently on the target architecture(s)? (ARM, perhaps RISC-V)
