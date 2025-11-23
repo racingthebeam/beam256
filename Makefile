@@ -32,8 +32,8 @@ $(WASM_MODULE_JS): $(WASM_OUT_DIR) $(CORE_SRC) $(WASM_SRC)
 		-s MODULARIZE=1 \
 		-s EXPORT_ES6=1 \
 		-s EXPORT_NAME="BEAM256" \
-		-s EXPORTED_FUNCTIONS='["_init"]' \
-		-s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]'
+		-s EXPORTED_FUNCTIONS='["_init", "_ram_base", "_tick", "_is_halted", "_read_reg"]' \
+		-s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","HEAPU8"]'
 
 .PHONY: all wasm clean deploy
 

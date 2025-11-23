@@ -1,21 +1,33 @@
 ## Upcoming Work
 
+### Emulator
 
-  - [ ] Set up proper TypeScript/JavaScript project
-  - [ ] Refactor AST to be concrete types
+  - [ ] Port emulator core to C
+
+### Assembler stuff
+
   - [ ] Rework parser so AST is annotated with line numbers
   - [ ] Assembler: codegen
+  - [ ] Refactor AST to be concrete types
+  - [ ] Set up proper TypeScript/JavaScript project
 
 ## Day 7
 
 JavaScript for the emulator was a mistake, WASM is a thing, and it will allow us to share code between emu/HW.
+
 Let's see if I can still do C...
-(I was considering Zig but prior experience making VM-type-stuff says macros are useful for this type of thing and my Zig comptime-fu is pretty weak... we'll use Zig for the Next Project (tm))
+
+(I was considering Zig but prior experience making VM-type-stuff says macros are useful for this type of thing and my Zig comptime-fu is pretty weak... we'll use Zig for the Next Project(tm))
 
   - [x] Set up Emscripten for building WASM core
-  - [ ] Get basic browser/WASM integration setup
-  - [ ] Port emulator core to C
-  - [ ] Rework JS emulator to use WASM core
+  - [x] Get basic browser/WASM integration setup
+  - [x] Set up machine memory sharing between WASM and JS
+
+Usually at this point I'd start reworking everything and build a complicated system to allow multiple instances to co-exist in a single module instantiation, but in the name of actually making progress we'll just say that each WASM instance hosts precisely one machine instance.
+
+  - [x] Rework JS emulator to use WASM core (restore working framebuffer)
+
+Good progress today - WASM core in place with memory sharing and we can draw the framebuffer from JS!
 
 ## Day 6
 

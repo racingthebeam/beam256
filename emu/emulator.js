@@ -24,10 +24,10 @@ export class Emulator {
     }
 
     start() {
-        const tick = () => {
-            this.machine.runCycles(100);
-            setTimeout(tick, 0);
-        };
+        // const tick = () => {
+        //     this.machine.runCycles(100);
+        //     setTimeout(tick, 0);
+        // };
 
         const draw = () => {
             this.#draw();
@@ -36,12 +36,12 @@ export class Emulator {
 
         this.#resetDisplay();
 
-        tick();
+        // tick();
         requestAnimationFrame(draw);
     }
 
     #resetDisplay() {
-        const mode = this.machine.reg[REG_GRAPHICS_MODE];
+        const mode = this.machine.reg(REG_GRAPHICS_MODE);
         const bigScreen = !!(mode & 0x01);
         const bigPalette = !!(mode & 0x02);
         let logicalWidth = ((mode >> 8) & 0xFF) * 2;
@@ -83,12 +83,12 @@ export class Emulator {
     }
 
     #draw() {
-        const mem = this.machine.memory;
+        const mem = this.machine.ram;
         const px = this.px;
 
-        let lineRp = this.machine.reg[REG_GRAPHICS_FRAMEBUFFER_ADDR];
+        let lineRp = this.machine.reg(REG_GRAPHICS_FRAMEBUFFER_ADDR);
 
-        const paletteBase = this.machine.reg[REG_GRAPHICS_PALETTE_ADDR];
+        const paletteBase = this.machine.reg(REG_GRAPHICS_PALETTE_ADDR);
         const getColor = (dst, ent) => {
             const offset = (paletteBase + (ent * 4)) % MemorySize;
             dst[0] = mem[offset + 0] << 2;

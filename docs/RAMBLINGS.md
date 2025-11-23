@@ -1,3 +1,8 @@
+# WASM stuff
+
+Need to reproduce the working framebuffer we had from last session, but having WASM initialise the machine state, then have JS read the relevant registers and memory in order to present the framebuffer.
+
+
 # Assembler Thoughts
 
 Tokenizer and parser are working well.
