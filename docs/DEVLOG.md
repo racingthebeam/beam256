@@ -11,6 +11,13 @@
   - [ ] Refactor AST to be concrete types
   - [ ] Set up proper TypeScript/JavaScript project
 
+## Day 8 Plan
+
+  - set up a UI with display, code editor, transport controls
+  - pick tiny subset of instructions and implement in C (enough to update framebuffer in a loop)
+  - finish assembler for this instruction subset (parse/type check/compile), then run
+  - implement IO READ/WRITE instructions to trigger framebuffer update
+
 ## Day 7
 
 JavaScript for the emulator was a mistake, WASM is a thing, and it will allow us to share code between emu/HW.
