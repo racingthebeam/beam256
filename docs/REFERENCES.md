@@ -72,3 +72,6 @@ Play tone from memory
   - add/mul/sub/div, not, negate
   - bitwise AND/OR/XOR
 
+## Other Stuff
+
+  - [Cool Palette Generator](http://mycours.es/colorRampCreator/)

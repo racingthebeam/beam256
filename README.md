@@ -20,6 +20,10 @@ Audio functionality is TBC and will likely be punted down the road until we have
   - `src/`: C source code, including VM, HW-specific code, and WASM interop
   - `emu/`: emulator (JavaScript)
 
+## Dependencies
+
+  - Emscripten (`emcc`)
+
 ## Resources
 
   - [Design](./docs/DESIGN.md) - design document; a bit of a mess right now
