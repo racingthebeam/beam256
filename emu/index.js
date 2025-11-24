@@ -1,18 +1,23 @@
 import BEAM256 from "./beam256.js";
 import { Emulator } from "./emulator.js";
 
-async function createMachine() {
+async function createMachine(onEvent) {
+    // Instantiate the machine core's WASM module
+    // We use a fresh instance for each machine
     const mod = await BEAM256();
 
-    const onEvent = mod.addFunction((evt, arg) => {
-        console.log("received event", evt, arg);
-    }, "vii");
+    // Create a function pointer for receiving event callbacks
+    // from the machine.
+    const onEventFnPtr = mod.addFunction(onEvent, "vii");
 
-    const ret = mod.ccall('init', 'int', ['int'], [onEvent]);
+    // Initialise the machine, passing in the event callback.
+    const ret = mod.ccall('init', 'int', ['int'], [onEventFnPtr]);
     if (ret !== 0) {
         throw new Error(`machine init failed with status ${ret}`);
     }
 
+    // Get the offset of the machine RAM in WASM memory so we can
+    // access required data (framebuffer, palette etc)
     const memPtr = mod.ccall('ram_base', 'number');
     const ram = new Uint8Array(mod.HEAPU8.buffer, memPtr, 256 * 1024);
 
@@ -54,7 +59,9 @@ btnStartStop.onclick = async (evt) => {
     switch (state) {
         case "stopped":
             state = "starting";
-            machine = await createMachine();
+            machine = await createMachine((evt, arg) => {
+                console.log("EVENT", evt, arg);
+            });
             emu = new Emulator({
                 machine: machine,
                 display: document.querySelector('canvas#display'),
