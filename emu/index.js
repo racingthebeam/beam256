@@ -4,17 +4,11 @@ import { Emulator } from "./emulator.js";
 async function createMachine() {
     const mod = await BEAM256();
 
-    // mod.on_event = (evt, arg) => {
-    //     console.log("received event", evt, arg);
-    // }
-
-    mod.on_event = mod.addFunction((evt, arg) => {
+    const onEvent = mod.addFunction((evt, arg) => {
         console.log("received event", evt, arg);
     }, "vii");
 
-    window.mod = mod;
-
-    const ret = mod.ccall('init', 'int');
+    const ret = mod.ccall('init', 'int', ['int'], [onEvent]);
     if (ret !== 0) {
         throw new Error(`machine init failed with status ${ret}`);
     }

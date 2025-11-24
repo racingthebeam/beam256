@@ -10,9 +10,7 @@
 static machine_t machine;
 static uint8_t memory[MEMORY_SIZE];
 
-void EM_IMPORT(on_event) on_event(uint32_t event, uint32_t arg);
-
-int init() {
+int init(machine_event_fn on_event) {
     beam256_init();
     return beam256_init_machine(&machine, memory, on_event);
 }
