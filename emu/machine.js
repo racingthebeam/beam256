@@ -5,7 +5,8 @@ import * as O from "./opcodes.js";
 export const REG_GRAPHICS_FRAMEBUFFER_ADDR = 1;
 export const REG_GRAPHICS_PALETTE_ADDR = 2;
 export const REG_GRAPHICS_MODE = 3;
-const REG_COUNT = 3;
+export const REG_GRAPHICS_DRAW = 4;
+const REG_COUNT = 4;
 
 // const FlagZero = 0x01;
 // const FlagCarry = 0x02;

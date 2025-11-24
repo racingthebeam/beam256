@@ -3,19 +3,90 @@
 <html>
   <head>
     <title>BEAM256 Emulator</title>
+
+    <script src="codemirror/codemirror.js"></script>
+    <link rel="stylesheet" href="codemirror/codemirror.css">
+
     <script type="module" src="index.js"></script>
     <style type="text/css">
-      body { background: black; }
+      html, body { margin: 0; padding: 0; }
+      body { background: black; color: #f0f0f0; }
+
+      .app {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: stretch;
+      }
+
+      .app--left {
+        background: #101010;
+        flex: 1 1 auto;
+        padding: 20px;
+        max-width: 680px;
+      }
+
+      .app--right {
+        background: #181818;
+        flex: 1 1 auto;
+        position: relative;
+      }
+
+      #editor {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      #editor > .CodeMirror {
+        width: 100%;
+        height: 100%;
+        font-family: "RobotoMono Nerd Font";
+        font-size: 20px;
+      }
+
+      .display {
+        aspect-ratio: 8/5;
+        position: relative;
+      }
+
+      .controls {
+        margin-top: 10px;
+      }
+
       #display {
-        width: 640px;
-        height: 400px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         image-rendering: pixelated;
         background: black;
       }
     </style>
   </head>
   <body>
-    <canvas id="display" tabindex="0"> </canvas>
+    <div class="app">
+      <div class="app--left">
+        <h1>BEAM256</h1>
+        <div class="display">
+          <canvas id="display" tabindex="0"> </canvas>
+        </div>
+        <div class="controls">
+          <button type="button" name="startstop">Start</button>
+        </div>
+      </div>
+      <div class="app--right">
+        <div id="editor"></div>
+      </div>
+    </div>
 
   </body>
 </html>

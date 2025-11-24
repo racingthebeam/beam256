@@ -11,12 +11,33 @@
   - [ ] Refactor AST to be concrete types
   - [ ] Set up proper TypeScript/JavaScript project
 
-## Day 8 Plan
+## Day 9 Plan
 
-  - set up a UI with display, code editor, transport controls
   - pick tiny subset of instructions and implement in C (enough to update framebuffer in a loop)
-  - finish assembler for this instruction subset (parse/type check/compile), then run
   - implement IO READ/WRITE instructions to trigger framebuffer update
+  - finish assembler for this instruction subset (parse/type check/compile), then run
+
+## Day 8 Plan (short stream)
+
+  - [x] set up a UI with display, code editor, transport controls
+
+We'll use Codemirror, used it tons before, it's fine
+For prototyping we'll stick with CM5 because fuck setting up bundlers
+
+  - [~] set up C LSP - LOL, no, what a shitshow. do it later...
+
+  - [ ] work out how we can signal redraw from WASM -> JS
+
+OK let's work out how we're going to trigger the emulator to draw the framebuffer.
+We'll use a write to an IO port (not yet documented) to trigger the redraw.
+We're not executing any code yet so let's worry about getting the mechanism in place - we can just trigger it on init.
+
+Possible approaches:
+  - have the tick function return a bitmask of events to handle
+  - have the tick function return early if an event occurs, return value is event
+  - callback function that is triggered during tick; WASM can can __also__ elect to return early if necessary. callback function has 2 params - event ID and optional argument. Maybe absolute tick/cycle count too? Maybe later.
+
+Exhausted, giving up for now.
 
 ## Day 7
 

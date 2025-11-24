@@ -1,7 +1,8 @@
 import {
     REG_GRAPHICS_FRAMEBUFFER_ADDR,
     REG_GRAPHICS_PALETTE_ADDR,
-    REG_GRAPHICS_MODE
+    REG_GRAPHICS_MODE,
+    REG_GRAPHICS_DRAW,
 } from "./machine.js";
 
 import {
@@ -38,6 +39,10 @@ export class Emulator {
 
         // tick();
         requestAnimationFrame(draw);
+    }
+
+    stop() {
+        console.log("STOP STOP STOP");
     }
 
     #resetDisplay() {

@@ -5,8 +5,9 @@ static void init_reg(machine_t *m);
 static void init_mem(machine_t *m);
 static int tick(machine_t *m);
 
-void machine_init(machine_t *m, uint8_t *mem) {
+void machine_init(machine_t *m, uint8_t *mem, machine_event_fn on_event) {
     m->mem = mem;
+    m->on_event = on_event;
 
     memset(m->reg, 0, sizeof(WORD) * REG_MAX);
 
@@ -79,6 +80,9 @@ static void init_mem(machine_t *m) {
     PAL_ENT(0xFD, 0xFD, 0xF2);
 
 #undef PAL_ENT
+
+    // We'll just bodge this in here for now
+    m->on_event(EV_GRAPHICS_REQUEST_DRAW, 0);
 }
 
 static int tick(machine_t *m) {

@@ -3,6 +3,15 @@ import { Emulator } from "./emulator.js";
 
 async function createMachine() {
     const mod = await BEAM256();
+
+    // mod.on_event = (evt, arg) => {
+    //     console.log("received event", evt, arg);
+    // }
+
+    mod.on_event = mod.addFunction((evt, arg) => {
+        console.log("received event", evt, arg);
+    }, "vii");
+
     window.mod = mod;
 
     const ret = mod.ccall('init', 'int');
@@ -31,17 +40,41 @@ class Machine {
     reg(r) {
         return this.mod.ccall('read_reg', 'uint32', ['int'], [r]);
     }
+
+    stop() {
+
+    }
 }
 
-async function run() {
-    const machine = await createMachine();
+const editor = CodeMirror(document.querySelector('#editor'), {
+    lineNumbers: true,
+    autofocus: true,
+});
 
-    const emu = new Emulator({
-        machine: machine,
-        display: document.querySelector('canvas#display')
-    });
+let machine = null;
+let emu = null;
+let state = "stopped";
 
-    emu.start();
-}
-
-run();
+const btnStartStop = document.querySelector('button[name="startstop"]');
+btnStartStop.onclick = async (evt) => {
+    switch (state) {
+        case "stopped":
+            state = "starting";
+            machine = await createMachine();
+            emu = new Emulator({
+                machine: machine,
+                display: document.querySelector('canvas#display'),
+            });
+            emu.start();
+            state = "running";
+            btnStartStop.textContent = "Stop";
+            break;
+        case "starting":
+            // do nothing
+            break;
+        case "running":
+            emu.stop();
+            state = "stopped";
+            break;
+    }
+};

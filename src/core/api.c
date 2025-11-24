@@ -4,8 +4,8 @@ int beam256_init() {
     return 0;
 }
 
-int beam256_init_machine(machine_t *m, uint8_t *mem) {
-    machine_init(m, mem);
+int beam256_init_machine(machine_t *m, uint8_t *mem, machine_event_fn on_event) {
+    machine_init(m, mem, on_event);
     return 0;
 }
 

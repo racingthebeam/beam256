@@ -5,17 +5,25 @@
 
 typedef uint32_t WORD;
 
+typedef void (*machine_event_fn)(uint32_t event, uint32_t arg);
+
 #define MEMORY_SIZE         (256 * 1024)
 #define STACK_WORDS         512
 #define FRAME_STACK_SIZE    32
 
-// Registers
+// IO ports
 enum {
     REG_INVALID,
     REG_GRAPHICS_FRAMEBUFFER_ADDR,
     REG_GRAPHICS_PALETTE_ADDR,
     REG_GRAPHICS_MODE,
+    REG_GRAPHICS_DRAW,
     REG_MAX
+};
+
+// Events to pass back to host
+enum {
+    EV_GRAPHICS_REQUEST_DRAW
 };
 
 typedef struct frame {
@@ -27,6 +35,9 @@ typedef struct frame {
 typedef struct machine {
     // system memory
     uint8_t *mem;
+
+    // event handler
+    machine_event_fn on_event;
 
     // register file
     WORD reg[REG_MAX];
@@ -42,5 +53,5 @@ typedef struct machine {
     int halted;
 } machine_t;
 
-void machine_init(machine_t *m, uint8_t *mem);
+void machine_init(machine_t *m, uint8_t *mem, machine_event_fn on_event);
 int machine_run(machine_t *m, int ncycles);

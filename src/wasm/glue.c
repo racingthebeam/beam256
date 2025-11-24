@@ -1,5 +1,6 @@
 #include "beam256/beam256.h"
 
+#include <emscripten.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -9,9 +10,11 @@
 static machine_t machine;
 static uint8_t memory[MEMORY_SIZE];
 
+void EM_IMPORT(on_event) on_event(uint32_t event, uint32_t arg);
+
 int init() {
     beam256_init();
-    return beam256_init_machine(&machine, memory);
+    return beam256_init_machine(&machine, memory, on_event);
 }
 
 uint8_t* ram_base() {

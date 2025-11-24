@@ -19,7 +19,7 @@ int beam256_init();
  *
  * Returns 0 on success.
  */
-int beam256_init_machine(machine_t *m, uint8_t *mem);
+int beam256_init_machine(machine_t *m, uint8_t *mem, machine_event_fn on_event);
 
 /*
  * Tick the given machine for up to the given number of cycles
