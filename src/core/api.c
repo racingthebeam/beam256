@@ -18,6 +18,12 @@ int beam256_is_halted(machine_t *m) {
 }
 
 WORD beam256_read_reg(machine_t *m, int reg) {
-    return m->reg[reg];
+    return m->stack[m->sp + reg];
+}
+
+WORD beam256_write_reg(machine_t *m, int reg, WORD value) {
+    WORD out = m->stack[m->sp + reg];
+    m->stack[m->sp + reg] = value;
+    return out;
 }
 

@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include "beam256/opcodes.h"
+
 typedef uint32_t WORD;
 
 typedef void (*machine_event_fn)(uint32_t event, uint32_t arg);
@@ -55,3 +57,7 @@ typedef struct machine {
 
 void machine_init(machine_t *m, uint8_t *mem, machine_event_fn on_event);
 int machine_run(machine_t *m, int ncycles);
+
+uint32_t mem_read_uint32_le(uint8_t *mem);
+uint16_t mem_read_uint16_le(uint8_t *mem);
+

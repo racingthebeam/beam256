@@ -40,3 +40,9 @@ int beam256_is_halted(machine_t *m);
  * Read the given register from the machine
  */
 WORD beam256_read_reg(machine_t *m, int reg);
+
+/*
+ * Write the given register to the machine
+ * Returns the previous value
+ */
+WORD beam256_write_reg(machine_t *m, int reg, WORD value);

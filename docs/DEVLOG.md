@@ -8,13 +8,19 @@ Main goal: get a workflow in place so we assemble the code consumed by day 9.
   - [ ] Assembler: codegen
   - [ ] Refactor AST to be concrete types
   - [ ] Set up proper TypeScript/JavaScript project
-
-## Day 9 Plan
-
   - write the simplest possible assembly program to update the framebuffer (inc. IO READ/WRITE instructions to trigger FB update)
   - manually encode this program and put into machine RAM
   - implement the instructions in the CPU core
   - debug it until it's all working
+
+## Day 9 Plan
+
+OK so small change of plan.
+
+Original plan - bodge our way through directly encoding a bunch of assembler instructions to create a program that updates the framebuffer.
+
+New plan - get exactly ONE opcode working, end to end, including unit tests.
+End to end - parse assembly, emit code, load up VM, run code, inspect/assert machine state.
 
 ## Day 8 Plan (short stream)
 

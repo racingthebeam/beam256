@@ -85,6 +85,28 @@ static void init_mem(machine_t *m) {
     m->on_event(EV_GRAPHICS_REQUEST_DRAW, 0);
 }
 
+#define OP(ins) ((ins) >> 24)
+
+#define DECODE_REG_REG(ins, r0, r1) \
+    uint8_t r0 = (((ins) >> 16) & 0xFF); \
+    uint8_t r1 = (((ins) >> 8) & 0xFF)
+
 static int tick(machine_t *m) {
+    frame_t *f = &m->frames[m->fp];
+    WORD ins = mem_read_uint32_le(m->mem + f->ip);
+    f->ip += 4;
+
+    switch (OP(ins)) {
+        case OP_MOV:
+        {
+            DECODE_REG_REG(ins, rd, rs);
+            m->stack[m->sp + rd] = m->stack[m->sp + rs];
+            break;
+        }
+        case OP_HALT:
+            m->halted = 1;
+            break;
+    }
+
     return 0;
 }

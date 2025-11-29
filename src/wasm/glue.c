@@ -31,3 +31,7 @@ WORD read_reg(int reg) {
     return beam256_read_reg(&machine, reg);
 }
 
+WORD write_reg(int reg, WORD value) {
+    return beam256_write_reg(&machine, reg, value);
+}
+

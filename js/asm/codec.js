@@ -1,4 +1,7 @@
-export const encoders = {
+export const Encoders = {
+    op: (op) => {
+        return encodeOp(op);
+    },
     reg_reg: (op, r1, r2) => {
         return encodeOp(op) | encodeReg(r1, 16) | encodeReg(r2, 8);
     },
