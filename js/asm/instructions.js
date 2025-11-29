@@ -1,4 +1,5 @@
-import * as O from "./optypes.js";
+import * as T from "./optypes.js";
+import * as O from "./opcodes.js";
 
 // Argument types:
 // reg - register reference (7-bit, 0-127)
@@ -15,12 +16,15 @@ export const Instructions = {
 
     "MOV": [
         {
-            // Args denotes the order as written by humans in assembly code
+            // Params denotes the order as written by humans in assembly code
             // This doesn't always match the order in which they're encoded
             // because the human-written representation favours destination-
             // first, whereas the native representation is chosen so as to
             // minimise the total number of encodings.
-            args: [O.Reg, O.Reg],
+            params: [T.Reg, T.Reg],
+
+            // The machine-level opcode
+            op: O.OP_MOV,
 
             // This defines how the instructions are encoded
             // If encoding order matches the argument order, this can be
@@ -28,34 +32,40 @@ export const Instructions = {
             enc: null,
         },
         {
-            args: [O.Reg, O.S17],
+            params: [T.Reg, T.S17],
         }
     ],
-    "MOVH": [
+    // "MOVH": [
+    //     {
+    //         args: [O.Reg, O.U16]
+    //     },
+    // ],
+    // "MOVL": [
+    //     {
+    //         args: [O.Reg, O.U16]
+    //     }
+    // ],
+    // "STORE": [
+    //     {
+    //         args: [O.Addr, O.Reg]
+    //     },
+    //     {
+    //         args: [O.RegAddr, O.Reg]
+    //     }
+    // ],
+    // "LOAD": [
+    //     {
+    //         args: [O.Reg, O.Addr],
+    //         enc: [1, 0]
+    //     },
+    //     {
+    //         args: [O.Reg, O.RegAddr],
+    //     }
+    // ],
+    "HALT": [
         {
-            args: [O.Reg, O.U16]
-        },
-    ],
-    "MOVL": [
-        {
-            args: [O.Reg, O.U16]
-        }
-    ],
-    "STORE": [
-        {
-            args: [O.Addr, O.Reg]
-        },
-        {
-            args: [O.RegAddr, O.Reg]
-        }
-    ],
-    "LOAD": [
-        {
-            args: [O.Reg, O.Addr],
-            enc: [1, 0]
-        },
-        {
-            args: [O.Reg, O.RegAddr],
+            params: [],
+            op: O.OP_HALT
         }
     ]
 }

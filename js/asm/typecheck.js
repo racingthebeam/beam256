@@ -30,20 +30,22 @@ export function typecheck(prog) {
         // Select the first one that matches our arguments.
         formLoop: for (const [i, c] of forms.entries()) {
             // if the argument counts aren't equal, can never match
-            if (c.args.length !== node.args.length) {
+            if (c.params.length !== node.args.length) {
                 continue;
             }
 
             // check that each argument is assignable to the operand type
             for (let argIx = 0; argIx < node.args.length; argIx++) {
-                const res = c.args[argIx].check(node.args[argIx], state);
+                const res = c.params[argIx].check(node.args[argIx], state);
                 if (res === false || typeof res === 'string') {
                     continue formLoop;
                 }
             }
 
-            // if we find a match, annotate the AST node with the index
-            // so we can look it up easily during codegen
+            // if we find a match, annotate the AST node with the
+            // entry and the index so we can look it up easily
+            // during codegen
+            node.instruction = c;
             node.instructionIndex = i;
             foundMatch = true;
             break;
@@ -64,7 +66,6 @@ export function typecheck(prog) {
         switch (line.type) {
             case "ins":
                 {
-                    console.log("ins", wp);
                     if (wp & 3) {
                         throw new Error("instruction alignment error");
                     }
