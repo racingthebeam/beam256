@@ -87,9 +87,29 @@ static void init_mem(machine_t *m) {
 
 #define OP(ins) ((ins) >> 24)
 
+#define REG(r) (m->stack[m->sp + (r)])
+
+#define DEF_SIGNED(var, val) \
+    union { int32_t i; uint32_t u; } var; \
+    var.u = (val)
+
 #define DECODE_REG_REG(ins, r0, r1) \
-    uint8_t r0 = (((ins) >> 16) & 0xFF); \
-    uint8_t r1 = (((ins) >> 8) & 0xFF)
+    uint8_t r0 = (((ins) >> 16) & 0x7F); \
+    uint8_t r1 = (((ins) >> 8) & 0x7F)
+
+#define DECODE_REG_S17(ins, r0, v0) \
+    uint8_t r0 = (((ins) >> 17) & 0x7F); \
+    uint32_t v0 = (ins) & 0x1FFFF; \
+    if (v0 & 0x10000) v0 |= 0xFFFF0000
+
+#define DECODE_REG_U16(ins, r0, v0) \
+    uint8_t r0 = (((ins) >> 16) & 0x7F); \
+    uint32_t v0 = (ins) & 0xFFFF
+
+#define DECODE_REG_REG_REG(ins, r0, r1, r2) \
+    uint8_t r0 = (((ins) >> 16) & 0x7F); \
+    uint8_t r1 = (((ins) >> 8) & 0x7F); \
+    uint8_t r2 = (((ins) >> 0) & 0x7F); \
 
 static int tick(machine_t *m) {
     frame_t *f = &m->frames[m->fp];
@@ -103,6 +123,106 @@ static int tick(machine_t *m) {
             m->stack[m->sp + rd] = m->stack[m->sp + rs];
             break;
         }
+        case OP_MOV_I:
+        {
+            DECODE_REG_S17(ins, rd, val);
+            REG(rd) = val;
+            break;
+        }
+        case OP_MOVL:
+        {
+            DECODE_REG_U16(ins, rd, val);
+            uint32_t tmp = REG(rd);
+            REG(rd) = (tmp & 0xFFFF0000) | val;
+            break;
+        }
+        case OP_MOVH:
+        {
+            DECODE_REG_U16(ins, rd, val);
+            uint32_t tmp = REG(rd);
+            REG(rd) = (tmp & 0x0000FFFF) | (val << 16);
+            break;
+        }
+        case OP_ADD:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = REG(r1) + REG(r2);
+            break;
+        }
+        case OP_SUB:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = REG(r1) - REG(r2);
+            break;
+        }
+        case OP_MUL:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = REG(r1) * REG(r2);
+            break;
+        }
+        case OP_DIV:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = REG(r1) / REG(r2);
+            break;
+        }
+        case OP_MOD:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = REG(r1) % REG(r2);
+            break;
+        }
+
+        case OP_AND:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = REG(r1) & REG(r2);
+            break;
+        }
+        case OP_OR:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = REG(r1) | REG(r2);
+            break;
+        }
+        case OP_XOR:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = REG(r1) ^ REG(r2);
+            break;
+        }
+        case OP_NOT:
+        {
+            DECODE_REG_REG(ins, rd, r1);
+            REG(rd) = ~REG(r1);
+            break;
+        }
+        case OP_SHL:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = REG(r1) << REG(r2);
+            break;
+        }
+        case OP_SHR:
+        {
+            // TODO: ensure this always shifts in 0
+            // According to C standard, this is implementation dependent
+            // Check the standard myself, seems like C20/23 have actually
+            // standardised this stuff
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = REG(r1) >> REG(r2);
+            break;
+        }
+        case OP_SAR:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            DEF_SIGNED(tmp, REG(r1));
+            tmp.i >>= REG(r2);
+            REG(rd) = tmp.u;
+            break;
+        }
+
         case OP_HALT:
             m->halted = 1;
             break;

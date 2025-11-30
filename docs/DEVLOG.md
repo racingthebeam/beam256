@@ -13,7 +13,34 @@ Main goal: get a workflow in place so we assemble the code consumed by day 9.
   - implement the instructions in the CPU core
   - debug it until it's all working
 
-## Day 9 Plan
+## Day 11 Plan
+
+  - function call opcodes: PUSH, POP, RSV, CALL, NARGS, SYSCALL
+  - IO: READ, WRITE (with testing for event forwarding)
+  - LOAD, STORE, plus split-reg indexed operations (not yet documented)
+  - unconditional jumps
+  - extend maths operations with support for signed operations and immediate values
+
+That's ambitious but if we can knock all that out in a day then next Sunday we can do all the conditional jumps, of which there seem to be dozens, and looks like an all-round miserable time. After *that* we can finally start looking at some hardware.
+
+As you can see I'm doing everything I can to avoid setting up a TypeScript pipeline.
+
+## Day 10
+
+Late start today, work emergency...
+We'll get as many opcodes done as we can...
+
+Think we'll just move POW to stdlib
+Bug: something up with parsing hex values (maybe those starting with numbers?)
+  - see commented out MOV test
+  - come back to this when we've got parser/lexer tests
+
+What we got done:
+  - MOV, MOVL, MOVH
+  - unsigned maths (reg-reg)
+  - bit shifts, inc. arithmetic (reg-reg)
+
+## Day 9
 
 OK so small change of plan.
 
@@ -21,6 +48,21 @@ Original plan - bodge our way through directly encoding a bunch of assembler ins
 
 New plan - get exactly ONE opcode working, end to end, including unit tests.
 End to end - parse assembly, emit code, load up VM, run code, inspect/assert machine state.
+
+success_kid.gif
+
+That went pretty well - we have an end to end testing framework with:
+
+  - tests defined in node.js
+  - each test takes human-readable assembly and produces binary code
+  - binary code is loaded into CPU
+  - run the CPU until it halts
+  - check the CPU/memory state vs expected
+
+Things outstanding:
+
+  - codegen doesn't deal with anything except instructions i.e. no directives, labels
+  - tons and tons of instructions still to implement
 
 ## Day 8 Plan (short stream)
 

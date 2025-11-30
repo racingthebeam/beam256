@@ -31,10 +31,53 @@ export const Instructions = {
             // omitted/set to null
             enc: null,
         },
-        {
-            params: [T.Reg, T.S17],
-        }
+        { params: [T.Reg, T.S17], op: O.OP_MOV_I }
     ],
+    "MOVL": [
+        { params: [T.Reg, T.U16], op: O.OP_MOVL },
+    ],
+    "MOVH": [
+        { params: [T.Reg, T.U16], op: O.OP_MOVH },
+    ],
+
+    "ADD": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_ADD }
+    ],
+    "SUB": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_SUB }
+    ],
+    "MUL": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_MUL }
+    ],
+    "DIV": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_DIV }
+    ],
+    "MOD": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_MOD }
+    ],
+
+    "AND": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_AND }
+    ],
+    "OR": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_OR }
+    ],
+    "XOR": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_XOR }
+    ],
+    "NOT": [
+        { params: [T.Reg, T.Reg], op: O.OP_NOT }
+    ],
+    "SHL": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_SHL }
+    ],
+    "SHR": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_SHR }
+    ],
+    "SAR": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_SAR }
+    ],
+
     // "MOVH": [
     //     {
     //         args: [O.Reg, O.U16]
