@@ -21,6 +21,8 @@ Main goal: get a workflow in place so we assemble the code consumed by day 9.
   - unconditional jumps
   - extend maths operations with support for signed operations and immediate values
 
+NB: need to extend assembler to support `.org`, `.align`, and literal data
+
 That's ambitious but if we can knock all that out in a day then next Sunday we can do all the conditional jumps, of which there seem to be dozens, and looks like an all-round miserable time. After *that* we can finally start looking at some hardware.
 
 As you can see I'm doing everything I can to avoid setting up a TypeScript pipeline.
