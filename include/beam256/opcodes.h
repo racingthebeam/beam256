@@ -36,4 +36,11 @@
 #define OP_STORE_I 25
 #define OP_STORE_REG 26
 
+#define OP_PUSH_I 27
+#define OP_PUSH_REG 28
+#define OP_POP 29
+#define OP_POP_REG 30
+#define OP_RSV 31
+
+#define OP_DUMP   254
 #define OP_HALT         255

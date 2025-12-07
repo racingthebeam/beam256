@@ -18,6 +18,13 @@ export const Encoders = {
         assertType("r1", r1, "reg");
         return encodeOp(op) | encodeReg(r1.reg, 16);
     },
+
+    // u7 encoding is only used by RSV
+    u7: (op, v1) => {
+        assertIntegerConstant("v1", v1);
+        return encodeOp(op) | encodeReg(v1.val, 16);
+    },
+
     reg_reg: (op, r1, r2) => {
         assertType("r1", r1, "reg");
         assertType("r2", r2, "reg");

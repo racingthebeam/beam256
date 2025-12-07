@@ -13,12 +13,31 @@ Main goal: get a workflow in place so we assemble the code consumed by day 9.
   - implement the instructions in the CPU core
   - debug it until it's all working
 
-## Day 12
+## Day 14 (est. 14/12)
+
+By the end of this session we should have pretty much all of the opcodes in place for a v1 ISA
+
+  - extend maths operations with support for signed operations and immediate values
+  - finish conditional jumps
+
+All things going well we should be able to spend the pre-Christmas session on hardware planning and placing a fat DigiKey order so we can play with some hardware in the new year!
 
 ### Plan
 
-  - extend maths operations with support for signed operations and immediate values
-  - conditional jumps
+## Day 13 (est. 13/12)
+
+### Plan
+
+  - LOAD, STORE split-reg indexed operations
+  - some conditional jumps
+
+## Day 12 (mid-week)
+
+### Plan
+
+  - built-in function calls
+  - function call opcodes: CALL, NARGS
+  - write up docs for split-reg indexed operations
 
 ## Day 11
 
@@ -50,6 +69,11 @@ LOAD/STORE done, we'll leave the indexing operations till next session (maybe tr
 
 Almost 3 hours in... do i have the energy for function calls/stack shenanigans...
 
+No energy for the full native call stuff - but let's do SYSCALL. It's nice and simple.
+Updated the design doc and wrote up how SYSCALL (now BCALL for "built in function call") will work
+Implemented PUSH, POP, RSV, and DUMP
+
+Will do BCALL next session, wasted a ton of time with PUSH/POP debugging.
 
 ## Day 10
 

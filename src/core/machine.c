@@ -89,7 +89,9 @@ static void init_mem(machine_t *m) {
 
 #define OP(ins) ((ins) >> 24)
 
-#define REG(r) (m->stack[m->sp + (r)])
+#define REG(r)          (m->stack[f->bp + (r)])
+#define PUSH(v)         (m->stack[m->sp++] = (v))
+#define POP()           (m->stack[--(m->sp)])
 
 #define DEF_SIGNED(var, val) \
     union { int32_t i; uint32_t u; } var; \
@@ -307,6 +309,52 @@ static int tick(machine_t *m) {
         {
             DECODE_REG_REG(ins, r_dst, r_val);
             mem_write_uint32_le(&m->mem[REG(r_dst)], REG(r_val));
+            break;
+        }
+
+        case OP_PUSH_I:
+        {
+            // TODO: this instruction needs a new 24 bit integer encoding with
+            // sign extension and i can't be bothered doing it right now
+            printf("PUSH_I is not implemented!\n");
+            break;
+        }
+        case OP_PUSH_REG:
+        {
+            DECODE_REG(ins, r_val);
+            PUSH(REG(r_val));
+            break;
+        }
+        case OP_POP:
+        {
+            POP();
+            break;
+        }
+        case OP_POP_REG:
+        {
+            DECODE_REG(ins, r_dst);
+            REG(r_dst) = POP();
+            break;
+        }
+        case OP_RSV:
+        {
+            DECODE_REG(ins, n);
+            m->sp = f->bp + n;
+            break;
+        }
+
+        case OP_DUMP:
+        {
+            printf("=== beam256 dump ===\n");
+            printf("fp=%d sp=%d\n", m->fp, m->sp);
+            printf("frame: bp=%d ip=%d\n", f->bp, f->ip);
+
+            printf("frame locals:\n");
+            for (int i = f->bp; i < m->sp; i++) {
+                const int reg = i - f->bp;
+                printf("  r%d = %d\n", reg, REG(reg));
+            }
+
             break;
         }
 

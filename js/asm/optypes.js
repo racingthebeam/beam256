@@ -87,6 +87,7 @@ class UnsignedInt extends OpType {
     }
 }
 
+export const U7 = new UnsignedInt(7);
 export const U8 = new UnsignedInt(8);
 export const U16 = new UnsignedInt(16);
 

@@ -317,3 +317,38 @@ right so... the challenge we have is that we want to support a bunch of differen
 i think the best way to deal with this is just to... not deal with it. the compiler/assembler can work out how big everything is, and maybe we can have some directives to fill in absolute values, i dunno, never built an assembler or linker before. regardless, punt it into the future.
 
 
+# Built-in Functions
+
+BEAM256 implements a standard library of "built in functions" (BIFs), addressed by numeric index.
+
+BIF numbers will be mapped to named constants by the assembler's implicit prelude include.
+
+BIFs are invoked using the `BCALL` mnemonic, which takes two forms:
+
+  - `BCALL fn, nArgs`: call the specified BIF and discard the return value
+  - `BCALL rX, fn, nArgs`: call the specified BIF and place the return value in register `rX`
+
+BIF arguments must be `PUSH`'d to the stack; on return, said arguments will have been popped.
+
+Instruction encoding notes:
+
+  - register: 7 bits
+  - nargs: 5 bits (max 31 args)
+  - fn: 12 bits (max 4096 BIFs - plenty)
+
+Ideas for BIFs:
+
+  - random number generation
+  - trigonometric/other maths functions
+  - fixed-point arithmetic
+  - string handling
+
+
+
+
+
+
+
+
+
+

@@ -104,6 +104,18 @@ export const Instructions = {
         { params: [T.Reg, T.Reg], op: O.OP_STORE_REG },
     ],
 
+    "PUSH": [
+        // TODO: immediate
+        { params: [T.Reg], op: O.OP_PUSH_REG }
+    ],
+    "POP": [
+        { params: [], op: O.OP_POP },
+        { params: [T.Reg], op: O.OP_POP_REG },
+    ],
+    "RSV": [
+        { params: [T.U7], op: O.OP_RSV }
+    ],
+
     // "MOVH": [
     //     {
     //         args: [O.Reg, O.U16]
@@ -131,6 +143,9 @@ export const Instructions = {
     //         args: [O.Reg, O.RegAddr],
     //     }
     // ],
+    "DUMP": [
+        { params: [], op: O.OP_DUMP }
+    ],
     "HALT": [
         {
             params: [],

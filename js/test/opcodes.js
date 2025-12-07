@@ -297,6 +297,32 @@ const TESTS = [
             assert.equal(m.view.getUint32(2048, true), 5678);
         }
     },
+
+    {
+        name: "PUSH/POP",
+        setup: (m) => {
+            m.writeReg(4, 1);
+            m.writeReg(5, 2);
+            m.writeReg(6, 3);
+            m.writeReg(7, 4);
+        },
+        code: `
+            RSV 8
+            PUSH r4     # stack: {1}
+            PUSH r7     # stack: {1, 4}
+            PUSH r6     # stack: {1, 4, 3}
+            PUSH r5     # stack: {1, 4, 3, 2}
+            POP         # stack: {1, 4, 3}
+            POP r1      # stack: {1, 4}, r1=3
+            POP r2      # stack: {1}, r1=3, r2=4
+            POP r3      # stack: {}, r1=3, r2=4, r3=1
+        `,
+        check: (m) => {
+            assert.equal(m.reg(1), 3);
+            assert.equal(m.reg(2), 4);
+            assert.equal(m.reg(3), 1);
+        }
+    }
 ];
 
 for (const t of TESTS) {

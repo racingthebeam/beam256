@@ -31,4 +31,12 @@ export const OP_LOAD_REG = 24;
 export const OP_STORE_I = 25;
 export const OP_STORE_REG = 26;
 
+export const OP_PUSH_I = 27;
+export const OP_PUSH_REG = 28;
+export const OP_POP = 29;
+export const OP_POP_REG = 30;
+export const OP_RSV = 31;
+
+
+export const OP_DUMP = 254;
 export const OP_HALT = 255;
