@@ -37,6 +37,9 @@ All things going well we should be able to spend the pre-Christmas session on ha
 
   - built-in function calls
   - function call opcodes: CALL, NARGS
+  - implement sign-extended 24 bit encoding for PUSH immediate
+    - OR OR OR - do we just stick with S17 encoding - we have it already?!
+    - I think laziness will prevail here, let's just use S17
   - write up docs for split-reg indexed operations
 
 ## Day 11
