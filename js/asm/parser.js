@@ -81,6 +81,9 @@ export function parse(text) {
             case "B":
             case "W":
                 {
+                    // TODO: we should extend this to support negative/2s complement,
+                    // but encode it as an unsigned value.
+
                     // FIXME: this is most definitely wrong in JavaScript
                     const max = (dir === "B") ? 255 : 0xFFFFFFFF;
 

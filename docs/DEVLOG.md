@@ -13,19 +13,33 @@ Main goal: get a workflow in place so we assemble the code consumed by day 9.
   - implement the instructions in the CPU core
   - debug it until it's all working
 
-## Day 11 Plan
+## Day 12
+
+### Plan
+
+  - extend maths operations with support for signed operations and immediate values
+  - conditional jumps
+
+## Day 11
+
+### Plan
+
+NB: need to extend assembler to support `.org`, `.align`, and literal data
 
   - function call opcodes: PUSH, POP, RSV, CALL, NARGS, SYSCALL
   - IO: READ, WRITE (with testing for event forwarding)
   - LOAD, STORE, plus split-reg indexed operations (not yet documented)
   - unconditional jumps
-  - extend maths operations with support for signed operations and immediate values
-
-NB: need to extend assembler to support `.org`, `.align`, and literal data
 
 That's ambitious but if we can knock all that out in a day then next Sunday we can do all the conditional jumps, of which there seem to be dozens, and looks like an all-round miserable time. After *that* we can finally start looking at some hardware.
 
 As you can see I'm doing everything I can to avoid setting up a TypeScript pipeline.
+
+### Report
+
+Twas a late start, will not get everything done that I wanted. Punt signed math ops to next week!
+
+codegen is extended to support org, align, zero, literal data
 
 ## Day 10
 

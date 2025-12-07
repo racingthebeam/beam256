@@ -1,11 +1,15 @@
 import { Encoders as E } from "./codec.js";
 import { MemorySize } from "../emu/constants.js"
+import { roundUpToNextMultipleOf } from "./helpers.js";
 
 export function codegen(prog) {
     const gen = new CodeGen(prog);
     gen.generate();
     return gen.memory;
 }
+
+// TODO: assembler should keep track of regions that
+// have already be written to, and disallow overwrites.
 
 export class CodeGen {
     constructor(prog) {
@@ -19,6 +23,30 @@ export class CodeGen {
     generate() {
         for (const line of this.prog.lines) {
             switch (line.type) {
+                case "dir-org":
+                    this.wp = line.addr;
+                    break;
+                case "dir-align":
+                    this.wp = roundUpToNextMultipleOf(this.wp, line.align);
+                    break;
+                case "dir-zero":
+                    for (let i = 0; i < line.count; i++) {
+                        this.view.setUint8(this.wp, 0);
+                        this.wp++;
+                    }
+                    break;
+                case "dir-bytes":
+                    for (const b of line.values) {
+                        this.view.setUint8(this.wp, b.val);
+                        this.wp++;
+                    }
+                    break;
+                case "dir-words":
+                    for (const w of line.values) {
+                        this.view.setUint32(this.wp, w.val, true);
+                        this.wp += 4;
+                    }
+                    break;
                 case "ins":
                     this.emitInstruction(line);
                     break;

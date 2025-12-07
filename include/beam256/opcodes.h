@@ -23,4 +23,7 @@
 #define OP_SHR 13
 #define OP_SAR 14
 
+#define OP_UJMP_ADDR 17
+#define OP_UJMP_REG 18
+
 #define OP_HALT         255

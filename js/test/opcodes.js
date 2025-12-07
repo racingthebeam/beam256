@@ -158,6 +158,43 @@ const TESTS = [
             // assert.strictEqual(m.reg(0), 0xFFFF00FF);
         }
     },
+
+    //
+    // Unconditional jumps
+
+    {
+        name: "JMP addr",
+        code: `
+            JMP 16
+            HALT
+            MOV r0, 123
+            HALT
+            MOV r0, 456
+            HALT
+            MOV r0, 789
+            HALT
+        `,
+        check: (m) => {
+            assert.strictEqual(m.reg(0), 456);
+        }
+    },
+    {
+        name: "JMP reg",
+        setup: (m) => { m.writeReg(0, 16); },
+        code: `
+            JMP r0
+            HALT
+            MOV r1, 1
+            HALT
+            MOV r1, 2
+            HALT
+            MOV r1, 3
+            HALT
+        `,
+        check: (m) => {
+            assert.strictEqual(m.reg(1), 2);
+        }
+    }
 ];
 
 for (const t of TESTS) {

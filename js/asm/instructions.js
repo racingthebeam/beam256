@@ -78,6 +78,11 @@ export const Instructions = {
         { params: [T.Reg, T.Reg, T.Reg], op: O.OP_SAR }
     ],
 
+    "JMP": [
+        { params: [T.U16], op: O.OP_UJMP_ADDR },
+        { params: [T.Reg], op: O.OP_UJMP_REG }
+    ],
+
     // "MOVH": [
     //     {
     //         args: [O.Reg, O.U16]

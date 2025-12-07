@@ -93,6 +93,9 @@ static void init_mem(machine_t *m) {
     union { int32_t i; uint32_t u; } var; \
     var.u = (val)
 
+#define DECODE_REG(ins, r0) \
+    uint8_t r0 = (((ins) >> 16) & 0x7F)
+
 #define DECODE_REG_REG(ins, r0, r1) \
     uint8_t r0 = (((ins) >> 16) & 0x7F); \
     uint8_t r1 = (((ins) >> 8) & 0x7F)
@@ -104,6 +107,9 @@ static void init_mem(machine_t *m) {
 
 #define DECODE_REG_U16(ins, r0, v0) \
     uint8_t r0 = (((ins) >> 16) & 0x7F); \
+    uint32_t v0 = (ins) & 0xFFFF
+
+#define DECODE_U16(ins, v0) \
     uint32_t v0 = (ins) & 0xFFFF
 
 #define DECODE_REG_REG_REG(ins, r0, r1, r2) \
@@ -220,6 +226,18 @@ static int tick(machine_t *m) {
             DEF_SIGNED(tmp, REG(r1));
             tmp.i >>= REG(r2);
             REG(rd) = tmp.u;
+            break;
+        }
+        case OP_UJMP_ADDR:
+        {
+            DECODE_U16(ins, addr);
+            f->ip = addr;
+            break;
+        }
+        case OP_UJMP_REG:
+        {
+            DECODE_REG(ins, reg);
+            f->ip = REG(reg);
             break;
         }
 

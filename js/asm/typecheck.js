@@ -1,4 +1,5 @@
 import { Instructions } from "./instructions.js";
+import { roundUpToNextMultipleOf } from "./helpers.js";
 import * as O from "./optypes.js";
 
 // typecheck checks the program for the following:
@@ -107,13 +108,5 @@ export function typecheck(prog) {
                 throw new Error(`unknown statement type ${line.type} - this is a bug`);
         }
     }
-}
-
-function roundUpToNextMultipleOf(x, n) {
-    // probably a better way to do this if you assume powers of 2?
-    // but... our .align directive doesn't mandate this.
-    const rem = x % n;
-    if (rem === 0) return x;
-    return x + (n - rem);
 }
 

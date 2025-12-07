@@ -18,4 +18,7 @@ export const OP_SHL = 12;
 export const OP_SHR = 13;
 export const OP_SAR = 14;
 
+export const OP_UJMP_ADDR = 17;
+export const OP_UJMP_REG = 18;
+
 export const OP_HALT = 255;

@@ -8,6 +8,16 @@ export const Encoders = {
     op: (op) => {
         return encodeOp(op);
     },
+    u16: (op, v1) => {
+        assertIntegerConstant("v1", v1);
+        // TODO: should we check the range here?
+        // TODO: should we allow negative values and just encode using 2s comp?
+        return encodeOp(op) | (v1.val & 0xFFFF);
+    },
+    reg: (op, r1) => {
+        assertType("r1", r1, "reg");
+        return encodeOp(op) | encodeReg(r1.reg, 16);
+    },
     reg_reg: (op, r1, r2) => {
         assertType("r1", r1, "reg");
         assertType("r2", r2, "reg");
