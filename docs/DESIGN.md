@@ -344,8 +344,21 @@ Ideas for BIFs:
   - string handling
 
 
+# Audio
 
+Ideas for audio:
 
+  - 4 channel
+  - each channel can be triggered to either:
+    - play a sample from RAM
+    - simulate a simple oscillator
+  - envelopes for pitch/amplitude (maybe with looping)
+
+There could be a scheduler that runs on the second core that can trigger events.
+This would allow music playback.
+(look at the Amstrad Plus DMA thing - it has a simple bytecode).
+
+Finally - add built-in functions for generating more advanced SFX into RAM.
 
 
 
