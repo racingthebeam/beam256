@@ -8,9 +8,14 @@ function makeTest({ setup, code, check, halt = true }) {
     return async (t) => {
         if (halt) code += "\nHALT\n";
 
+        const events = [];
+
         const machine = await createMachine({
-            onEvent: () => {
-                // console.log("event!");
+            onEvent: (evt, arg1, arg2) => {
+                events.push({
+                    event: evt,
+                    args: [arg1, arg2]
+                });
             },
             image: assemble(code)
         });
@@ -24,7 +29,7 @@ function makeTest({ setup, code, check, halt = true }) {
         }
 
         if (typeof check === 'function') {
-            check(machine);
+            check(machine, events);
         }
     };
 }
@@ -194,7 +199,104 @@ const TESTS = [
         check: (m) => {
             assert.strictEqual(m.reg(1), 2);
         }
-    }
+    },
+
+    //
+    // IO
+
+    {
+        name: "OUT port, imm",
+        code: "OUT 255, 100",
+        check: (_, events) => {
+            assert.equal(events.length, 1);
+            assert.equal(events[0].args[0], 255);
+            assert.equal(events[0].args[1], 100);
+        }
+    },
+    {
+        name: "OUT port, reg",
+        setup: (m) => { m.writeReg(0, 67); },
+        code: "OUT 255, r0",
+        check: (_, events) => {
+            assert.equal(events.length, 1);
+            assert.equal(events[0].args[0], 255);
+            assert.equal(events[0].args[1], 67);
+        }
+    },
+    {
+        name: "IN reg, port",
+        code: `
+            OUT 255, 100
+            IN r0, 255
+        `,
+        check: (m) => {
+            assert.equal(m.reg(0), 100);
+        }
+    },
+    {
+        name: "OUT port, reg, reg",
+        setup: (m) => {
+            m.writeReg(0, 0xAA);
+            m.writeReg(1, 0xFF);
+        },
+        code: `
+            OUT 255, 0x0F0F
+            OUT 255, r0, r1
+        `,
+        check: (_, events) => {
+            assert.equal(events.length, 2);
+            assert.equal(events[0].args[0], 255);
+            assert.equal(events[0].args[1], 0x0F0F);
+            assert.equal(events[1].args[0], 255);
+            assert.equal(events[1].args[1], 0x0FAA);
+        }
+    },
+
+    //
+    // LOAD/STORE
+
+    {
+        name: "LOAD reg, addr",
+        setup: (m) => { m.view.setUint32(4096, 123, true); },
+        code: "LOAD r0, 4096",
+        check: (m) => {
+            assert.equal(m.reg(0), 123);
+        }
+    },
+    {
+        name: "LOAD reg, reg",
+        setup: (m) => {
+            m.view.setUint32(8192, 67, true);
+            m.writeReg(1, 8192);
+        },
+        code: "LOAD r0, r1",
+        check: (m) => {
+            assert.equal(m.reg(0), 67);
+        }
+    },
+    {
+        name: "STORE addr, reg",
+        setup: (m) => { m.writeReg(0, 12345); },
+        code: `
+            STORE 1024, r0
+        `,
+        check: (m) => {
+            assert.equal(m.view.getUint32(1024, true), 12345);
+        }
+    },
+    {
+        name: "STORE reg, reg",
+        setup: (m) => {
+            m.writeReg(0, 2048);
+            m.writeReg(1, 5678);
+        },
+        code: `
+            STORE r0, r1
+        `,
+        check: (m) => {
+            assert.equal(m.view.getUint32(2048, true), 5678);
+        }
+    },
 ];
 
 for (const t of TESTS) {

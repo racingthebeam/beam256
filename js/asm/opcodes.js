@@ -21,4 +21,14 @@ export const OP_SAR = 14;
 export const OP_UJMP_ADDR = 17;
 export const OP_UJMP_REG = 18;
 
+export const OP_IN = 19;
+export const OP_OUT_I = 20;
+export const OP_OUT_REG = 21;
+export const OP_OUT_REG_MASK = 22;
+
+export const OP_LOAD_I = 23;
+export const OP_LOAD_REG = 24;
+export const OP_STORE_I = 25;
+export const OP_STORE_REG = 26;
+
 export const OP_HALT = 255;

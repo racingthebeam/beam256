@@ -83,6 +83,27 @@ export const Instructions = {
         { params: [T.Reg], op: O.OP_UJMP_REG }
     ],
 
+    "IN": [
+        {
+            params: [T.Reg, T.U8], op: O.OP_IN,
+            enc: [1, 0]
+        }
+    ],
+    "OUT": [
+        { params: [T.U8, T.U16], op: O.OP_OUT_I },
+        { params: [T.U8, T.Reg], op: O.OP_OUT_REG },
+        { params: [T.U8, T.Reg, T.Reg], op: O.OP_OUT_REG_MASK },
+    ],
+
+    "LOAD": [
+        { params: [T.Reg, T.U16], op: O.OP_LOAD_I },
+        { params: [T.Reg, T.Reg], op: O.OP_LOAD_REG },
+    ],
+    "STORE": [
+        { params: [T.U16, T.Reg], op: O.OP_STORE_I, enc: [1, 0] },
+        { params: [T.Reg, T.Reg], op: O.OP_STORE_REG },
+    ],
+
     // "MOVH": [
     //     {
     //         args: [O.Reg, O.U16]

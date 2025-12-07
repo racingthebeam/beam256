@@ -39,6 +39,24 @@ export const Encoders = {
         assertIntegerConstant("v1", v1);
         return encodeOp(op) | encodeReg(r1.reg, 16) | encodeU16(v1.val);
     },
+
+    u8_u16: (op, v1, v2) => {
+        assertIntegerConstant("v1", v1); // TODO: need a range check for sure
+        assertIntegerConstant("v2", v2); // TODO: need a range check for sure
+        return encodeOp(op) | encodeU8(v1.val, 16) | encodeU16(v2.val);
+    },
+    u8_reg: (op, v1, r1) => {
+        assertIntegerConstant("v1", v1); // TODO: need a range check for sure
+        assertType("r1", r1, "reg");
+        return encodeOp(op) | encodeU8(v1.val, 16) | encodeReg(r1.reg, 8);
+    },
+    u8_reg_reg: (op, v1, r1, r2) => {
+        assertIntegerConstant("v1", v1); // TODO: need a range check for sure
+        assertType("r1", r1, "reg");
+        assertType("r2", r2, "reg");
+        return encodeOp(op) | encodeU8(v1.val, 16) | encodeReg(r1.reg, 8) | encodeReg(r2.reg, 0);
+    }
+
     // reg_b16: (op, r, val) => {
     //     // TODO: need test runner
     // },
@@ -59,6 +77,10 @@ function assertIntegerConstant(label, v) {
 
 function encodeOp(op) {
     return (op & 0xFF) << 24;
+}
+
+function encodeU8(val, lshift) {
+    return (val & 0xFF) << lshift;
 }
 
 function encodeReg(reg, lshift) {

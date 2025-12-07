@@ -14,7 +14,7 @@ export async function createMachine({ onEvent, image }) {
 
     // Create a function pointer for receiving event callbacks
     // from the machine.
-    const onEventFnPtr = mod.addFunction(onEvent, "vii");
+    const onEventFnPtr = mod.addFunction(onEvent, "viii");
 
     // Initialise the machine, passing in the event callback.
     const ret = mod.ccall('init', 'int', ['int'], [onEventFnPtr]);
@@ -38,6 +38,7 @@ class Machine {
     constructor(mod, ram) {
         this.mod = mod;
         this.ram = ram;
+        this.view = new DataView(ram.buffer, ram.byteOffset, ram.byteLength);
     }
 
     get halted() {

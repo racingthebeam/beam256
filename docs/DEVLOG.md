@@ -40,6 +40,16 @@ As you can see I'm doing everything I can to avoid setting up a TypeScript pipel
 Twas a late start, will not get everything done that I wanted. Punt signed math ops to next week!
 
 codegen is extended to support org, align, zero, literal data
+unconditional jumps done & tested
+
+i think we'll rename the IO instructions to IN and OUT, gives me Z80 fuzzies
+
+IO IN/OUT done and tested, including event forwarding
+
+LOAD/STORE done, we'll leave the indexing operations till next session (maybe try that mid-week?) - I haven't written up my plans for that yet and I've lost my train of thought. Also it needs a new complex instruction encoding with a couple of flags. Yeh, do that during the week!
+
+Almost 3 hours in... do i have the energy for function calls/stack shenanigans...
+
 
 ## Day 10
 

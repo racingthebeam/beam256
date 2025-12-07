@@ -26,4 +26,14 @@
 #define OP_UJMP_ADDR 17
 #define OP_UJMP_REG 18
 
+#define OP_IN 19
+#define OP_OUT_I 20
+#define OP_OUT_REG 21
+#define OP_OUT_REG_MASK 22
+
+#define OP_LOAD_I 23
+#define OP_LOAD_REG 24
+#define OP_STORE_I 25
+#define OP_STORE_REG 26
+
 #define OP_HALT         255

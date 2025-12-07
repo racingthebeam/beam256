@@ -4,6 +4,8 @@
 static void init_reg(machine_t *m);
 static void init_mem(machine_t *m);
 static int tick(machine_t *m);
+static WORD read(machine_t *m, uint8_t port);
+static int write(machine_t *m, uint8_t port, WORD value);
 
 void machine_init(machine_t *m, uint8_t *mem, machine_event_fn on_event) {
     m->mem = mem;
@@ -20,6 +22,8 @@ void machine_init(machine_t *m, uint8_t *mem, machine_event_fn on_event) {
     m->halted = 0;
 
     init_reg(m);
+
+    memset(mem, 0, MEMORY_SIZE);
     init_mem(m);
 }
 
@@ -27,7 +31,7 @@ int machine_run(machine_t *m, int ncycles) {
     int cyc = 0;
     while (!m->halted && ncycles--) {
         cyc++;
-        if (tick(m) != 0) {
+        if (tick(m) == 0) {
             break;
         }
     }
@@ -42,8 +46,6 @@ static void init_reg(machine_t *m) {
 
 static void init_mem(machine_t *m) {
     int wp, end;
-
-    printf("init memory: %p\n", m->mem);
 
     int c = 0;
     wp = m->reg[REG_GRAPHICS_FRAMEBUFFER_ADDR];
@@ -82,7 +84,7 @@ static void init_mem(machine_t *m) {
 #undef PAL_ENT
 
     // We'll just bodge this in here for now
-    m->on_event(EV_GRAPHICS_REQUEST_DRAW, 0);
+    // m->on_event(EV_GRAPHICS_REQUEST_DRAW, 0, 0);
 }
 
 #define OP(ins) ((ins) >> 24)
@@ -112,15 +114,30 @@ static void init_mem(machine_t *m) {
 #define DECODE_U16(ins, v0) \
     uint32_t v0 = (ins) & 0xFFFF
 
+#define DECODE_U8_U16(ins, v0, v1) \
+    uint8_t v0 = (((ins) >> 16) & 0xFF); \
+    uint32_t v1 = ((ins) & 0xFFFF)
+
+#define DECODE_U8_REG(ins, v0, r0) \
+    uint8_t v0 = (((ins) >> 16) & 0xFF); \
+    uint8_t r0 = (((ins) >> 8) & 0x7F)
+
+#define DECODE_U8_REG_REG(ins, v0, r0, r1) \
+    uint8_t v0 = (((ins) >> 16) & 0xFF); \
+    uint8_t r0 = (((ins) >> 8) & 0x7F); \
+    uint8_t r1 = (((ins) >> 0) & 0x7F)
+
 #define DECODE_REG_REG_REG(ins, r0, r1, r2) \
     uint8_t r0 = (((ins) >> 16) & 0x7F); \
     uint8_t r1 = (((ins) >> 8) & 0x7F); \
-    uint8_t r2 = (((ins) >> 0) & 0x7F); \
+    uint8_t r2 = (((ins) >> 0) & 0x7F)
 
 static int tick(machine_t *m) {
     frame_t *f = &m->frames[m->fp];
     WORD ins = mem_read_uint32_le(m->mem + f->ip);
     f->ip += 4;
+
+    int keep_ticking = 1;
 
     switch (OP(ins)) {
         case OP_MOV:
@@ -240,11 +257,94 @@ static int tick(machine_t *m) {
             f->ip = REG(reg);
             break;
         }
+        case OP_IN:
+        {
+            DECODE_U8_REG(ins, port, reg);
+            REG(reg) = read(m, port);
+            break;
+        }
+        case OP_OUT_I:
+        {
+            DECODE_U8_U16(ins, port, value);
+            keep_ticking = write(m, port, value);
+            break;
+        }
+        case OP_OUT_REG:
+        {
+            DECODE_U8_REG(ins, port, reg);
+            keep_ticking = write(m, port, REG(reg));
+            break;
+        }
+        case OP_OUT_REG_MASK:
+        {
+            DECODE_U8_REG_REG(ins, port, r_value, r_mask);
+            WORD value = REG(r_value);
+            WORD mask = REG(r_mask);
+            WORD curr = read(m, port);
+            keep_ticking = write(m, port, (curr & ~mask) | (value & mask));
+            break;
+        }
+
+        case OP_LOAD_I:
+        {
+            DECODE_REG_U16(ins, r_dst, addr);
+            REG(r_dst) = mem_read_uint32_le(&m->mem[addr]);
+            break;
+        }
+        case OP_LOAD_REG:
+        {
+            DECODE_REG_REG(ins, r_dst, r_addr);
+            REG(r_dst) = mem_read_uint32_le(&m->mem[REG(r_addr)]);
+            break;
+        }
+        case OP_STORE_I:
+        {
+            DECODE_REG_U16(ins, r_val, addr);
+            mem_write_uint32_le(&m->mem[addr], REG(r_val));
+            break;
+        }
+        case OP_STORE_REG:
+        {
+            DECODE_REG_REG(ins, r_dst, r_val);
+            mem_write_uint32_le(&m->mem[REG(r_dst)], REG(r_val));
+            break;
+        }
 
         case OP_HALT:
             m->halted = 1;
             break;
+
+        default:
+            // TODO: we should probably fire an event here
+            printf("UNKNOWN INSTRUCTION: %d", OP(ins));
+            break;
     }
 
+    return keep_ticking;
+}
+
+// we'll use port 0xFF as a "debug" IO port
+// we just store the last value written, and allow it to be read back
+static WORD debug_io = 0;
+
+static WORD read(machine_t *m, uint8_t port) {
+    if (port == 0xFF) {
+        return debug_io;
+    }
     return 0;
 }
+
+// write() writes a value to the given IO port.
+// Writing to an IO port may trigger a synchronous callback to the host
+// application.
+// A return value of zero indicates that the current tick should be aborted
+// and control should return to the host application.
+static int write(machine_t *m, uint8_t port, WORD value) {
+    if (port == 0xFF) {
+        debug_io = value;
+        m->on_event(EV_IO_WRITE, port, value);
+    }
+
+    return 1;
+}
+
