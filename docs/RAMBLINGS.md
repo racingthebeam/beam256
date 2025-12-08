@@ -107,10 +107,35 @@ WASM is a thing and it would be far easier to do all the bit juggling in Zig or 
 JS is still fine (and indeed, necessary) for the host environment, since we want the thing to run in a browser. But the core should really be in something else. I think we'll get the bare minimum up and running in JS then switch to Zig or similar.
 
 
+# Function Calling
 
+BCALL (built in function call) puts return value into a designated register.
 
+for CALL, we can do this:
 
+  - CALL r_dst, r_fn, nargs (7 + 7 + 5 = 19)
+  - CALL r_dst, addr, nargs (7 + 16 + 5 = 28 - TOO MANY)
 
+Some thoughts:
+
+  - if calling by immediate address, the return value remains on the stack
+    - this "works" but it's inconsitent with everything else
+  - we could just not allow calling by immediate address; the problem here
+    is that every call now requires a MOV before. cycles matter in this little machine :)
+  - in general, for CALL, we could expand max # of args to 127
+    - why? because it would allow us to pass small arrays on the stack
+    - (we're going to add a few index-based MOV opcodes for dealing with stack arrays)
+
+So we arrive at this:
+
+  - CALL r_dst(7), r_fn(7), nargs(7)
+  - CALL addr(16), nargs(7)
+
+With the latter form leaving the return value on the stack.
+
+Actually wait.
+When control passes to the callee, we lose the context for where the return value is to go.
+So if we want to be able to write the return value directly to a register there's going to need to be some information stored in the stack frame to instruct the machine where to write it. Don't know if I like this.
 
 
 

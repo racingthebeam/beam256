@@ -322,6 +322,53 @@ const TESTS = [
             assert.equal(m.reg(2), 4);
             assert.equal(m.reg(3), 1);
         }
+    },
+    {
+        name: "PUSH imm",
+        code: `
+            RSV 2
+            PUSH 123
+            PUSH -65536
+            POP r0
+            POP r1
+        `,
+        check: (m) => {
+            assert.equal(m.reg(0), -65536);
+            assert.equal(m.reg(1), 123);
+        }
+    },
+    {
+        name: "BCALL r_dst, nargs, fn",
+        code: `
+            RSV 1
+            PUSH 1
+            PUSH 20
+            PUSH 300
+            BCALL r0, 3, 0
+        `,
+        check: (m) => {
+            assert.equal(m.reg(0), 321);
+            // TODO: need a way of checking the stack is popped
+        }
+    },
+    {
+        name: "BCALL nargs, fn",
+        code: `
+            PUSH 1
+            PUSH 20
+            PUSH 300
+            BCALL 3, 0
+        `,
+        check: (m) => {
+            // TODO: we need a way of testing the function was called
+            // HOWEVER! I'm not convinced this form is even required - if the
+            // BIF doesn't return a value its only purpose can be do some form
+            // of I/O, which should be handled by OUT instruction.
+            // I guess there's an argument that a BIF could be used to make helper
+            // functions that perform I/O - but even then, why not just return a
+            // value?
+            // Revisit later...
+        }
     }
 ];
 

@@ -9,6 +9,16 @@ typedef uint32_t WORD;
 
 typedef void (*machine_event_fn)(uint32_t event, uint32_t arg1, uint32_t arg2);
 
+typedef WORD (*bif_fn)(WORD *args, int nargs);
+
+enum {
+    BIF_TEST,
+    BIF_MAX
+};
+
+// TODO: work out a better way to set up this table
+extern bif_fn bif_table[BIF_MAX];
+
 #define MEMORY_SIZE         (256 * 1024)
 #define STACK_WORDS         512
 #define FRAME_STACK_SIZE    32

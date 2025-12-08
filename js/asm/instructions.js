@@ -105,7 +105,7 @@ export const Instructions = {
     ],
 
     "PUSH": [
-        // TODO: immediate
+        { params: [T.S17], op: O.OP_PUSH_I },
         { params: [T.Reg], op: O.OP_PUSH_REG }
     ],
     "POP": [
@@ -114,6 +114,11 @@ export const Instructions = {
     ],
     "RSV": [
         { params: [T.U7], op: O.OP_RSV }
+    ],
+
+    "BCALL": [
+        { params: [T.Reg, T.U5, T.U12], op: O.OP_BCALL },
+        { params: [T.U5, T.U12], op: O.OP_BCALL_DISCARD },
     ],
 
     // "MOVH": [

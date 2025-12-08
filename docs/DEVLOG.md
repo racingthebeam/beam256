@@ -31,6 +31,10 @@ All things going well we should be able to spend the pre-Christmas session on ha
   - LOAD, STORE split-reg indexed operations
   - some conditional jumps
 
+## Off-stream
+
+  - write up docs for split-reg indexed operations
+
 ## Day 12 (mid-week)
 
 ### Plan
@@ -40,7 +44,23 @@ All things going well we should be able to spend the pre-Christmas session on ha
   - implement sign-extended 24 bit encoding for PUSH immediate
     - OR OR OR - do we just stick with S17 encoding - we have it already?!
     - I think laziness will prevail here, let's just use S17
-  - write up docs for split-reg indexed operations
+
+### Actual
+
+Gonna stick with S17 encoding for PUSH immediate
+Implemented PUSH immediate, tested with negative numbers
+
+OK, next up - BIFs. We're just implemented in the mechanics of the call,
+not implement an actual table of functions.
+BIFs implemented! We ended up making a table after all, but still need to work out a way of encoding it elegantly. Funky xmacro time?
+
+Realised my idea for implementing CALL where the instruction encoding specifies register for return value isn't workable without modifying machine internals (stack frame needs to record where to put return value) - now wondering if it's better just to say all CALL forms leave the return value on the stack. But then there's no way of calling a function without returning a value.
+
+This is going to require some off-stream thought; too tired to reach a meaningful decision tonight.
+
+Let's try to un-fuck the mess I made.
+
+
 
 ## Day 11
 

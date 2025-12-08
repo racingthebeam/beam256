@@ -42,5 +42,11 @@
 #define OP_POP_REG 30
 #define OP_RSV 31
 
+#define OP_BCALL 32
+#define OP_BCALL_DISCARD 33
+
+#define OP_CALL_I 34
+#define OP_CALL_REG 35
+
 #define OP_DUMP   254
 #define OP_HALT         255

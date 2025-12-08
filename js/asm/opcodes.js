@@ -37,6 +37,11 @@ export const OP_POP = 29;
 export const OP_POP_REG = 30;
 export const OP_RSV = 31;
 
+export const OP_BCALL = 32;
+export const OP_BCALL_DISCARD = 33;
+
+export const OP_CALL_I = 34;
+export const OP_CALL_REG = 35;
 
 export const OP_DUMP = 254;
 export const OP_HALT = 255;

@@ -92,6 +92,7 @@ static void init_mem(machine_t *m) {
 #define REG(r)          (m->stack[f->bp + (r)])
 #define PUSH(v)         (m->stack[m->sp++] = (v))
 #define POP()           (m->stack[--(m->sp)])
+#define POPN(n)         (m->sp -= (n))
 
 #define DEF_SIGNED(var, val) \
     union { int32_t i; uint32_t u; } var; \
@@ -106,6 +107,10 @@ static void init_mem(machine_t *m) {
 
 #define DECODE_REG_S17(ins, r0, v0) \
     uint8_t r0 = (((ins) >> 17) & 0x7F); \
+    uint32_t v0 = (ins) & 0x1FFFF; \
+    if (v0 & 0x10000) v0 |= 0xFFFF0000
+
+#define DECODE_S17(ins, v0) \
     uint32_t v0 = (ins) & 0x1FFFF; \
     if (v0 & 0x10000) v0 |= 0xFFFF0000
 
@@ -133,6 +138,14 @@ static void init_mem(machine_t *m) {
     uint8_t r0 = (((ins) >> 16) & 0x7F); \
     uint8_t r1 = (((ins) >> 8) & 0x7F); \
     uint8_t r2 = (((ins) >> 0) & 0x7F)
+
+#define DECODE_REG_U5_U12(ins, r0, v0, v1) \
+    uint8_t r0 = (((ins) >> 17) & 0x7F); \
+    uint32_t v0 = (((ins) >> 12) & 0x1F); \
+    uint32_t v1 = (((ins) >> 0) & 0xFFF)
+
+#define DECODE_U5_12(ins, r0, v0, v1) \
+    DECODE_REG_U5_U12(ins, __ignore__, v0, v1)
 
 static int tick(machine_t *m) {
     frame_t *f = &m->frames[m->fp];
@@ -314,9 +327,8 @@ static int tick(machine_t *m) {
 
         case OP_PUSH_I:
         {
-            // TODO: this instruction needs a new 24 bit integer encoding with
-            // sign extension and i can't be bothered doing it right now
-            printf("PUSH_I is not implemented!\n");
+            DECODE_S17(ins, val);
+            PUSH(val);
             break;
         }
         case OP_PUSH_REG:
@@ -342,6 +354,41 @@ static int tick(machine_t *m) {
             m->sp = f->bp + n;
             break;
         }
+
+        case OP_BCALL:
+        {
+            DECODE_REG_U5_U12(ins, r_res, nargs, fn);
+            if (fn < BIF_MAX) {
+                REG(r_res) = bif_table[fn](&m->stack[m->sp - nargs], nargs);
+            } else {
+                // TODO: probably trap this with an event, maybe even halt the machine
+                REG(r_res) = 0xDEADBEEF;
+            }
+            POPN(nargs);
+            break;
+        }
+        case OP_BCALL_DISCARD:
+        {
+            DECODE_REG_U5_U12(ins, r_res, nargs, fn);
+            if (fn < BIF_MAX) {
+                bif_table[fn](&m->stack[m->sp - nargs], nargs);
+            } else {
+                // TODO: probably trap this with an event, maybe even halt the machine
+            }
+            POPN(nargs);
+            break;
+        }
+
+        // case OP_CALL_I:
+        // {
+        //     DECODE_U7_ADDR(ins, nargs, fn_addr);
+        //     break;
+        // }
+        // case OP_CALL_REG:
+        // {
+        //     DECODE_REG_U7_REG(ins, r_ret, )
+        //     break;
+        // }
 
         case OP_DUMP:
         {

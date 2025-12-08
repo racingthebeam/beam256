@@ -41,6 +41,10 @@ export const Encoders = {
         assertIntegerConstant("v1", v1);
         return encodeOp(op) | encodeReg(r1.reg, 17) | encodeS17(v1.val);
     },
+    s17: (op, v1) => {
+        assertIntegerConstant("v1", v1);
+        return encodeOp(op) | encodeS17(v1.val);
+    },
     reg_u16: (op, r1, v1) => {
         assertType("r1", r1, "reg");
         assertIntegerConstant("v1", v1);
@@ -62,7 +66,18 @@ export const Encoders = {
         assertType("r1", r1, "reg");
         assertType("r2", r2, "reg");
         return encodeOp(op) | encodeU8(v1.val, 16) | encodeReg(r1.reg, 8) | encodeReg(r2.reg, 0);
-    }
+    },
+    reg_u5_u12: (op, r1, v1, v2) => {
+        assertType("r1", r1, "reg");
+        assertIntegerConstant("v1", v1);
+        assertIntegerConstant("v2", v2);
+        return encodeOp(op) | encodeReg(r1.reg, 17) | encodeReg(v1.val, 12) | encodeReg(v2.val, 0);
+    },
+    u5_u12: (op, v1, v2) => {
+        assertIntegerConstant("v1", v1);
+        assertIntegerConstant("v2", v2);
+        return encodeOp(op) | encodeReg(v1.val, 12) | encodeReg(v2.val, 0);
+    },
 
     // reg_b16: (op, r, val) => {
     //     // TODO: need test runner
@@ -98,6 +113,14 @@ function encodeReg(reg, lshift) {
 // we need to turn this into a bit pattern.
 export function encodeS17(value) {
     return value & 0x1FFFF;
+}
+
+export function encodeU5(value) {
+    return value & 0x1F;
+}
+
+export function encodeU12(value) {
+    return value & 0xFFF;
 }
 
 export function encodeU16(value) {
