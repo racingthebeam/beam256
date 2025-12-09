@@ -369,6 +369,77 @@ const TESTS = [
             // value?
             // Revisit later...
         }
+    },
+    {
+        name: "CALL r_dst, r_fn, nargs (+ NARGS)",
+        code: `
+            RSV 2
+            MOV r0, 28
+            PUSH 1
+            PUSH 2
+            PUSH 3
+            CALL r1, r0, 3
+            HALT
+            
+            MOV r0, 12345
+            NARGS r1
+            HALT
+        `,
+        check: (m) => {
+            assert.equal(m.reg(0), 12345);
+            assert.equal(m.reg(1), 3);
+        }
+    },
+    {
+        name: "RET imm",
+        code: `
+            RSV 1
+            MOV r0, 16
+            CALL r0, r0, 0
+            HALT
+
+            RET 2468
+        `,
+        check: (m) => {
+            assert.equal(m.reg(0), 2468);
+        }
+    },
+    {
+        name: "RET reg",
+        code: `
+            RSV 2
+            MOV r0, 28
+            PUSH 1
+            PUSH 2
+            PUSH 3
+            CALL r1, r0, 3
+            HALT
+            
+            ADD r0, r0, r1
+            ADD r0, r0, r2
+            RET r0
+        `,
+        check: (m) => {
+            assert.equal(m.reg(1), 6);
+        }
+    },
+    {
+        name: "CALL r_dst, addr, nargs",
+        code: `
+            RSV 1
+            PUSH 10
+            PUSH 20
+            PUSH 30
+            CALL r0, 24, 3
+            HALT
+
+            ADD r0, r0, r1
+            ADD r0, r0, r2
+            RET r0
+        `,
+        check: (m) => {
+            assert.equal(m.reg(0), 60);
+        }
     }
 ];
 

@@ -44,9 +44,15 @@
 
 #define OP_BCALL 32
 #define OP_BCALL_DISCARD 33
+#define OP_CALL_REG 34
+#define OP_NARGS 35
+#define OP_RET_I 36
+#define OP_RET_REG 37
 
-#define OP_CALL_I 34
-#define OP_CALL_REG 35
+#define OP_DUMP   126
+#define OP_HALT         127
 
-#define OP_DUMP   254
-#define OP_HALT         255
+//
+// Extended opcodes
+
+#define OP_CALL_I 0x08

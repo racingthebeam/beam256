@@ -87,7 +87,8 @@ static void init_mem(machine_t *m) {
     // m->on_event(EV_GRAPHICS_REQUEST_DRAW, 0, 0);
 }
 
-#define OP(ins) ((ins) >> 24)
+#define OP(ins)         ((ins) >> 24)
+#define XOP(ins)        ((ins) >> 28)
 
 #define REG(r)          (m->stack[f->bp + (r)])
 #define PUSH(v)         (m->stack[m->sp++] = (v))
@@ -151,6 +152,23 @@ static int tick(machine_t *m) {
     frame_t *f = &m->frames[m->fp];
     WORD ins = mem_read_uint32_le(m->mem + f->ip);
     f->ip += 4;
+
+    if (ins & 0x80000000) {
+        uint8_t op = ins >> 28;
+        uint8_t r_dst = (ins >> 21) & 0x7F;
+        uint32_t addr = ((ins >> 7) & 0x3FFF) << 2;
+        uint8_t nargs = ins & 0x7F;
+
+        // TODO: check op is valid
+
+        f->r_dst = r_dst;
+        m->fp++;
+        m->frames[m->fp].ip = addr;
+        m->frames[m->fp].bp = m->sp - nargs;
+        m->frames[m->fp].nargs = nargs;
+
+        return 1;
+    }
 
     int keep_ticking = 1;
 
@@ -378,17 +396,39 @@ static int tick(machine_t *m) {
             POPN(nargs);
             break;
         }
-
-        // case OP_CALL_I:
-        // {
-        //     DECODE_U7_ADDR(ins, nargs, fn_addr);
-        //     break;
-        // }
-        // case OP_CALL_REG:
-        // {
-        //     DECODE_REG_U7_REG(ins, r_ret, )
-        //     break;
-        // }
+        case OP_CALL_REG:
+        {
+            DECODE_REG_REG_REG(ins, r_dst, r_fn, nargs);
+            f->r_dst = r_dst;
+            m->fp++;
+            m->frames[m->fp].ip = REG(r_fn);
+            m->frames[m->fp].bp = m->sp - nargs;
+            m->frames[m->fp].nargs = nargs;
+            break;
+        }
+        case OP_NARGS:
+        {
+            DECODE_REG(ins, r_dst);
+            REG(r_dst) = f->nargs;
+            break;
+        }
+        case OP_RET_I:
+        {
+            DECODE_S17(ins, val);
+            m->sp = f->bp;
+            f = &(m->frames[--m->fp]);
+            REG(f->r_dst) = val;
+            break;
+        }
+        case OP_RET_REG:
+        {
+            DECODE_REG(ins, r_ret);
+            WORD ret = REG(r_ret);
+            m->sp = f->bp;
+            f = &(m->frames[--m->fp]);
+            REG(f->r_dst) = ret;
+            break;
+        }
 
         case OP_DUMP:
         {

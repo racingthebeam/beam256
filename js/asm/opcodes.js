@@ -39,9 +39,15 @@ export const OP_RSV = 31;
 
 export const OP_BCALL = 32;
 export const OP_BCALL_DISCARD = 33;
+export const OP_CALL_REG = 34;
+export const OP_NARGS = 35;
+export const OP_RET_I = 36;
+export const OP_RET_REG = 37;
 
-export const OP_CALL_I = 34;
-export const OP_CALL_REG = 35;
+export const OP_DUMP = 126;
+export const OP_HALT = 127;
 
-export const OP_DUMP = 254;
-export const OP_HALT = 255;
+//
+// Extended opcodes
+
+export const OP_CALL_I = 0x80000000;

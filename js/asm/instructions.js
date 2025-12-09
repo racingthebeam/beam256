@@ -120,6 +120,17 @@ export const Instructions = {
         { params: [T.Reg, T.U5, T.U12], op: O.OP_BCALL },
         { params: [T.U5, T.U12], op: O.OP_BCALL_DISCARD },
     ],
+    "CALL": [
+        { params: [T.Reg, T.Reg, T.U7], op: O.OP_CALL_REG },
+        { params: [T.Reg, T.U14, T.U7], op: O.OP_CALL_I }
+    ],
+    "NARGS": [
+        { params: [T.Reg], op: O.OP_NARGS }
+    ],
+    "RET": [
+        { params: [T.S17], op: O.OP_RET_I },
+        { params: [T.Reg], op: O.OP_RET_REG }
+    ],
 
     // "MOVH": [
     //     {

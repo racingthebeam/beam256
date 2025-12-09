@@ -31,6 +31,14 @@ All things going well we should be able to spend the pre-Christmas session on ha
   - LOAD, STORE split-reg indexed operations
   - some conditional jumps
 
+### Actual
+
+Implemented (native function calls) and all related opcodes:
+
+  - CALL (immediate address and register-based)
+  - NARGS - to get number of arguments from call frame
+  - RET (immediate value and register-based)
+
 ## Off-stream
 
   - write up docs for split-reg indexed operations

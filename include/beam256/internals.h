@@ -48,6 +48,7 @@ typedef struct frame {
     int ip;
     int bp;
     int nargs;
+    uint8_t r_dst;
 } frame_t;
 
 typedef struct machine {

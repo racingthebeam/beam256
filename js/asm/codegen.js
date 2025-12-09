@@ -1,5 +1,6 @@
 import { Encoders as E } from "./codec.js";
 import { MemorySize } from "../emu/constants.js"
+import * as O from "./opcodes.js";
 import { roundUpToNextMultipleOf } from "./helpers.js";
 
 export function codegen(prog) {
@@ -7,6 +8,10 @@ export function codegen(prog) {
     gen.generate();
     return gen.memory;
 }
+
+const extendedOps = {
+    [O.OP_CALL_I]: true,
+};
 
 // TODO: assembler should keep track of regions that
 // have already be written to, and disallow overwrites.
@@ -78,6 +83,10 @@ export class CodeGen {
         // is expected by the instruction encoding.
         const swizzledArgs = enc.map(i => line.args[i]);
         let encoding = enc.map(i => form.params[i].name).join('_') || 'op';
+
+        if (extendedOps[form.op]) {
+            encoding = `ext_${encoding}`;
+        }
 
         const codec = E[encoding];
         if (!codec) {

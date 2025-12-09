@@ -36,6 +36,12 @@ export const Encoders = {
         assertType("r3", r3, "reg");
         return encodeOp(op) | encodeReg(r1.reg, 16) | encodeReg(r2.reg, 8) | encodeReg(r3.reg, 0);
     },
+    reg_reg_u7: (op, r1, r2, v1) => {
+        assertType("r1", r1, "reg");
+        assertType("r2", r2, "reg");
+        assertIntegerConstant("v1", v1);
+        return encodeOp(op) | encodeReg(r1.reg, 16) | encodeReg(r2.reg, 8) | encodeReg(v1.val, 0);
+    },
     reg_s17: (op, r1, v1) => {
         assertType("r1", r1, "reg");
         assertIntegerConstant("v1", v1);
@@ -71,12 +77,19 @@ export const Encoders = {
         assertType("r1", r1, "reg");
         assertIntegerConstant("v1", v1);
         assertIntegerConstant("v2", v2);
-        return encodeOp(op) | encodeReg(r1.reg, 17) | encodeReg(v1.val, 12) | encodeReg(v2.val, 0);
+        return encodeOp(op) | encodeReg(r1.reg, 17) | encodeU5(v1.val, 12) | encodeU12(v2.val, 0);
     },
     u5_u12: (op, v1, v2) => {
         assertIntegerConstant("v1", v1);
         assertIntegerConstant("v2", v2);
-        return encodeOp(op) | encodeReg(v1.val, 12) | encodeReg(v2.val, 0);
+        return encodeOp(op) | encodeU5(v1.val, 12) | encodeU12(v2.val, 0);
+    },
+
+    ext_reg_u14_u7: (op, r1, v1, v2) => {
+        assertType("r1", r1, "reg");
+        assertIntegerConstant("v1", v1);
+        assertIntegerConstant("v2", v2);
+        return encodedExtendedOp(op) | encodeReg(r1.reg, 21) | encodeU14(v1.val >> 2, 7) | encodeU7(v2.val, 0);
     },
 
     // reg_b16: (op, r, val) => {
@@ -101,9 +114,16 @@ function encodeOp(op) {
     return (op & 0xFF) << 24;
 }
 
-function encodeU8(val, lshift) {
-    return (val & 0xFF) << lshift;
+function encodedExtendedOp(op) {
+    return op;
 }
+
+export function encodeU5(val, lshift = 0) { return (val & 0x1F) << lshift; }
+export function encodeU7(val, lshift = 0) { return (val & 0x7F) << lshift; }
+export function encodeU8(val, lshift = 0) { return (val & 0xFF) << lshift; }
+export function encodeU12(value, lshift = 0) { return (value & 0xFFF) << lshift; }
+export function encodeU14(value, lshift = 0) { return (value & 0x3FFF) << lshift; }
+export function encodeU16(value) { return value & 0xFFFF; }
 
 function encodeReg(reg, lshift) {
     return (reg & 0x7F) << lshift;
@@ -115,18 +135,3 @@ export function encodeS17(value) {
     return value & 0x1FFFF;
 }
 
-export function encodeU5(value) {
-    return value & 0x1F;
-}
-
-export function encodeU12(value) {
-    return value & 0xFFF;
-}
-
-export function encodeU16(value) {
-    return value & 0xFFFF;
-}
-
-function encodeAddr(addr, lshift) {
-    return (addr & 0xFFFF) << lshift;
-}
