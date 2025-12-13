@@ -42,6 +42,19 @@ const TESTS = [
         check: (machine) => { assert.strictEqual(machine.reg(0), 150); }
     },
     {
+        name: "MOV rd, rs, ro",
+        setup: (m) => {
+            m.writeReg(1, 3);
+            m.writeReg(2, 10);
+            m.writeReg(3, 20);
+            m.writeReg(4, 30);
+            m.writeReg(5, 40);
+            m.writeReg(6, 50);
+        },
+        code: `MOV r0, r2, r1`,
+        check: (m) => { assert.strictEqual(m.reg(0), 40); }
+    },
+    {
         name: "MOV rd, s17",
         code: `
             MOV r0, 123
@@ -95,16 +108,40 @@ const TESTS = [
         check: (m) => { assert.strictEqual(m.reg(0), 4000); }
     },
     {
+        name: "MULS rd, r1, r2",
+        setup: (m) => { },
+        code: "MULS r0, r1, r2",
+        check: (m) => { console.error("FIX TEST FOR MULS!"); }
+    },
+    {
         name: "DIV rd, r1, r2",
         setup: (m) => { m.writeReg(1, 100); m.writeReg(2, 40); },
         code: "DIV r0, r1, r2",
         check: (m) => { assert.strictEqual(m.reg(0), 2); }
     },
     {
+        name: "DIVS rd, r1, r2",
+        setup: (m) => { m.writeReg(2, 100); },
+        code: "DIVS r0, r1, r2",
+        check: (m) => { console.error("FIX TEST FOR DIVS!"); }
+    },
+    {
         name: "MOD rd, r1, r2",
         setup: (m) => { m.writeReg(1, 100); m.writeReg(2, 40); },
         code: "MOD r0, r1, r2",
         check: (m) => { assert.strictEqual(m.reg(0), 20); }
+    },
+    {
+        name: "ABS rd, r1",
+        setup: (m) => { },
+        code: "ABS r0, r1",
+        check: (m) => { console.error("FIX TEST FOR ABS!"); }
+    },
+    {
+        name: "NEG rd, r1",
+        setup: (m) => { },
+        code: "NEG r0, r1",
+        check: (m) => { console.error("FIX TEST FOR NEG!"); }
     },
 
     //
@@ -162,6 +199,110 @@ const TESTS = [
             // inspector.
             // assert.strictEqual(m.reg(0), 0xFFFF00FF);
         }
+    },
+
+    {
+        name: "BSET rd, r1, r2",
+        setup: (m) => {
+            m.writeReg(1, 0x81);
+            m.writeReg(2, 3);
+        },
+        code: "BSET r0, r1, r2",
+        check: (m) => { assert.strictEqual(m.reg(0), 0x89); }
+    },
+    {
+        name: "BCLR rd, r1, r2",
+        setup: (m) => {
+            m.writeReg(1, 0x81);
+            m.writeReg(2, 7);
+        },
+        code: "BCLR r0, r1, r2",
+        check: (m) => { assert.strictEqual(m.reg(0), 0x01); }
+    },
+    {
+        name: "BTOG rd, r1, r2 (clear)",
+        setup: (m) => {
+            m.writeReg(1, 0x81);
+            m.writeReg(2, 7);
+        },
+        code: "BTOG r0, r1, r2",
+        check: (m) => { assert.strictEqual(m.reg(0), 0x01); }
+    },
+    {
+        name: "BTOG rd, r1, r2 (set)",
+        setup: (m) => {
+            m.writeReg(1, 0x01);
+            m.writeReg(2, 7);
+        },
+        code: "BTOG r0, r1, r2",
+        check: (m) => { assert.strictEqual(m.reg(0), 0x81); }
+    },
+    {
+        name: "BTST rd, r1, r2 (on)",
+        setup: (m) => {
+            m.writeReg(1, 0x81);
+            m.writeReg(2, 0);
+        },
+        code: "BTST r0, r1, r2",
+        check: (m) => { assert.strictEqual(m.reg(0), 1); }
+    },
+    {
+        name: "BTST rd, r1, r2 (off)",
+        setup: (m) => {
+            m.writeReg(1, 0x81);
+            m.writeReg(2, 1);
+        },
+        code: "BTST r0, r1, r2",
+        check: (m) => { assert.strictEqual(m.reg(0), 0); }
+    },
+
+    {
+        name: "BSET rd, r1, imm",
+        setup: (m) => {
+            m.writeReg(1, 0x81);
+        },
+        code: "BSET r0, r1, 3",
+        check: (m) => { assert.strictEqual(m.reg(0), 0x89); }
+    },
+    {
+        name: "BCLR rd, r1, imm",
+        setup: (m) => {
+            m.writeReg(1, 0x81);
+        },
+        code: "BCLR r0, r1, 7",
+        check: (m) => { assert.strictEqual(m.reg(0), 0x01); }
+    },
+    {
+        name: "BTOG rd, r1, imm (clear)",
+        setup: (m) => {
+            m.writeReg(1, 0x81);
+        },
+        code: "BTOG r0, r1, 7",
+        check: (m) => { assert.strictEqual(m.reg(0), 0x01); }
+    },
+    {
+        name: "BTOG rd, r1, imm (set)",
+        setup: (m) => {
+            m.writeReg(1, 0x01);
+        },
+        code: "BTOG r0, r1, 7",
+        check: (m) => { assert.strictEqual(m.reg(0), 0x81); }
+    },
+    {
+        name: "BTST rd, r1, imm (on)",
+        setup: (m) => {
+            m.writeReg(1, 0x81);
+        },
+        code: "BTST r0, r1, 0",
+        check: (m) => { assert.strictEqual(m.reg(0), 1); }
+    },
+    {
+        name: "BTST rd, r1, imm (off)",
+        setup: (m) => {
+            m.writeReg(1, 0x81);
+        },
+        code: "BTST r0, r1, 1",
+        check: (m) => { assert.strictEqual(m.reg(0), 0); }
     },
 
     //
@@ -295,6 +436,68 @@ const TESTS = [
         `,
         check: (m) => {
             assert.equal(m.view.getUint32(2048, true), 5678);
+        }
+    },
+    {
+        name: "STOREX (reg)",
+        setup: (m) => {
+            m.writeReg(0, (8 << 16) | 1024);
+
+            m.writeReg(1, 0);
+            m.writeReg(2, 123456789);
+
+            m.writeReg(3, 4);
+            m.writeReg(4, 46900);
+
+            m.writeReg(5, 6);
+            m.writeReg(6, 100);
+        },
+        code: `
+            STOREXW r0, r1, r2
+            STOREXH r0, r3, r4
+            STOREXB.I r0, r5, r6
+            STOREXW r0, r1, r2
+            STOREXH r0, r3, r4
+            STOREXB.I r0, r5, r6
+        `,
+        check: (m) => {
+            assert.equal(m.view.getUint32(1024, true), 123456789);
+            assert.equal(m.view.getUint16(1028, true), 46900);
+            assert.equal(m.view.getUint8(1030), 100);
+
+            assert.equal(m.view.getUint32(1032, true), 123456789);
+            assert.equal(m.view.getUint16(1036, true), 46900);
+            assert.equal(m.view.getUint8(1038), 100);
+
+            assert.equal(m.reg(0), (8 << 16) | 1040);
+        }
+    },
+    {
+        name: "STOREX (imm)",
+        setup: (m) => {
+            m.writeReg(0, (8 << 16) | 1024);
+            m.writeReg(2, 123456789);
+            m.writeReg(4, 46900);
+            m.writeReg(6, 100);
+        },
+        code: `
+            STOREXW r0, 0, r2
+            STOREXH r0, 4, r4
+            STOREXB.I r0, 6, r6
+            STOREXW r0, 0, r2
+            STOREXH r0, 4, r4
+            STOREXB.I r0, 6, r6
+        `,
+        check: (m) => {
+            assert.equal(m.view.getUint32(1024, true), 123456789);
+            assert.equal(m.view.getUint16(1028, true), 46900);
+            assert.equal(m.view.getUint8(1030), 100);
+
+            assert.equal(m.view.getUint32(1032, true), 123456789);
+            assert.equal(m.view.getUint16(1036, true), 46900);
+            assert.equal(m.view.getUint8(1038), 100);
+
+            assert.equal(m.reg(0), (8 << 16) | 1040);
         }
     },
 

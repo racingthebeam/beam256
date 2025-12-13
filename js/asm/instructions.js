@@ -31,7 +31,8 @@ export const Instructions = {
             // omitted/set to null
             enc: null,
         },
-        { params: [T.Reg, T.S17], op: O.OP_MOV_I }
+        { params: [T.Reg, T.S17], op: O.OP_MOV_I },
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_MOV_O }
     ],
     "MOVL": [
         { params: [T.Reg, T.U16], op: O.OP_MOVL },
@@ -49,11 +50,23 @@ export const Instructions = {
     "MUL": [
         { params: [T.Reg, T.Reg, T.Reg], op: O.OP_MUL }
     ],
+    "MULS": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_MUL_S }
+    ],
     "DIV": [
         { params: [T.Reg, T.Reg, T.Reg], op: O.OP_DIV }
     ],
+    "DIVS": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_DIV_S }
+    ],
     "MOD": [
         { params: [T.Reg, T.Reg, T.Reg], op: O.OP_MOD }
+    ],
+    "ABS": [
+        { params: [T.Reg, T.Reg], op: O.OP_ABS }
+    ],
+    "NEG": [
+        { params: [T.Reg, T.Reg], op: O.OP_NEG }
     ],
 
     "AND": [
@@ -76,6 +89,22 @@ export const Instructions = {
     ],
     "SAR": [
         { params: [T.Reg, T.Reg, T.Reg], op: O.OP_SAR }
+    ],
+    "BSET": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_BSET },
+        { params: [T.Reg, T.Reg, T.U10], op: O.OP_BSET_I }
+    ],
+    "BCLR": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_BCLR },
+        { params: [T.Reg, T.Reg, T.U10], op: O.OP_BCLR_I }
+    ],
+    "BTOG": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_BTOG },
+        { params: [T.Reg, T.Reg, T.U10], op: O.OP_BTOG_I }
+    ],
+    "BTST": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_BTST },
+        { params: [T.Reg, T.Reg, T.U10], op: O.OP_BTST_I }
     ],
 
     "JMP": [
@@ -102,6 +131,18 @@ export const Instructions = {
     "STORE": [
         { params: [T.U16, T.Reg], op: O.OP_STORE_I, enc: [1, 0] },
         { params: [T.Reg, T.Reg], op: O.OP_STORE_REG },
+    ],
+    "STOREXB": [
+        { params: [T.Reg, T.Reg, T.Reg], flags: T.FlagsMemX, op: O.OP_STOREXB },
+        { params: [T.Reg, T.U7, T.Reg], flags: T.FlagsMemX, op: O.OP_STOREXB_I }
+    ],
+    "STOREXH": [
+        { params: [T.Reg, T.Reg, T.Reg], flags: T.FlagsMemX, op: O.OP_STOREXH },
+        { params: [T.Reg, T.U7, T.Reg], flags: T.FlagsMemX, op: O.OP_STOREXH_I }
+    ],
+    "STOREXW": [
+        { params: [T.Reg, T.Reg, T.Reg], flags: T.FlagsMemX, op: O.OP_STOREXW },
+        { params: [T.Reg, T.U7, T.Reg], flags: T.FlagsMemX, op: O.OP_STOREXW_I }
     ],
 
     "PUSH": [

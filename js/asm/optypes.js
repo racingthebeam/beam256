@@ -1,5 +1,40 @@
 import { isNumeric } from "./ast.js";
 
+//
+//
+
+class FlagSet {
+    constructor(flagNames, length = null) {
+        this.flagNames = flagNames.map(fn => fn.toUpperCase());
+        if (length === null) length = flagNames.length;
+        this.length = length;
+    }
+
+    check(ins) {
+        for (const actualFlag of ins.flags) {
+            if (this.flagNames.indexOf(actualFlag) < 0) {
+                return `${actualFlag} is not a valid flag for ${ins.op}`;
+            }
+        }
+        return true;
+    }
+
+    encode(flags) {
+        let out = 0;
+        this.flagNames.forEach((flag, ix) => {
+            if (flags.has(flag)) {
+                out |= (1 << ix);
+            }
+        });
+        return out;
+    }
+}
+
+export const FlagsMemX = new FlagSet(["X", "I"], 3);
+
+//
+//
+
 class OpType {
     name = "";
 
@@ -12,6 +47,8 @@ class OpType {
     // Otherwise, returns a string describing the error.
     check(astNode, state) { return false; }
 }
+
+
 
 export const Addr = new class extends OpType {
     constructor() { super("addr"); }
@@ -90,6 +127,7 @@ class UnsignedInt extends OpType {
 export const U5 = new UnsignedInt(5);
 export const U7 = new UnsignedInt(7);
 export const U8 = new UnsignedInt(8);
+export const U10 = new UnsignedInt(10);
 export const U12 = new UnsignedInt(12);
 export const U14 = new UnsignedInt(14);
 export const U16 = new UnsignedInt(16);

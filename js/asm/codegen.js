@@ -84,6 +84,17 @@ export class CodeGen {
         const swizzledArgs = enc.map(i => line.args[i]);
         let encoding = enc.map(i => form.params[i].name).join('_') || 'op';
 
+        if (!form.flags && line.flags.size > 0) {
+            throw new Error(`form does not accept any flags`);
+        } else if (form.flags) {
+            const checkResult = form.flags.check(line);
+            if (typeof checkResult === 'string') {
+                throw new Error(checkResult);
+            }
+            encoding = `f${form.flags.length}_${encoding}`;
+            swizzledArgs.unshift(form.flags.encode(line.flags));
+        }
+
         if (extendedOps[form.op]) {
             encoding = `ext_${encoding}`;
         }
@@ -91,6 +102,10 @@ export class CodeGen {
         const codec = E[encoding];
         if (!codec) {
             throw new Error(`couldn't find encoder for '${encoding}'`);
+        }
+
+        if (typeof form.op !== 'number') {
+            throw new Error("form opcode is not a number, this is a bug!");
         }
 
         return codec(form.op, ...swizzledArgs);

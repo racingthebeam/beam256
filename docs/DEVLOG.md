@@ -13,18 +13,51 @@ Main goal: get a workflow in place so we assemble the code consumed by day 9.
   - implement the instructions in the CPU core
   - debug it until it's all working
 
-## Day 14 (est. 14/12)
-
-By the end of this session we should have pretty much all of the opcodes in place for a v1 ISA
-
-  - extend maths operations with support for signed operations and immediate values
-  - finish conditional jumps
-
-All things going well we should be able to spend the pre-Christmas session on hardware planning and placing a fat DigiKey order so we can play with some hardware in the new year!
+## Day 17
 
 ### Plan
 
-## Day 13 (est. 13/12)
+  - Hardware planning!
+
+All things going well we should be able to spend the pre-Christmas session on hardware planning and placing a fat DigiKey order so we can play with some hardware in the new year!
+
+## Day 16
+
+### Plan
+
+  - Finish implementing conditional jumps
+
+## Day 15
+
+### Plan
+
+  - Maths opcodes with immediate operands
+  - [ ] STOREF, LOADF (B, H, W variants)
+  - [ ] LOADX (B, H, W variants)
+  - Plan out all the conditional jumps
+  - Implement some conditional jumps
+
+## Day 14
+
+### Plan
+
+  - [x] MOV Rd, Rsrc, Roffset
+  - [x] Signed multiplication/division
+  - [x] NEG
+  - [x] ABS
+  - [x] {BSET, BTOG, BCLR} Rdst, Rsrc, Rbit
+  - [x] BTST Rdst, Rsrc, Rbit
+  - [x] {BSET, BTOG, BCLR} Rdst, Rsrc, imm
+  - [x] BTST Rdst, Rsrc, imm
+  - [x] STOREX (B, H, W variants) (immediate and register based)
+
+Do we need these bit-test instructions?
+We're going to have a HUGE number of conditional jump instructions.
+Benefits of these:
+  - don't need to create the AND mask
+  - get a guaranteed 0 or 1 output
+
+## Day 13
 
 ### Plan
 

@@ -11,6 +11,7 @@ const T_HEX = Symbol("hex");
 const T_BIN = Symbol("bin");
 const T_INT = Symbol("int");
 const T_IDENT = Symbol("ident");
+const T_IDENT_WITH_FLAGS = Symbol("ident-with-flags");
 const T_NL = Symbol("<nl>");
 const T_EOF = Symbol("<eof>");
 
@@ -25,6 +26,7 @@ const TokenNames = {
     [T_BIN]: "BIN",
     [T_INT]: "INT",
     [T_IDENT]: "IDENT",
+    [T_IDENT_WITH_FLAGS]: "IDENT_WITH_FLAGS",
     [T_NL]: "NL",
     [T_EOF]: "EOF",
 };
@@ -124,11 +126,22 @@ export function parse(text) {
     }
 
     function parseInstruction() {
-        if (!at(T_IDENT)) {
+        const flags = new Set();
+
+        let op = null;
+
+        if (at(T_IDENT_WITH_FLAGS)) {
+            const dot = curr[1].indexOf(".");
+            op = curr[1].substring(0, dot);
+            for (const ch of curr[1].substring(dot + 1)) {
+                flags.add(ch.toUpperCase());
+            }
+        } else if (at(T_IDENT)) {
+            op = curr[1].toUpperCase();
+        } else {
             throwWithLine(curr, `Unexpected token ${tokenName(curr)} while attempting to parse instruction, expected ${tokenName(T_IDENT)}`);
         }
 
-        const op = curr[1].toUpperCase();
         accept();
 
         const args = [];
@@ -139,7 +152,7 @@ export function parse(text) {
             args.push(parseOperand());
         }
 
-        return { type: 'ins', op: op, args: args };
+        return { type: 'ins', op: op, args: args, flags: flags };
     }
 
     function parsePositiveNumber() {
@@ -209,7 +222,7 @@ export function parse(text) {
     function parseStatement() {
         if (at(T_DIRECTIVE)) {
             return parseDirective();
-        } else if (at(T_IDENT)) {
+        } else if (at(T_IDENT) || at(T_IDENT_WITH_FLAGS)) {
             return parseInstruction();
         } else {
             throwWithLine(curr, `Unexpected token ${tokenName(curr)}`);
@@ -247,7 +260,7 @@ export function parse(text) {
 
 function createTokenizer(text) {
     // regex for matching all of the non-comment/whitespace/newline tokens
-    const matcher = /(\.[a-z]+|[a-z_][a-z0-9_]*:|,|-|\[r\d+\]|r\d+|0x[0-9a-f_]+|0b[01_]+|[0-9_]+|[a-z][a-z0-9_]*)/iy;
+    const matcher = /(\.[a-z]+|[a-z_][a-z0-9_]*:|,|-|\[r\d+\]|r\d+|0x[0-9a-f_]+|0b[01_]+|[0-9_]+|[a-z][a-z0-9_]*(\.[a-z]+)?)/iy;
 
     let rp = 0;
     let line = 1;
@@ -322,7 +335,12 @@ function createTokenizer(text) {
         } else if (raw.match(registerReference)) {
             return [T_REG, raw];
         } else {
-            return [T_IDENT, raw];
+            const dot = raw.indexOf(".");
+            if (dot > 0) {
+                return [T_IDENT_WITH_FLAGS, raw];
+            } else {
+                return [T_IDENT, raw];
+            }
         }
     }
 

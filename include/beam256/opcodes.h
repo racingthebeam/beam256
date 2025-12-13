@@ -49,6 +49,31 @@
 #define OP_RET_I 36
 #define OP_RET_REG 37
 
+#define OP_MOV_O 38
+
+#define OP_MUL_S 39
+#define OP_DIV_S 40
+
+#define OP_ABS 41
+#define OP_NEG 42
+
+#define OP_BSET 43
+#define OP_BCLR 44
+#define OP_BTOG 45
+#define OP_BTST 46
+
+#define OP_BSET_I 47
+#define OP_BCLR_I 48
+#define OP_BTOG_I 49
+#define OP_BTST_I 50
+
+#define OP_STOREXB 51
+#define OP_STOREXB_I 52
+#define OP_STOREXH 53
+#define OP_STOREXH_I 54
+#define OP_STOREXW 55
+#define OP_STOREXW_I 56
+
 #define OP_DUMP   126
 #define OP_HALT         127
 

@@ -95,9 +95,16 @@ static void init_mem(machine_t *m) {
 #define POP()           (m->stack[--(m->sp)])
 #define POPN(n)         (m->sp -= (n))
 
-#define DEF_SIGNED(var, val) \
+#define FLAG_MEMX_SIGN_EXTEND   1
+#define FLAG_MEMX_INC           2
+
+#define DEF_SIGNED_UNION_WITH_UNSIGNED(var, val) \
     union { int32_t i; uint32_t u; } var; \
     var.u = (val)
+
+#define DEF_SIGNED_UNION_WITH_SIGNED(var, val) \
+    union { int32_t i; uint32_t u; } var; \
+    var.i = (val)
 
 #define DECODE_REG(ins, r0) \
     uint8_t r0 = (((ins) >> 16) & 0x7F)
@@ -140,10 +147,21 @@ static void init_mem(machine_t *m) {
     uint8_t r1 = (((ins) >> 8) & 0x7F); \
     uint8_t r2 = (((ins) >> 0) & 0x7F)
 
+#define DECODE_REG_REG_U10(ins, r0, r1, v0) \
+    uint8_t r0 = (((ins) >> 17) & 0x7F); \
+    uint8_t r1 = (((ins) >> 10) & 0x7F); \
+    uint32_t v0 = (((ins) >> 0) & 0x3FF)
+
 #define DECODE_REG_U5_U12(ins, r0, v0, v1) \
     uint8_t r0 = (((ins) >> 17) & 0x7F); \
     uint32_t v0 = (((ins) >> 12) & 0x1F); \
     uint32_t v1 = (((ins) >> 0) & 0xFFF)
+
+#define DECODE_F3_U7_U7_U7(ins, f0, v0, v1, v2) \
+    uint8_t f0 = (((ins) >> 21) & 0x7); \
+    uint8_t v0 = (((ins) >> 14) & 0x7f); \
+    uint8_t v1 = (((ins) >> 7) & 0x7f); \
+    uint8_t v2 = (((ins) >> 0) & 0x7f)
 
 #define DECODE_U5_12(ins, r0, v0, v1) \
     DECODE_REG_U5_U12(ins, __ignore__, v0, v1)
@@ -185,6 +203,12 @@ static int tick(machine_t *m) {
             REG(rd) = val;
             break;
         }
+        case OP_MOV_O:
+        {
+            DECODE_REG_REG_REG(ins, rd, rs, ro);
+            REG(rd) = REG(rs + REG(ro));
+            break;
+        }
         case OP_MOVL:
         {
             DECODE_REG_U16(ins, rd, val);
@@ -217,16 +241,50 @@ static int tick(machine_t *m) {
             REG(rd) = REG(r1) * REG(r2);
             break;
         }
+        case OP_MUL_S:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(r1));
+            DEF_SIGNED_UNION_WITH_UNSIGNED(r, REG(r2));
+            DEF_SIGNED_UNION_WITH_SIGNED(result, l.i * r.i);
+            REG(rd) = result.u;
+            break;
+        }
         case OP_DIV:
         {
             DECODE_REG_REG_REG(ins, rd, r1, r2);
             REG(rd) = REG(r1) / REG(r2);
             break;
         }
+        case OP_DIV_S:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(r1));
+            DEF_SIGNED_UNION_WITH_UNSIGNED(r, REG(r2));
+            DEF_SIGNED_UNION_WITH_SIGNED(result, l.i / r.i);
+            REG(rd) = result.u;
+            break;
+        }
         case OP_MOD:
         {
             DECODE_REG_REG_REG(ins, rd, r1, r2);
             REG(rd) = REG(r1) % REG(r2);
+            break;
+        }
+        case OP_ABS:
+        {
+            DECODE_REG_REG(ins, rd, r1);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(v, REG(r1));
+            DEF_SIGNED_UNION_WITH_SIGNED(result, v.i < 0 ? -v.i : v.i);
+            REG(rd) = result.i;
+            break;
+        }
+        case OP_NEG:
+        {
+            DECODE_REG_REG(ins, rd, r1);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(v, REG(r1));
+            DEF_SIGNED_UNION_WITH_SIGNED(result, -v.i);
+            REG(rd) = result.i;
             break;
         }
 
@@ -273,11 +331,60 @@ static int tick(machine_t *m) {
         case OP_SAR:
         {
             DECODE_REG_REG_REG(ins, rd, r1, r2);
-            DEF_SIGNED(tmp, REG(r1));
+            DEF_SIGNED_UNION_WITH_UNSIGNED(tmp, REG(r1));
             tmp.i >>= REG(r2);
             REG(rd) = tmp.u;
             break;
         }
+        case OP_BSET:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = REG(r1) | (1 << REG(r2));
+            break;
+        }
+        case OP_BCLR:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = REG(r1) & ~(1 << REG(r2));
+            break;
+        }
+        case OP_BTOG:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = REG(r1) ^ (1 << REG(r2));
+            break;
+        }
+        case OP_BTST:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            REG(rd) = (REG(r1) & (1 << REG(r2))) != 0;
+            break;
+        }
+        case OP_BSET_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = REG(r1) | (1 << v1);
+            break;
+        }
+        case OP_BCLR_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = REG(r1) & ~(1 << v1);
+            break;
+        }
+        case OP_BTOG_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = REG(r1) ^ (1 << v1);
+            break;
+        }
+        case OP_BTST_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = (REG(r1) & (1 << v1)) != 0;
+            break;
+        }
+
         case OP_UJMP_ADDR:
         {
             DECODE_U16(ins, addr);
@@ -340,6 +447,81 @@ static int tick(machine_t *m) {
         {
             DECODE_REG_REG(ins, r_dst, r_val);
             mem_write_uint32_le(&m->mem[REG(r_dst)], REG(r_val));
+            break;
+        }
+        case OP_STOREXB:
+        {
+            DECODE_F3_U7_U7_U7(ins, flags, r_addr, r_off, r_val);
+            uint32_t addr = REG(r_addr);
+            uint32_t base = addr & 0xFFFF;
+            uint32_t offset = REG(r_off);
+            m->mem[base + offset] = REG(r_val);
+            if (flags & FLAG_MEMX_INC) {
+                base = (base + (addr >> 16)) & 0xFFFF;
+                REG(r_addr) = (addr & 0xFFFF0000) | base;
+            }
+            break;
+        }
+        case OP_STOREXH:
+        {
+            DECODE_F3_U7_U7_U7(ins, flags, r_addr, r_off, r_val);
+            uint32_t addr = REG(r_addr);
+            uint32_t base = addr & 0xFFFF;
+            uint32_t offset = REG(r_off);
+            mem_write_uint16_le(&m->mem[base + offset], (uint16_t)REG(r_val));
+            if (flags & FLAG_MEMX_INC) {
+                base = (base + (addr >> 16)) & 0xFFFF;
+                REG(r_addr) = (addr & 0xFFFF0000) | base;
+            }
+            break;
+        }
+        case OP_STOREXW:
+        {
+            DECODE_F3_U7_U7_U7(ins, flags, r_addr, r_off, r_val);
+            uint32_t addr = REG(r_addr);
+            uint32_t base = addr & 0xFFFF;
+            uint32_t offset = REG(r_off);
+            mem_write_uint32_le(&m->mem[base + offset], REG(r_val));
+            if (flags & FLAG_MEMX_INC) {
+                base = (base + (addr >> 16)) & 0xFFFF;
+                REG(r_addr) = (addr & 0xFFFF0000) | base;
+            }
+            break;
+        }
+        case OP_STOREXB_I:
+        {
+            DECODE_F3_U7_U7_U7(ins, flags, r_addr, offset, r_val);
+            uint32_t addr = REG(r_addr);
+            uint32_t base = addr & 0xFFFF;
+            m->mem[base + offset] = REG(r_val);
+            if (flags & FLAG_MEMX_INC) {
+                base = (base + (addr >> 16)) & 0xFFFF;
+                REG(r_addr) = (addr & 0xFFFF0000) | base;
+            }
+            break;
+        }
+        case OP_STOREXH_I:
+        {
+            DECODE_F3_U7_U7_U7(ins, flags, r_addr, offset, r_val);
+            uint32_t addr = REG(r_addr);
+            uint32_t base = addr & 0xFFFF;
+            mem_write_uint16_le(&m->mem[base + offset], (uint16_t)REG(r_val));
+            if (flags & FLAG_MEMX_INC) {
+                base = (base + (addr >> 16)) & 0xFFFF;
+                REG(r_addr) = (addr & 0xFFFF0000) | base;
+            }
+            break;
+        }
+        case OP_STOREXW_I:
+        {
+            DECODE_F3_U7_U7_U7(ins, flags, r_addr, offset, r_val);
+            uint32_t addr = REG(r_addr);
+            uint32_t base = addr & 0xFFFF;
+            mem_write_uint32_le(&m->mem[base + offset], REG(r_val));
+            if (flags & FLAG_MEMX_INC) {
+                base = (base + (addr >> 16)) & 0xFFFF;
+                REG(r_addr) = (addr & 0xFFFF0000) | base;
+            }
             break;
         }
 
@@ -451,7 +633,7 @@ static int tick(machine_t *m) {
 
         default:
             // TODO: we should probably fire an event here
-            printf("UNKNOWN INSTRUCTION: %d", OP(ins));
+            printf("UNKNOWN INSTRUCTION: %d\n", OP(ins));
             break;
     }
 

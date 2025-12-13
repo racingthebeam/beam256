@@ -40,7 +40,13 @@ export const Encoders = {
         assertType("r1", r1, "reg");
         assertType("r2", r2, "reg");
         assertIntegerConstant("v1", v1);
-        return encodeOp(op) | encodeReg(r1.reg, 16) | encodeReg(r2.reg, 8) | encodeReg(v1.val, 0);
+        return encodeOp(op) | encodeReg(r1.reg, 16) | encodeReg(r2.reg, 8) | encodeU7(v1.val, 0);
+    },
+    reg_reg_u10: (op, r1, r2, v1) => {
+        assertType("r1", r1, "reg");
+        assertType("r2", r2, "reg");
+        assertIntegerConstant("v1", v1);
+        return encodeOp(op) | encodeReg(r1.reg, 17) | encodeReg(r2.reg, 10) | encodeU10(v1.val, 0);
     },
     reg_s17: (op, r1, v1) => {
         assertType("r1", r1, "reg");
@@ -55,6 +61,18 @@ export const Encoders = {
         assertType("r1", r1, "reg");
         assertIntegerConstant("v1", v1);
         return encodeOp(op) | encodeReg(r1.reg, 16) | encodeU16(v1.val);
+    },
+    f3_reg_reg_reg: (op, f1, r1, r2, r3) => {
+        assertType("r1", r1, "reg");
+        assertType("r2", r2, "reg");
+        assertType("r3", r3, "reg");
+        return encodeOp(op) | (f1 << 21) | encodeReg(r1.reg, 14) | encodeReg(r2.reg, 7) | encodeReg(r3.reg, 0);
+    },
+    f3_reg_u7_reg: (op, f1, r1, v1, r2) => {
+        assertType("r1", r1, "reg");
+        assertIntegerConstant("v1", v1);
+        assertType("r2", r2, "reg");
+        return encodeOp(op) | (f1 << 21) | encodeReg(r1.reg, 14) | encodeReg(v1.val, 7) | encodeReg(r2.reg, 0);
     },
 
     u8_u16: (op, v1, v2) => {
@@ -121,6 +139,7 @@ function encodedExtendedOp(op) {
 export function encodeU5(val, lshift = 0) { return (val & 0x1F) << lshift; }
 export function encodeU7(val, lshift = 0) { return (val & 0x7F) << lshift; }
 export function encodeU8(val, lshift = 0) { return (val & 0xFF) << lshift; }
+export function encodeU10(val, lshift = 0) { return (val & 0x3FF) << lshift; }
 export function encodeU12(value, lshift = 0) { return (value & 0xFFF) << lshift; }
 export function encodeU14(value, lshift = 0) { return (value & 0x3FFF) << lshift; }
 export function encodeU16(value) { return value & 0xFFFF; }

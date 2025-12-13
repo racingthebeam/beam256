@@ -44,6 +44,31 @@ export const OP_NARGS = 35;
 export const OP_RET_I = 36;
 export const OP_RET_REG = 37;
 
+export const OP_MOV_O = 38;
+
+export const OP_MUL_S = 39;
+export const OP_DIV_S = 40;
+
+export const OP_ABS = 41;
+export const OP_NEG = 42;
+
+export const OP_BSET = 43;
+export const OP_BCLR = 44;
+export const OP_BTOG = 45;
+export const OP_BTST = 46;
+
+export const OP_BSET_I = 47;
+export const OP_BCLR_I = 48;
+export const OP_BTOG_I = 49;
+export const OP_BTST_I = 50;
+
+export const OP_STOREXB = 51;
+export const OP_STOREXB_I = 52;
+export const OP_STOREXH = 53;
+export const OP_STOREXH_I = 54;
+export const OP_STOREXW = 55;
+export const OP_STOREXW_I = 56;
+
 export const OP_DUMP = 126;
 export const OP_HALT = 127;
 
