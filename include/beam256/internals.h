@@ -4,8 +4,10 @@
 #include <stdint.h>
 
 #include "beam256/opcodes.h"
+#include "beam256/helpers.h"
 
 typedef uint32_t WORD;
+typedef int32_t SWORD;
 
 typedef void (*machine_event_fn)(uint32_t event, uint32_t arg1, uint32_t arg2);
 

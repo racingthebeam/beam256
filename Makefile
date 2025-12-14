@@ -33,7 +33,7 @@ $(WASM_MODULE_JS): $(WASM_OUT_DIR) $(CORE_SRC) $(WASM_SRC)
 		-s EXPORT_ES6=1 \
 		-s EXPORT_NAME="BEAM256" \
 		-s ALLOW_TABLE_GROWTH=1 \
-		-s EXPORTED_FUNCTIONS='["_init", "_ram_base", "_tick", "_is_halted", "_read_reg", "_write_reg"]' \
+		-s EXPORTED_FUNCTIONS='["_init", "_ram_base", "_tick", "_is_halted", "_read_reg", "_read_reg_signed", "_write_reg"]' \
 		-s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","HEAPU8","addFunction"]'
 
 .PHONY: all wasm clean deploy

@@ -6,7 +6,7 @@ import { assemble } from "../asm/index.js";
 
 function makeTest({ setup, code, check, halt = true }) {
     return async (t) => {
-        if (halt) code += "\nHALT\n";
+        if (halt) code += "\n.align 4\nHALT\n";
 
         const events = [];
 
@@ -132,6 +132,12 @@ const TESTS = [
         check: (m) => { assert.strictEqual(m.reg(0), 20); }
     },
     {
+        name: "MODS rd, r1, r2",
+        setup: (m) => { m.writeReg(1, 100); m.writeReg(2, 40); },
+        code: "MODS r0, r1, r2",
+        check: (m) => { console.error("FIX TEST FOR MODS!"); }
+    },
+    {
         name: "ABS rd, r1",
         setup: (m) => { },
         code: "ABS r0, r1",
@@ -142,6 +148,58 @@ const TESTS = [
         setup: (m) => { },
         code: "NEG r0, r1",
         check: (m) => { console.error("FIX TEST FOR NEG!"); }
+    },
+
+    //
+    // Maths - reg imm
+
+    {
+        name: "ADD rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 100); },
+        code: "ADD r0, r1, 150",
+        check: (m) => { assert.strictEqual(m.reg(0), 250); }
+    },
+    {
+        name: "SUB rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 100); },
+        code: "SUB r0, r1, 25",
+        check: (m) => { assert.strictEqual(m.reg(0), 75); }
+    },
+    {
+        name: "MUL rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 100); },
+        code: "MUL r0, r1, 40",
+        check: (m) => { assert.strictEqual(m.reg(0), 4000); }
+    },
+    {
+        name: "MULS rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 100); },
+        code: "MULS r0, r1, -3",
+        check: (m) => { assert.equal(m.regSigned(0), -300); }
+    },
+    {
+        name: "DIV rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 100); },
+        code: "DIV r0, r1, 30",
+        check: (m) => { assert.strictEqual(m.reg(0), 3); }
+    },
+    {
+        name: "DIVS rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 100); },
+        code: "DIVS r0, r1, -25",
+        check: (m) => { assert.equal(m.regSigned(0), -4); }
+    },
+    {
+        name: "MOD rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 100); },
+        code: "MOD r0, r1, 40",
+        check: (m) => { assert.strictEqual(m.reg(0), 20); }
+    },
+    {
+        name: "MODS rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 100); },
+        code: "MODS r0, r1, -40",
+        check: (m) => { assert.equal(m.regSigned(0), 20); }
     },
 
     //
@@ -193,6 +251,51 @@ const TESTS = [
         name: "SAR rd, r1, r2",
         setup: (m) => { m.writeReg(1, 0xFF00FF00); m.writeReg(2, 8); },
         code: "SAR r0, r1, r2",
+        check: (m) => {
+            // JS probably won't like this
+            // TODO: come back to this when we have a proper debugger/
+            // inspector.
+            // assert.strictEqual(m.reg(0), 0xFFFF00FF);
+        }
+    },
+
+    //
+    // Bitwise - reg imm
+
+    {
+        name: "AND rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 0b1010); },
+        code: "AND r0, r1, 0b1000",
+        check: (m) => { assert.strictEqual(m.reg(0), 0b1000); }
+    },
+    {
+        name: "OR rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 0b1010) },
+        code: "OR r0, r1, 0b1000",
+        check: (m) => { assert.strictEqual(m.reg(0), 0b1010); }
+    },
+    {
+        name: "XOR rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 0b1010) },
+        code: "XOR r0, r1, 0b1000",
+        check: (m) => { assert.strictEqual(m.reg(0), 0b0010); }
+    },
+    {
+        name: "SHL rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 0b1010) },
+        code: "SHL r0, r1, 2",
+        check: (m) => { assert.strictEqual(m.reg(0), 0b1010_00); }
+    },
+    {
+        name: "SHR rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 0b1010) },
+        code: "SHR r0, r1, 3",
+        check: (m) => { assert.strictEqual(m.reg(0), 0b1); }
+    },
+    {
+        name: "SAR rd, r1, imm",
+        setup: (m) => { m.writeReg(1, 0xFF00FF00) },
+        code: "SAR r0, r1, 8",
         check: (m) => {
             // JS probably won't like this
             // TODO: come back to this when we have a proper debugger/
@@ -498,6 +601,158 @@ const TESTS = [
             assert.equal(m.view.getUint8(1038), 100);
 
             assert.equal(m.reg(0), (8 << 16) | 1040);
+        }
+    },
+    {
+        name: "LOADX (reg)",
+        code: `
+            # set up base address and stride
+            MOVL r0, 1024
+            MOVH r0, 8
+            
+            # set up offsets
+            MOV r1, 0
+            MOV r2, 4
+            MOV r3, 6
+
+            LOADXW r4, r0, r1
+            LOADXH r5, r0, r2
+            LOADXB.I r6, r0, r3
+            LOADXW.X r7, r0, r1
+            LOADXH.X r8, r0, r2
+            LOADXB.XI r9, r0, r3
+
+            HALT
+
+            .org 1024
+            .b 1, 0, 0, 0
+            .b 2, 0
+            .b 3
+            .z 1
+            .b 0xFF, 0xFF, 0xFF, 0xFF
+            .b 0xFF, 0xFF
+            .b 0xFF
+            .z 1
+        `,
+        check: (m) => {
+            assert.equal(m.reg(4), 1);
+            assert.equal(m.reg(5), 2);
+            assert.equal(m.reg(6), 3);
+
+            assert.equal(m.regSigned(7), -1);
+            assert.equal(m.regSigned(8), -1);
+            assert.equal(m.regSigned(9), -1);
+
+            assert.equal(m.reg(0), (8 << 16) | 1040);
+        }
+    },
+    {
+        name: "LOADX (imm)",
+        code: `
+            # set up base address and stride
+            MOVL r0, 1024
+            MOVH r0, 8
+            
+            LOADXW r4, r0, 0
+            LOADXH r5, r0, 4
+            LOADXB.I r6, r0, 6
+            LOADXW.X r7, r0, 0
+            LOADXH.X r8, r0, 4
+            LOADXB.XI r9, r0, 6
+
+            HALT
+
+            .org 1024
+            .b 1, 0, 0, 0
+            .b 2, 0
+            .b 3
+            .z 1
+            .b 0xFF, 0xFF, 0xFF, 0xFF
+            .b 0xFF, 0xFF
+            .b 0xFF
+            .z 1
+        `,
+        check: (m) => {
+            assert.equal(m.reg(4), 1);
+            assert.equal(m.reg(5), 2);
+            assert.equal(m.reg(6), 3);
+
+            assert.equal(m.regSigned(7), -1);
+            assert.equal(m.regSigned(8), -1);
+            assert.equal(m.regSigned(9), -1);
+
+            assert.equal(m.reg(0), (8 << 16) | 1040);
+        }
+    },
+
+    {
+        name: "STOREFB",
+        setup: (m) => { m.writeReg(0, 1024); m.writeReg(1, 100); },
+        code: `STOREFB r0, r1`,
+        check: (m) => {
+            assert.equal(m.view.getUint8(1024), 100);
+        }
+    },
+    {
+        name: "STOREFH",
+        setup: (m) => { m.writeReg(0, 1024); m.writeReg(1, 10_000); },
+        code: `STOREFH r0, r1`,
+        check: (m) => {
+            assert.equal(m.view.getUint16(1024, true), 10_000);
+        }
+    },
+    {
+        name: "STOREFW",
+        setup: (m) => { m.writeReg(0, 1024); m.writeReg(1, 100_000); },
+        code: `STOREFW r0, r1`,
+        check: (m) => {
+            assert.equal(m.view.getUint32(1024, true), 100_000);
+        }
+    },
+    {
+        name: "LOADFB",
+        code: `
+            MOVL r0, 1024
+            LOADFB r1, r0
+            LOADFB.X r2, r0
+            HALT
+
+            .org 1024
+            .b 0xFF
+        `,
+        check: (m) => {
+            assert.equal(m.reg(1), 255);
+            assert.equal(m.regSigned(2), -1);
+        }
+    },
+    {
+        name: "LOADFH",
+        code: `
+            MOVL r0, 1024
+            LOADFH r1, r0
+            LOADFH.X r2, r0
+            HALT
+
+            .org 1024
+            .b 0xFF, 0xFF
+        `,
+        check: (m) => {
+            assert.equal(m.reg(1), 0xFFFF);
+            assert.equal(m.regSigned(2), -1);
+        }
+    },
+    {
+        name: "LOADFW",
+        code: `
+            MOVL r0, 1024
+            LOADFW r1, r0
+            HALT
+
+            .org 1024
+            .b 0x1, 0x2, 0x3, 0x4
+        `,
+        check: (m) => {
+            assert.equal(m.reg(1), 0x04030201);
         }
     },
 

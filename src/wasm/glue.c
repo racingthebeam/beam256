@@ -31,6 +31,12 @@ WORD read_reg(int reg) {
     return beam256_read_reg(&machine, reg);
 }
 
+SWORD read_reg_signed(int reg) {
+    union { int32_t i; uint32_t u; } out;
+    out.u = read_reg(reg);
+    return out.i;
+}
+
 WORD write_reg(int reg, WORD value) {
     return beam256_write_reg(&machine, reg, value);
 }

@@ -69,6 +69,37 @@ export const OP_STOREXH_I = 54;
 export const OP_STOREXW = 55;
 export const OP_STOREXW_I = 56;
 
+export const OP_LOADXB = 57;
+export const OP_LOADXB_I = 58;
+export const OP_LOADXH = 59;
+export const OP_LOADXH_I = 60;
+export const OP_LOADXW = 61;
+export const OP_LOADXW_I = 62;
+
+export const OP_STOREFB = 63;
+export const OP_STOREFH = 64;
+export const OP_STOREFW = 65;
+export const OP_LOADFB = 66;
+export const OP_LOADFH = 67;
+export const OP_LOADFW = 68;
+
+export const OP_MOD_S = 69;
+
+export const OP_ADD_I = 70;
+export const OP_SUB_I = 71;
+export const OP_MUL_I = 72;
+export const OP_MUL_S_I = 73;
+export const OP_DIV_I = 74;
+export const OP_DIV_S_I = 75;
+export const OP_MOD_I = 76;
+export const OP_MOD_S_I = 77;
+export const OP_AND_I = 78;
+export const OP_OR_I = 79;
+export const OP_XOR_I = 80;
+export const OP_SHL_I = 81;
+export const OP_SHR_I = 82;
+export const OP_SAR_I = 83;
+
 export const OP_DUMP = 126;
 export const OP_HALT = 127;
 

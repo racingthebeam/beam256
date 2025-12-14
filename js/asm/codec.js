@@ -48,6 +48,12 @@ export const Encoders = {
         assertIntegerConstant("v1", v1);
         return encodeOp(op) | encodeReg(r1.reg, 17) | encodeReg(r2.reg, 10) | encodeU10(v1.val, 0);
     },
+    reg_reg_s10: (op, r1, r2, v1) => {
+        assertType("r1", r1, "reg");
+        assertType("r2", r2, "reg");
+        assertIntegerConstant("v1", v1);
+        return encodeOp(op) | encodeReg(r1.reg, 17) | encodeReg(r2.reg, 10) | encodeS10(v1.val, 0);
+    },
     reg_s17: (op, r1, v1) => {
         assertType("r1", r1, "reg");
         assertIntegerConstant("v1", v1);
@@ -73,6 +79,17 @@ export const Encoders = {
         assertIntegerConstant("v1", v1);
         assertType("r2", r2, "reg");
         return encodeOp(op) | (f1 << 21) | encodeReg(r1.reg, 14) | encodeReg(v1.val, 7) | encodeReg(r2.reg, 0);
+    },
+    f3_reg_reg_u7: (op, f1, r1, r2, v1) => {
+        assertType("r1", r1, "reg");
+        assertType("r2", r2, "reg");
+        assertIntegerConstant("v1", v1);
+        return encodeOp(op) | (f1 << 21) | encodeReg(r1.reg, 14) | encodeReg(r2.reg, 7) | encodeReg(v1.val, 0);
+    },
+    f3_reg_reg: (op, f1, r1, r2) => {
+        assertType("r1", r1, "reg");
+        assertType("r2", r2, "reg");
+        return encodeOp(op) | (f1 << 21) | encodeReg(r1.reg, 14) | encodeReg(r2.reg, 7);
     },
 
     u8_u16: (op, v1, v2) => {
@@ -146,6 +163,10 @@ export function encodeU16(value) { return value & 0xFFFF; }
 
 function encodeReg(reg, lshift) {
     return (reg & 0x7F) << lshift;
+}
+
+export function encodeS10(value) {
+    return value & 0x3FF;
 }
 
 // value is an integer in the range -65536..65535 (inclusive)

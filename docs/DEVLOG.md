@@ -25,17 +25,16 @@ All things going well we should be able to spend the pre-Christmas session on ha
 
 ### Plan
 
-  - Finish implementing conditional jumps
+  - Implementing all conditional jumps!
 
 ## Day 15
 
 ### Plan
 
-  - Maths opcodes with immediate operands
-  - [ ] STOREF, LOADF (B, H, W variants)
-  - [ ] LOADX (B, H, W variants)
+  - [x] LOADX (B, H, W variants)
+  - [x] STOREF, LOADF (B, H, W variants)
+  - [x] Maths opcodes with immediate operands
   - Plan out all the conditional jumps
-  - Implement some conditional jumps
 
 ## Day 14
 

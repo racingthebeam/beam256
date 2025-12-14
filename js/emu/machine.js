@@ -59,6 +59,10 @@ class Machine {
         return this.mod.ccall('read_reg', 'uint32', ['int'], [r]);
     }
 
+    regSigned(r) {
+        return this.mod.ccall('read_reg_signed', 'int32', ['int'], [r]);
+    }
+
     // write the value of register r, returning the previous value
     writeReg(r, val) {
         return this.mod.ccall('write_reg', 'uint32', ['int', 'uint32'], [r, val]);

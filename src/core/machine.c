@@ -99,11 +99,11 @@ static void init_mem(machine_t *m) {
 #define FLAG_MEMX_INC           2
 
 #define DEF_SIGNED_UNION_WITH_UNSIGNED(var, val) \
-    union { int32_t i; uint32_t u; } var; \
+    union { SWORD i; WORD u; } var; \
     var.u = (val)
 
 #define DEF_SIGNED_UNION_WITH_SIGNED(var, val) \
-    union { int32_t i; uint32_t u; } var; \
+    union { SWORD i; WORD u; } var; \
     var.i = (val)
 
 #define DECODE_REG(ins, r0) \
@@ -152,6 +152,12 @@ static void init_mem(machine_t *m) {
     uint8_t r1 = (((ins) >> 10) & 0x7F); \
     uint32_t v0 = (((ins) >> 0) & 0x3FF)
 
+#define DECODE_REG_REG_S10(ins, r0, r1, v0) \
+    uint8_t r0 = (((ins) >> 17) & 0x7F); \
+    uint8_t r1 = (((ins) >> 10) & 0x7F); \
+    int32_t v0 = (((ins) >> 0) & 0x3FF); \
+    if (v0 & 0x200) v0 |= 0xFFFFFC00
+
 #define DECODE_REG_U5_U12(ins, r0, v0, v1) \
     uint8_t r0 = (((ins) >> 17) & 0x7F); \
     uint32_t v0 = (((ins) >> 12) & 0x1F); \
@@ -162,6 +168,11 @@ static void init_mem(machine_t *m) {
     uint8_t v0 = (((ins) >> 14) & 0x7f); \
     uint8_t v1 = (((ins) >> 7) & 0x7f); \
     uint8_t v2 = (((ins) >> 0) & 0x7f)
+
+#define DECODE_F3_U7_U7(ins, f0, v0, v1) \
+    uint8_t f0 = (((ins) >> 21) & 0x7); \
+    uint8_t v0 = (((ins) >> 14) & 0x7f); \
+    uint8_t v1 = (((ins) >> 7) & 0x7f)
 
 #define DECODE_U5_12(ins, r0, v0, v1) \
     DECODE_REG_U5_U12(ins, __ignore__, v0, v1)
@@ -229,16 +240,34 @@ static int tick(machine_t *m) {
             REG(rd) = REG(r1) + REG(r2);
             break;
         }
+        case OP_ADD_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = REG(r1) + v1;
+            break;
+        }
         case OP_SUB:
         {
             DECODE_REG_REG_REG(ins, rd, r1, r2);
             REG(rd) = REG(r1) - REG(r2);
             break;
         }
+        case OP_SUB_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = REG(r1) - v1;
+            break;
+        }
         case OP_MUL:
         {
             DECODE_REG_REG_REG(ins, rd, r1, r2);
             REG(rd) = REG(r1) * REG(r2);
+            break;
+        }
+        case OP_MUL_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = REG(r1) * v1;
             break;
         }
         case OP_MUL_S:
@@ -250,10 +279,24 @@ static int tick(machine_t *m) {
             REG(rd) = result.u;
             break;
         }
+        case OP_MUL_S_I:
+        {
+            DECODE_REG_REG_S10(ins, rd, r1, v1);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(r1));
+            DEF_SIGNED_UNION_WITH_SIGNED(result, l.i * v1);
+            REG(rd) = result.u;
+            break;
+        }
         case OP_DIV:
         {
             DECODE_REG_REG_REG(ins, rd, r1, r2);
             REG(rd) = REG(r1) / REG(r2);
+            break;
+        }
+        case OP_DIV_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = REG(r1) / v1;
             break;
         }
         case OP_DIV_S:
@@ -265,10 +308,48 @@ static int tick(machine_t *m) {
             REG(rd) = result.u;
             break;
         }
+        case OP_DIV_S_I:
+        {
+            DECODE_REG_REG_S10(ins, rd, r1, v1);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(r1));
+            DEF_SIGNED_UNION_WITH_SIGNED(result, l.i / v1);
+            printf("l.i: %d\n", l.i);
+            printf("v: %d\n", v1);
+            printf("result: %d\n", result.i);
+            REG(rd) = result.u;
+            break;
+        }
         case OP_MOD:
         {
             DECODE_REG_REG_REG(ins, rd, r1, r2);
             REG(rd) = REG(r1) % REG(r2);
+            break;
+        }
+        case OP_MOD_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = REG(r1) % v1;
+            break;
+        }
+        case OP_MOD_S:
+        {
+            DECODE_REG_REG_REG(ins, rd, r1, r2);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(r1));
+            DEF_SIGNED_UNION_WITH_UNSIGNED(r, REG(r2));
+            SWORD mod = l.i % r.i;
+            if (mod < 0) mod += (r.i > 0 ? r.i : -r.i);
+            DEF_SIGNED_UNION_WITH_SIGNED(result, mod);
+            REG(rd) = result.u;
+            break;
+        }
+        case OP_MOD_S_I:
+        {
+            DECODE_REG_REG_S10(ins, rd, r1, v1);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(r1));
+            SWORD mod = l.i % v1;
+            if (mod < 0) mod += (v1 > 0 ? v1 : -v1);
+            DEF_SIGNED_UNION_WITH_SIGNED(result, mod);
+            REG(rd) = result.u;
             break;
         }
         case OP_ABS:
@@ -294,16 +375,34 @@ static int tick(machine_t *m) {
             REG(rd) = REG(r1) & REG(r2);
             break;
         }
+        case OP_AND_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = REG(r1) & v1;
+            break;
+        }
         case OP_OR:
         {
             DECODE_REG_REG_REG(ins, rd, r1, r2);
             REG(rd) = REG(r1) | REG(r2);
             break;
         }
+        case OP_OR_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = REG(r1) | v1;
+            break;
+        }
         case OP_XOR:
         {
             DECODE_REG_REG_REG(ins, rd, r1, r2);
             REG(rd) = REG(r1) ^ REG(r2);
+            break;
+        }
+        case OP_XOR_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = REG(r1) ^ v1;
             break;
         }
         case OP_NOT:
@@ -318,6 +417,12 @@ static int tick(machine_t *m) {
             REG(rd) = REG(r1) << REG(r2);
             break;
         }
+        case OP_SHL_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = REG(r1) << v1;
+            break;
+        }
         case OP_SHR:
         {
             // TODO: ensure this always shifts in 0
@@ -328,11 +433,29 @@ static int tick(machine_t *m) {
             REG(rd) = REG(r1) >> REG(r2);
             break;
         }
+        case OP_SHR_I:
+        {
+            // TODO: ensure this always shifts in 0
+            // According to C standard, this is implementation dependent
+            // Check the standard myself, seems like C20/23 have actually
+            // standardised this stuff
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            REG(rd) = REG(r1) >> v1;
+            break;
+        }
         case OP_SAR:
         {
             DECODE_REG_REG_REG(ins, rd, r1, r2);
             DEF_SIGNED_UNION_WITH_UNSIGNED(tmp, REG(r1));
             tmp.i >>= REG(r2);
+            REG(rd) = tmp.u;
+            break;
+        }
+        case OP_SAR_I:
+        {
+            DECODE_REG_REG_U10(ins, rd, r1, v1);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(tmp, REG(r1));
+            tmp.i >>= v1;
             REG(rd) = tmp.u;
             break;
         }
@@ -449,6 +572,7 @@ static int tick(machine_t *m) {
             mem_write_uint32_le(&m->mem[REG(r_dst)], REG(r_val));
             break;
         }
+
         case OP_STOREXB:
         {
             DECODE_F3_U7_U7_U7(ins, flags, r_addr, r_off, r_val);
@@ -522,6 +646,146 @@ static int tick(machine_t *m) {
                 base = (base + (addr >> 16)) & 0xFFFF;
                 REG(r_addr) = (addr & 0xFFFF0000) | base;
             }
+            break;
+        }
+
+        case OP_LOADXB:
+        {
+            DECODE_F3_U7_U7_U7(ins, flags, r_dst, r_addr, r_off);
+            uint32_t addr = REG(r_addr);
+            uint32_t base = addr & 0xFFFF;
+            uint32_t offset = REG(r_off);
+            uint32_t val = m->mem[base + offset];
+            if (flags & FLAG_MEMX_SIGN_EXTEND) {
+                val = SIGN_EXTEND_8(val);
+            }
+            REG(r_dst) = val;
+            if (flags & FLAG_MEMX_INC) {
+                base = (base + (addr >> 16)) & 0xFFFF;
+                REG(r_addr) = (addr & 0xFFFF0000) | base;
+            }
+            break;
+        }
+        case OP_LOADXH:
+        {
+            DECODE_F3_U7_U7_U7(ins, flags, r_dst, r_addr, r_off);
+            uint32_t addr = REG(r_addr);
+            uint32_t base = addr & 0xFFFF;
+            uint32_t offset = REG(r_off);
+            uint32_t val = mem_read_uint16_le(&m->mem[base + offset]);
+            if (flags & FLAG_MEMX_SIGN_EXTEND) {
+                val = SIGN_EXTEND_16(val);
+            }
+            REG(r_dst) = val;
+            if (flags & FLAG_MEMX_INC) {
+                base = (base + (addr >> 16)) & 0xFFFF;
+                REG(r_addr) = (addr & 0xFFFF0000) | base;
+            }
+            break;
+        }
+        case OP_LOADXW:
+        {
+            DECODE_F3_U7_U7_U7(ins, flags, r_dst, r_addr, r_off);
+            uint32_t addr = REG(r_addr);
+            uint32_t base = addr & 0xFFFF;
+            uint32_t offset = REG(r_off);
+            uint32_t val = mem_read_uint32_le(&m->mem[base + offset]);
+            REG(r_dst) = val;
+            if (flags & FLAG_MEMX_INC) {
+                base = (base + (addr >> 16)) & 0xFFFF;
+                REG(r_addr) = (addr & 0xFFFF0000) | base;
+            }
+            break;
+        }
+        case OP_LOADXB_I:
+        {
+            DECODE_F3_U7_U7_U7(ins, flags, r_dst, r_addr, offset);
+            uint32_t addr = REG(r_addr);
+            uint32_t base = addr & 0xFFFF;
+            uint32_t val = m->mem[base + offset];
+            if (flags & FLAG_MEMX_SIGN_EXTEND) {
+                val = SIGN_EXTEND_8(val);
+            }
+            REG(r_dst) = val;
+            if (flags & FLAG_MEMX_INC) {
+                base = (base + (addr >> 16)) & 0xFFFF;
+                REG(r_addr) = (addr & 0xFFFF0000) | base;
+            }
+            break;
+        }
+        case OP_LOADXH_I:
+        {
+            DECODE_F3_U7_U7_U7(ins, flags, r_dst, r_addr, offset);
+            uint32_t addr = REG(r_addr);
+            uint32_t base = addr & 0xFFFF;
+            uint32_t val = mem_read_uint16_le(&m->mem[base + offset]);
+            if (flags & FLAG_MEMX_SIGN_EXTEND) {
+                val = SIGN_EXTEND_16(val);
+            }
+            REG(r_dst) = val;
+            if (flags & FLAG_MEMX_INC) {
+                base = (base + (addr >> 16)) & 0xFFFF;
+                REG(r_addr) = (addr & 0xFFFF0000) | base;
+            }
+            break;
+        }
+        case OP_LOADXW_I:
+        {
+            DECODE_F3_U7_U7_U7(ins, flags, r_dst, r_addr, offset);
+            uint32_t addr = REG(r_addr);
+            uint32_t base = addr & 0xFFFF;
+            uint32_t val = mem_read_uint32_le(&m->mem[base + offset]);
+            REG(r_dst) = val;
+            if (flags & FLAG_MEMX_INC) {
+                base = (base + (addr >> 16)) & 0xFFFF;
+                REG(r_addr) = (addr & 0xFFFF0000) | base;
+            }
+            break;
+        }
+
+        case OP_STOREFB:
+        {
+            DECODE_F3_U7_U7(ins, flags, r_addr, r_val);
+            m->mem[REG(r_addr)] = REG(r_val);
+            break;
+        }
+        case OP_STOREFH:
+        {
+            DECODE_F3_U7_U7(ins, flags, r_addr, r_val);
+            mem_write_uint16_le(&m->mem[REG(r_addr)], REG(r_val));
+            break;
+        }
+        case OP_STOREFW:
+        {
+            DECODE_F3_U7_U7(ins, flags, r_addr, r_val);
+            mem_write_uint32_le(&m->mem[REG(r_addr)], REG(r_val));
+            break;
+        }
+        case OP_LOADFB:
+        {
+            DECODE_F3_U7_U7(ins, flags, r_dst, r_addr);
+            WORD val = m->mem[REG(r_addr)];
+            if (flags & FLAG_MEMX_SIGN_EXTEND) {
+                val = SIGN_EXTEND_8(val);
+            }
+            REG(r_dst) = val;
+            break;
+        }
+        case OP_LOADFH:
+        {
+            DECODE_F3_U7_U7(ins, flags, r_dst, r_addr);
+            WORD val = mem_read_uint16_le(&m->mem[REG(r_addr)]);
+            if (flags & FLAG_MEMX_SIGN_EXTEND) {
+                val = SIGN_EXTEND_16(val);
+            }
+            REG(r_dst) = val;
+            break;
+        }
+        case OP_LOADFW:
+        {
+            DECODE_F3_U7_U7(ins, flags, r_dst, r_addr);
+            WORD val = mem_read_uint32_le(&m->mem[REG(r_addr)]);
+            REG(r_dst) = val;
             break;
         }
 

@@ -74,6 +74,37 @@
 #define OP_STOREXW 55
 #define OP_STOREXW_I 56
 
+#define OP_LOADXB 57
+#define OP_LOADXB_I 58
+#define OP_LOADXH 59
+#define OP_LOADXH_I 60
+#define OP_LOADXW 61
+#define OP_LOADXW_I 62
+
+#define OP_STOREFB 63
+#define OP_STOREFH 64
+#define OP_STOREFW 65
+#define OP_LOADFB 66
+#define OP_LOADFH 67
+#define OP_LOADFW 68
+
+#define OP_MOD_S 69
+
+#define OP_ADD_I 70
+#define OP_SUB_I 71
+#define OP_MUL_I 72
+#define OP_MUL_S_I 73
+#define OP_DIV_I 74
+#define OP_DIV_S_I 75
+#define OP_MOD_I 76
+#define OP_MOD_S_I 77
+#define OP_AND_I 78
+#define OP_OR_I 79
+#define OP_XOR_I 80
+#define OP_SHL_I 81
+#define OP_SHR_I 82
+#define OP_SAR_I 83
+
 #define OP_DUMP   126
 #define OP_HALT         127
 
