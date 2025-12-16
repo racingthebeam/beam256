@@ -5,7 +5,7 @@ BEAM256 is a work-in-progress fantasy console that is being [developed live on T
 Overview:
 
   - 256KB RAM + external stack
-  - 320x200 (4bpp) and 160x200 (4 + 8bpp) palettised graphics modes
+  - 320x200 (2 + 4bpp) and 160x200 (2 + 4 + 8bpp) palettised graphics modes
   - framebuffer and palette reside in RAM
   - banked memory (64KB addressable at any given time)
   - "hardware" accelerated drawing operations
