@@ -43,6 +43,8 @@ All things going well we should be able to spend the pre-Christmas session on ha
 
 New codecs needed: reg_reg_s9, reg_u8_s9
 
+All opcodes implemented and tested
+
 ### Quick Phase 1 Review
 
 Currently the stack is external to main memory
