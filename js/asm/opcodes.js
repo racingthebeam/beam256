@@ -100,6 +100,32 @@ export const OP_SHL_I = 81;
 export const OP_SHR_I = 82;
 export const OP_SAR_I = 83;
 
+export const OP_JZ = 84;
+export const OP_JNZ = 85;
+export const OP_JLTZ = 86;
+export const OP_JLEZ = 87;
+export const OP_JGTZ = 88;
+export const OP_JGEZ = 89;
+
+export const OP_JEQ = 90;
+export const OP_JNE = 91;
+export const OP_JLT = 92;
+export const OP_JLE = 93;
+export const OP_JGT = 94;
+export const OP_JGE = 95;
+
+export const OP_JEQ_I = 96;
+export const OP_JNE_I = 97;
+export const OP_JLT_I = 98;
+export const OP_JLE_I = 99;
+export const OP_JGT_I = 100;
+export const OP_JGE_I = 101;
+
+export const OP_JLTU = 102;
+export const OP_JLEU = 103;
+export const OP_JGTU = 104;
+export const OP_JGEU = 105;
+
 export const OP_DUMP = 126;
 export const OP_HALT = 127;
 

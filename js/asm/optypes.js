@@ -151,6 +151,7 @@ class SignedInt extends OpType {
     }
 }
 
+export const S9 = new SignedInt(9);
 export const S10 = new SignedInt(10);
 export const S17 = new SignedInt(17);
 

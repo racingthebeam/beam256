@@ -48,6 +48,18 @@ export const Encoders = {
         assertIntegerConstant("v1", v1);
         return encodeOp(op) | encodeReg(r1.reg, 17) | encodeReg(r2.reg, 10) | encodeU10(v1.val, 0);
     },
+    reg_reg_s9: (op, r1, r2, v1) => {
+        assertType("r1", r1, "reg");
+        assertType("r2", r2, "reg");
+        assertIntegerConstant("v1", v1);
+        return encodeOp(op) | encodeReg(r1.reg, 17) | encodeReg(r2.reg, 9) | encodeS9(v1.val, 0);
+    },
+    reg_u8_s9: (op, r1, v1, v2) => {
+        assertType("r1", r1, "reg");
+        assertIntegerConstant("v1", v1);
+        assertIntegerConstant("v2", v1);
+        return encodeOp(op) | encodeReg(r1.reg, 17) | encodeU8(v1.val, 9) | encodeS9(v2.val, 0);
+    },
     reg_reg_s10: (op, r1, r2, v1) => {
         assertType("r1", r1, "reg");
         assertType("r2", r2, "reg");
@@ -165,9 +177,8 @@ function encodeReg(reg, lshift) {
     return (reg & 0x7F) << lshift;
 }
 
-export function encodeS10(value) {
-    return value & 0x3FF;
-}
+export function encodeS9(value, lshift = 0) { return (value & 0x1FF) << lshift; }
+export function encodeS10(value, lshift = 0) { return (value & 0x3FF) << lshift; }
 
 // value is an integer in the range -65536..65535 (inclusive)
 // we need to turn this into a bit pattern.

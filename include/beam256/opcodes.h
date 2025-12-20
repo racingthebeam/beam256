@@ -105,6 +105,32 @@
 #define OP_SHR_I 82
 #define OP_SAR_I 83
 
+#define OP_JZ 84
+#define OP_JNZ 85
+#define OP_JLTZ 86
+#define OP_JLEZ 87
+#define OP_JGTZ 88
+#define OP_JGEZ 89
+
+#define OP_JEQ 90
+#define OP_JNE 91
+#define OP_JLT 92
+#define OP_JLE 93
+#define OP_JGT 94
+#define OP_JGE 95
+
+#define OP_JEQ_I 96
+#define OP_JNE_I 97
+#define OP_JLT_I 98
+#define OP_JLE_I 99
+#define OP_JGT_I 100
+#define OP_JGE_I 101
+
+#define OP_JLTU 102
+#define OP_JLEU 103
+#define OP_JGTU 104
+#define OP_JGEU 105
+
 #define OP_DUMP   126
 #define OP_HALT         127
 

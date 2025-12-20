@@ -6,6 +6,10 @@ import { assemble } from "../asm/index.js";
 
 function makeTest({ setup, code, check, halt = true }) {
     return async (t) => {
+        if (Array.isArray(code)) {
+            code = code.join("\n");
+        }
+
         if (halt) code += "\n.align 4\nHALT\n";
 
         const events = [];
@@ -898,7 +902,353 @@ const TESTS = [
         check: (m) => {
             assert.equal(m.reg(0), 60);
         }
-    }
+    },
+
+    //
+    // Conditional jumps - comparison with zero
+
+    {
+        name: "JZ reg, rel",
+        code: "MOV r0, 0\nJZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1) },
+    },
+    {
+        name: "JZ reg, rel",
+        code: "MOV r0, 1\nJZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0) },
+    },
+    {
+        name: "JNZ reg, rel",
+        code: "MOV r0, 0\nJNZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0) },
+    },
+    {
+        name: "JNZ reg, rel",
+        code: "MOV r0, 1\nJNZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1) },
+    },
+    {
+        name: "JLTZ reg, rel",
+        code: "MOV r0, -1\nJLTZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1) },
+    },
+    {
+        name: "JLTZ reg, rel",
+        code: "MOV r0, 0\nJLTZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0) },
+    },
+    {
+        name: "JLTZ reg, rel",
+        code: "MOV r0, 1\nJLTZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0) },
+    },
+    {
+        name: "JLEZ reg, rel",
+        code: "MOV r0, -1\nJLEZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1) },
+    },
+    {
+        name: "JLEZ reg, rel",
+        code: "MOV r0, 0\nJLEZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1) },
+    },
+    {
+        name: "JLEZ reg, rel",
+        code: "MOV r0, 1\nJLEZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0) },
+    },
+    {
+        name: "JGTZ reg, rel",
+        code: "MOV r0, -1\nJGTZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0) },
+    },
+    {
+        name: "JGTZ reg, rel",
+        code: "MOV r0, 0\nJGTZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0) },
+    },
+    {
+        name: "JGTZ reg, rel",
+        code: "MOV r0, 1\nJGTZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1) },
+    },
+    {
+        name: "JGEZ reg, rel",
+        code: "MOV r0, -1\nJGEZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0) },
+    },
+    {
+        name: "JGEZ reg, rel",
+        code: "MOV r0, 0\nJGEZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1) },
+    },
+    {
+        name: "JGEZ reg, rel",
+        code: "MOV r0, 1\nJGEZ r0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1) },
+    },
+    {
+        name: "JLEZ reg, reg",
+        code: "MOV r0, 0\nJLEZ r0, 1\nHALT\nMOV r1, 1",
+        check: (m) => { assert.equal(m.reg(1), 1); }
+    },
+    {
+        name: "JLEZ reg, reg",
+        code: "MOV r0, -1\nJLEZ r0, 1\nHALT\nMOV r1, 1",
+        check: (m) => { assert.equal(m.reg(1), 1); }
+    },
+    {
+        name: "JLEZ reg, reg",
+        code: "MOV r0, 1\nJLEZ r0, 1\nHALT\nMOV r1, 1",
+        check: (m) => { assert.equal(m.reg(1), 0); }
+    },
+    {
+        name: "JGEZ reg, reg",
+        code: "MOV r0, 0\nJGEZ r0, 1\nHALT\nMOV r1, 1",
+        check: (m) => { assert.equal(m.reg(1), 1); }
+    },
+    {
+        name: "JGEZ reg, reg",
+        code: "MOV r0, 1\nJGEZ r0, 1\nHALT\nMOV r1, 1",
+        check: (m) => { assert.equal(m.reg(1), 1); }
+    },
+    {
+        name: "JGEZ reg, reg",
+        code: "MOV r0, -1\nJGEZ r0, 1\nHALT\nMOV r1, 1",
+        check: (m) => { assert.equal(m.reg(1), 0); }
+    },
+
+    //
+    // Conditional jumps - reg/reg
+
+    {
+        name: "JEQ reg, reg",
+        code: "MOV r0, 1\nMOV r1, 1\nJEQ r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JEQ reg, reg",
+        code: "MOV r0, 1\nMOV r1, 0\nJEQ r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JNE reg, reg",
+        code: "MOV r0, 0\nMOV r1, 1\nJNE r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JNE reg, reg",
+        code: "MOV r0, 1\nMOV r1, 1\nJNE r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JLT reg, reg",
+        code: "MOV r0, 0\nMOV r1, 1\nJLT r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JLT reg, reg",
+        code: "MOV r0, 1\nMOV r1, 1\nJLT r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JLT reg, reg",
+        code: "MOV r0, 2\nMOV r1, 1\nJLT r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JGT reg, reg",
+        code: "MOV r0, 2\nMOV r1, 1\nJGT r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JGT reg, reg",
+        code: "MOV r0, 1\nMOV r1, 1\nJGT r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JGT reg, reg",
+        code: "MOV r0, 0\nMOV r1, 1\nJGT r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JLE reg, reg",
+        code: "MOV r0, 0\nMOV r1, 1\nJLE r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JLE reg, reg",
+        code: "MOV r0, 1\nMOV r1, 1\nJLE r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JLE reg, reg",
+        code: "MOV r0, 2\nMOV r1, 1\nJLE r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JGE reg, reg",
+        code: "MOV r0, 2\nMOV r1, 1\nJGE r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JGE reg, reg",
+        code: "MOV r0, 1\nMOV r1, 1\nJGE r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JGE reg, reg",
+        code: "MOV r0, 0\nMOV r1, 1\nJGE r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+
+    //
+    // Conditional jumps - reg/imm
+
+    {
+        name: "JEQ reg, imm",
+        code: "MOV r0, 1\nJEQ r0, 1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JEQ reg, imm",
+        code: "MOV r0, 1\nJEQ r0, 0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JNE reg, imm",
+        code: "MOV r0, 1\nJNE r0, 0, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JNE reg, imm",
+        code: "MOV r0, 1\nJNE r0, 1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JLT reg, imm",
+        code: "MOV r0, 3\nJLT r0, 4, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JLT reg, imm",
+        code: "MOV r0, 3\nJLT r0, 3, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JLT reg, imm",
+        code: "MOV r0, 3\nJLT r0, 2, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JGT reg, imm",
+        code: "MOV r0, 3\nJGT r0, 2, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JGT reg, imm",
+        code: "MOV r0, 3\nJGT r0, 3, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JGT reg, imm",
+        code: "MOV r0, 3\nJGT r0, 4, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JLE reg, imm",
+        code: "MOV r0, 3\nJLE r0, 4, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JLE reg, imm",
+        code: "MOV r0, 3\nJLE r0, 3, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JLE reg, imm",
+        code: "MOV r0, 3\nJLE r0, 2, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JGE reg, imm",
+        code: "MOV r0, 3\nJGE r0, 2, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JGE reg, imm",
+        code: "MOV r0, 3\nJGE r0, 3, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JGE reg, imm",
+        code: "MOV r0, 3\nJGE r0, 4, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+
+    //
+    // Conditional jumps - unsigned
+
+    {
+        name: "JLTU reg, reg, rel",
+        code: "MOV r0, 10\nMOV r1, 20\nJLTU r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JLTU reg, reg, rel",
+        code: "MOV r0, 10\nMOV r1, 10\nJLTU r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JLTU reg, reg, rel",
+        code: "MOV r0, 10\nMOV r1, 5\nJLTU r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JLEU reg, reg, rel",
+        code: "MOV r0, 10\nMOV r1, 20\nJLEU r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JLEU reg, reg, rel",
+        code: "MOV r0, 10\nMOV r1, 10\nJLEU r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JLEU reg, reg, rel",
+        code: "MOV r0, 10\nMOV r1, 5\nJLEU r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JGTU reg, reg, rel",
+        code: "MOV r0, 10\nMOV r1, 20\nJGTU r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JGTU reg, reg, rel",
+        code: "MOV r0, 10\nMOV r1, 10\nJGTU r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JGTU reg, reg, rel",
+        code: "MOV r0, 10\nMOV r1, 5\nJGTU r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JGEU reg, reg, rel",
+        code: "MOV r0, 10\nMOV r1, 20\nJGEU r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 0); }
+    },
+    {
+        name: "JGEU reg, reg, rel",
+        code: "MOV r0, 10\nMOV r1, 10\nJGEU r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
+    {
+        name: "JGEU reg, reg, rel",
+        code: "MOV r0, 10\nMOV r1, 5\nJGEU r0, r1, 1\nHALT\nMOV r2, 1",
+        check: (m) => { assert.equal(m.reg(2), 1); }
+    },
 ];
 
 for (const t of TESTS) {

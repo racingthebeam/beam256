@@ -221,6 +221,43 @@ export const Instructions = {
         { params: [T.Reg], op: O.OP_RET_REG }
     ],
 
+    "JZ": [{ params: [T.Reg, T.S17], op: O.OP_JZ }],
+    "JNZ": [{ params: [T.Reg, T.S17], op: O.OP_JNZ }],
+    "JLTZ": [{ params: [T.Reg, T.S17], op: O.OP_JLTZ }],
+    "JLEZ": [{ params: [T.Reg, T.S17], op: O.OP_JLEZ }],
+    "JGTZ": [{ params: [T.Reg, T.S17], op: O.OP_JGTZ }],
+    "JGEZ": [{ params: [T.Reg, T.S17], op: O.OP_JGEZ }],
+
+    "JEQ": [
+        { params: [T.Reg, T.Reg, T.S9], op: O.OP_JEQ },
+        { params: [T.Reg, T.U8, T.S9], op: O.OP_JEQ_I },
+    ],
+    "JNE": [
+        { params: [T.Reg, T.Reg, T.S9], op: O.OP_JNE },
+        { params: [T.Reg, T.U8, T.S9], op: O.OP_JNE_I },
+    ],
+    "JLT": [
+        { params: [T.Reg, T.Reg, T.S9], op: O.OP_JLT },
+        { params: [T.Reg, T.U8, T.S9], op: O.OP_JLT_I },
+    ],
+    "JLE": [
+        { params: [T.Reg, T.Reg, T.S9], op: O.OP_JLE },
+        { params: [T.Reg, T.U8, T.S9], op: O.OP_JLE_I },
+    ],
+    "JGT": [
+        { params: [T.Reg, T.Reg, T.S9], op: O.OP_JGT },
+        { params: [T.Reg, T.U8, T.S9], op: O.OP_JGT_I },
+    ],
+    "JGE": [
+        { params: [T.Reg, T.Reg, T.S9], op: O.OP_JGE },
+        { params: [T.Reg, T.U8, T.S9], op: O.OP_JGE_I },
+    ],
+
+    "JLTU": [{ params: [T.Reg, T.Reg, T.S9], op: O.OP_JLTU }],
+    "JLEU": [{ params: [T.Reg, T.Reg, T.S9], op: O.OP_JLEU }],
+    "JGTU": [{ params: [T.Reg, T.Reg, T.S9], op: O.OP_JGTU }],
+    "JGEU": [{ params: [T.Reg, T.Reg, T.S9], op: O.OP_JGEU }],
+
     // "MOVH": [
     //     {
     //         args: [O.Reg, O.U16]

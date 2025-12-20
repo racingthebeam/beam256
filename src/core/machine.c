@@ -95,6 +95,12 @@ static void init_mem(machine_t *m) {
 #define POP()           (m->stack[--(m->sp)])
 #define POPN(n)         (m->sp -= (n))
 
+// Breaking relative jumps into a macro because not sure if the
+// jump should be relative to the CURRENT instruction pointer,
+// or the instruction pointer as it was before the previous
+// instruction executed... need to do some reading on this.
+#define JMP_REL(rel)    (f->ip += (rel << 2))
+
 #define FLAG_MEMX_SIGN_EXTEND   1
 #define FLAG_MEMX_INC           2
 
@@ -151,6 +157,18 @@ static void init_mem(machine_t *m) {
     uint8_t r0 = (((ins) >> 17) & 0x7F); \
     uint8_t r1 = (((ins) >> 10) & 0x7F); \
     uint32_t v0 = (((ins) >> 0) & 0x3FF)
+
+#define DECODE_REG_REG_S9(ins, r0, r1, v0) \
+    uint8_t r0 = (((ins) >> 17) & 0x7F); \
+    uint8_t r1 = (((ins) >> 9) & 0x7F); \
+    int32_t v0 = (((ins) >> 0) & 0x1FF); \
+    if (v0 & 0x100) v0 |= 0xFFFFFE00
+
+#define DECODE_REG_U8_S9(ins, r0, v0, v1) \
+    uint8_t r0 = (((ins) >> 17) & 0x7F); \
+    uint8_t v0 = (((ins) >> 9) & 0x7F); \
+    int32_t v1 = (((ins) >> 0) & 0x1FF); \
+    if (v1 & 0x100) v0 |= 0xFFFFFE00
 
 #define DECODE_REG_REG_S10(ins, r0, r1, v0) \
     uint8_t r0 = (((ins) >> 17) & 0x7F); \
@@ -313,9 +331,6 @@ static int tick(machine_t *m) {
             DECODE_REG_REG_S10(ins, rd, r1, v1);
             DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(r1));
             DEF_SIGNED_UNION_WITH_SIGNED(result, l.i / v1);
-            printf("l.i: %d\n", l.i);
-            printf("v: %d\n", v1);
-            printf("result: %d\n", result.i);
             REG(rd) = result.u;
             break;
         }
@@ -876,6 +891,228 @@ static int tick(machine_t *m) {
             break;
         }
 
+        //
+        // Conditional jump - comparison with zero
+
+        case OP_JZ:
+        {
+            DECODE_REG_S17(ins, reg, rel);
+            if (REG(reg) == 0) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JNZ:
+        {
+            DECODE_REG_S17(ins, reg, rel);
+            if (REG(reg) != 0) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JLTZ:
+        {
+            DECODE_REG_S17(ins, reg, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(val, REG(reg));
+            if (val.i < 0) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JLEZ:
+        {
+            DECODE_REG_S17(ins, reg, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(val, REG(reg));
+            if (val.i <= 0) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JGTZ:
+        {
+            DECODE_REG_S17(ins, reg, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(val, REG(reg));
+            if (val.i > 0) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JGEZ:
+        {
+            DECODE_REG_S17(ins, reg, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(val, REG(reg));
+            if (val.i >= 0) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+
+        //
+        // Conditional jump - comparison with register
+
+        case OP_JEQ:
+        {
+            DECODE_REG_REG_S9(ins, rl, rr, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(rl));
+            DEF_SIGNED_UNION_WITH_UNSIGNED(r, REG(rr));
+            if (l.i == r.i) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JNE:
+        {
+            DECODE_REG_REG_S9(ins, rl, rr, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(rl));
+            DEF_SIGNED_UNION_WITH_UNSIGNED(r, REG(rr));
+            if (l.i != r.i) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JLT:
+        {
+            DECODE_REG_REG_S9(ins, rl, rr, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(rl));
+            DEF_SIGNED_UNION_WITH_UNSIGNED(r, REG(rr));
+            if (l.i < r.i) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JLE:
+        {
+            DECODE_REG_REG_S9(ins, rl, rr, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(rl));
+            DEF_SIGNED_UNION_WITH_UNSIGNED(r, REG(rr));
+            if (l.i <= r.i) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JGT:
+        {
+            DECODE_REG_REG_S9(ins, rl, rr, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(rl));
+            DEF_SIGNED_UNION_WITH_UNSIGNED(r, REG(rr));
+            if (l.i > r.i) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JGE:
+        {
+            DECODE_REG_REG_S9(ins, rl, rr, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(rl));
+            DEF_SIGNED_UNION_WITH_UNSIGNED(r, REG(rr));
+            if (l.i >= r.i) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+
+        //
+        // Conditional jump - comparison with immediate
+
+        case OP_JEQ_I:
+        {
+            DECODE_REG_U8_S9(ins, rl, ru, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(rl));
+            int32_t r = ru;
+            if (l.i == r) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JNE_I:
+        {
+            DECODE_REG_U8_S9(ins, rl, ru, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(rl));
+            int32_t r = ru;
+            if (l.i != r) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JLT_I:
+        {
+            DECODE_REG_U8_S9(ins, rl, ru, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(rl));
+            int32_t r = ru;
+            if (l.i < r) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JLE_I:
+        {
+            DECODE_REG_U8_S9(ins, rl, ru, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(rl));
+            int32_t r = ru;
+            if (l.i <= r) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JGT_I:
+        {
+            DECODE_REG_U8_S9(ins, rl, ru, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(rl));
+            int32_t r = ru;
+            if (l.i > r) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JGE_I:
+        {
+            DECODE_REG_U8_S9(ins, rl, ru, rel);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(l, REG(rl));
+            int32_t r = ru;
+            if (l.i >= r) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+
+        //
+        // Conditional jump - unsigned register/register comparison
+
+        case OP_JLTU:
+        {
+            DECODE_REG_REG_S9(ins, rl, rr, rel);
+            if (REG(rl) < REG(rr)) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JLEU:
+        {
+            DECODE_REG_REG_S9(ins, rl, rr, rel);
+            if (REG(rl) <= REG(rr)) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JGTU:
+        {
+            DECODE_REG_REG_S9(ins, rl, rr, rel);
+            if (REG(rl) > REG(rr)) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+        case OP_JGEU:
+        {
+            DECODE_REG_REG_S9(ins, rl, rr, rel);
+            if (REG(rl) >= REG(rr)) {
+                JMP_REL(rel);
+            }
+            break;
+        }
+
+        // OP-END
+
         case OP_DUMP:
         {
             printf("=== beam256 dump ===\n");
@@ -896,8 +1133,9 @@ static int tick(machine_t *m) {
             break;
 
         default:
-            // TODO: we should probably fire an event here
             printf("UNKNOWN INSTRUCTION: %d\n", OP(ins));
+            // TODO: we should probably fire an event here
+            m->halted = 1;
             break;
     }
 

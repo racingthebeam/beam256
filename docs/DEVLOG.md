@@ -26,6 +26,22 @@ All things going well we should be able to spend the pre-Christmas session on ha
 ### Plan
 
   - Implementing all conditional jumps!
+    1. J{Z,NZ,LTZ,LEZ,GTZ,GEZ} r, rel - 6 opcodes
+    2. J{EQ,NE,LT,LE,GT,GE} r0, r1, rel - 6 opcodes
+    3. J{EQ,NE,LT,LE,GT,GE} r0, imm, rel - 6 opcodes
+    4. J{LT,GT,GE,GT}U r0, r1, rel, - 4 opcodes (unsigned comparisons)
+  - Phase 1 review
+
+### Actual
+
+  - Conditional jumps, encoding:
+    1. reg:u7, rel:s17 - the comparisons against 0 can literally jump anywhere
+      - should this maybe just be an absolute jump?
+    2. reg:u7, reg:u7, rel:s9 - +/-256 instructions (+/- 1024 bytes)
+    3. reg:u7, imm:u8, rel:s9 - +/-256 instructions (+/- 1024 bytes)
+    4. reg:u7, reg:u7, rel:s9 - +/-256 instructions (+/- 1024 bytes)
+
+New codecs needed: reg_reg_s9, reg_u8_s9
 
 ## Day 15
 
