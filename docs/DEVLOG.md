@@ -43,6 +43,37 @@ All things going well we should be able to spend the pre-Christmas session on ha
 
 New codecs needed: reg_reg_s9, reg_u8_s9
 
+### Quick Phase 1 Review
+
+Currently the stack is external to main memory
+64KB of WIRED memory, 256KB full size
+Decision: move stack to main memory - this will allow fun tricks, possibly
+context switching etc.
+Stack pointer would be a "far" pointer - not constrained by the MMU.
+
+Memory is 32 x 8KB pages
+So - reserve top page (page 31) for stack etc.
+  - stack - 6KiB
+  - frame stack - 1KiB (16 bytes per entry - max call stack size = 64)
+  - palette - 1KiB (256 x 4 byte RGB entries)
+
+New opcodes: SCTX and LCTX (save and load CPU context) (2)
+  - saves stack pointer and address of active frame
+  - over provision amount of RAM for saved context to account for future changes
+
+Switch to signed maths being the default - unsigned operations will be the special cases.
+
+LOAD and STORE need B,H and W variants
+Total variants - 4 x 3 = 12. Currently have 4, so 8 extra needed (8)
+
+Other opcodes (11):
+  - SWP r0, r1 (1)
+  - DUP top of stack, ROTATE top of stack (2)
+  - ROTATE (LEFT, RIGHT) - few variants required (4)
+  - IO-wait opcode (port, mask register, value register) (1)
+  - jump tables (absolute/indirect) (1)
+  - ADD_MUL rdst, rval, rscale # REG[rdst] = REG[rdst] + (REG[rval] * REG[rscale]) (2)
+
 ## Day 15
 
 ### Plan
