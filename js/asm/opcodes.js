@@ -126,6 +126,18 @@ export const OP_JLEU = 103;
 export const OP_JGTU = 104;
 export const OP_JGEU = 105;
 
+export const OP_STACK_DUP = 106;
+export const OP_STACK_SWP = 107;
+
+export const OP_SWP = 108;
+
+export const OP_VJMP = 109;
+
+export const OP_ACC = 110;
+export const OP_ACC_I = 111;
+
+export const OP_WAIT = 112;
+
 export const OP_DUMP = 126;
 export const OP_HALT = 127;
 

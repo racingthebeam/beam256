@@ -206,6 +206,26 @@ const TESTS = [
         check: (m) => { assert.equal(m.regSigned(0), 20); }
     },
 
+    {
+        name: "ACC rd, rv, rs",
+        setup: (m) => {
+            m.writeReg(0, 100);
+            m.writeReg(1, 50);
+            m.writeReg(2, 3);
+        },
+        code: "ACC r0, r1, r2",
+        check: (m) => { assert.equal(m.reg(0), 250); }
+    },
+    {
+        name: "ACC rd, rv, imm",
+        setup: (m) => {
+            m.writeReg(0, 100);
+            m.writeReg(1, 50);
+        },
+        code: "ACC r0, r1, 4",
+        check: (m) => { assert.equal(m.reg(0), 300); }
+    },
+
     //
     // Bitwise - reg reg
 
@@ -446,6 +466,44 @@ const TESTS = [
         `,
         check: (m) => {
             assert.strictEqual(m.reg(1), 2);
+        }
+    },
+
+    //
+    // Vectored jump
+
+    {
+        name: "VJMP addr, reg",
+        setup: (m) => { m.writeReg(0, 2); },
+        code: `
+            VJMP 64, r0
+            HALT
+
+            .org 64
+            .B 128, 0
+            .B 144, 0
+            .B 160, 0
+            .B 176, 0
+            .B 192, 0
+
+            .org 128
+            HALT
+
+            .org 144
+            HALT
+            
+            .org 160
+            MOV r1, 123
+            HALT
+
+            .org 176
+            HALT
+
+            .org 192
+            HALT
+        `,
+        check: (m) => {
+            assert.equal(m.reg(1), 123);
         }
     },
 
@@ -1249,6 +1307,34 @@ const TESTS = [
         code: "MOV r0, 10\nMOV r1, 5\nJGEU r0, r1, 1\nHALT\nMOV r2, 1",
         check: (m) => { assert.equal(m.reg(2), 1); }
     },
+    {
+        name: "SWP (stack)",
+        code: "RSV 2\nPUSH 150\nPUSH 250\nSWP\nPOP r0\nPOP r1",
+        check: (m) => {
+            assert.equal(m.reg(0), 150);
+            assert.equal(m.reg(1), 250);
+        }
+    },
+    {
+        name: "DUP (stack)",
+        code: "RSV 2\nPUSH 100\nDUP\nPOP r0\nPOP r1",
+        check: (m) => {
+            assert.equal(m.reg(0), 100);
+            assert.equal(m.reg(1), 100);
+        }
+    },
+    {
+        name: "SWP r0, r1",
+        setup: (m) => {
+            m.writeReg(0, 100);
+            m.writeReg(1, 200);
+        },
+        code: "SWP r0, r1",
+        check: (m) => {
+            assert.equal(m.reg(0), 200);
+            assert.equal(m.reg(1), 100);
+        }
+    }
 ];
 
 for (const t of TESTS) {

@@ -131,6 +131,18 @@
 #define OP_JGTU 104
 #define OP_JGEU 105
 
+#define OP_STACK_DUP 106
+#define OP_STACK_SWP 107
+
+#define OP_SWP 108
+
+#define OP_VJMP 109
+
+#define OP_ACC 110
+#define OP_ACC_I 111
+
+#define OP_WAIT 112
+
 #define OP_DUMP   126
 #define OP_HALT         127
 

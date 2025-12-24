@@ -13,6 +13,29 @@ Main goal: get a workflow in place so we assemble the code consumed by day 9.
   - implement the instructions in the CPU core
   - debug it until it's all working
 
+## Day 18
+
+### Plan + Actual
+
+  - [x] SWP r0, r1 (1)
+  - [x] DUP top of stack, SWP top of stack (2)
+  - [x] ACC rdst, rval, rscale # REG[rdst] = REG[rdst] + (REG[rval] * REG[rscale]) (1)
+  - [x] ACC rdst, rval, iscale # REG[rdst] = REG[rdst] + (REG[rval] * iscale) (1)
+  - [x] jump tables (absolute/indirect) (1)
+
+Form for jump table is `VJMP addr, reg`
+
+`VJMP` means "vectored jump".
+`addr` is the base address of the vector table.
+
+The opcode looks up the 16-bit value at `addr + (2 * REG[reg])`, interprets it as an address, and jumps.
+
+Not going to get to these...
+
+  - [ ] Missing LOAD/STORE variants
+  - [ ] IO-wait opcode (port, mask register, value register) (1)
+  - [ ] Rotate (left, right etc.)
+
 ## Day 17
 
 ### Plan
@@ -70,6 +93,8 @@ Other opcodes (11):
   - SWP r0, r1 (1)
   - DUP top of stack, ROTATE top of stack (2)
   - ROTATE (LEFT, RIGHT) - few variants required (4)
+    - RT{L,R} r_dst:7, r_src:7, r_rot:7, i_size:5
+    - RT{L,R} r_dst:7, r_src:7, i_rot:5, i_size:5
   - IO-wait opcode (port, mask register, value register) (1)
   - jump tables (absolute/indirect) (1)
   - ADD_MUL rdst, rval, rscale # REG[rdst] = REG[rdst] + (REG[rval] * REG[rscale]) (2)

@@ -44,6 +44,15 @@ static void init_reg(machine_t *m) {
     m->reg[REG_GRAPHICS_MODE] = 0;
 }
 
+static void dbg_dump_stack(machine_t *m) {
+    printf("=== stack ===\n");
+    printf("sp=%d\n", m->sp);
+    for (int i = 0; i < m->sp; i++) {
+        printf("%d: %d\n", i, m->stack[i]);
+    }
+    printf("=== end stack ===\n");
+}
+
 static void init_mem(machine_t *m) {
     int wp, end;
 
@@ -305,6 +314,25 @@ static int tick(machine_t *m) {
             REG(rd) = result.u;
             break;
         }
+        case OP_ACC:
+        {
+            DECODE_REG_REG_REG(ins, rd, rr, rs);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(d, REG(rd));
+            DEF_SIGNED_UNION_WITH_UNSIGNED(r, REG(rr));
+            DEF_SIGNED_UNION_WITH_UNSIGNED(s, REG(rs));
+            DEF_SIGNED_UNION_WITH_SIGNED(result, d.i + (r.i * s.i));
+            REG(rd) = result.u;
+            break;
+        }
+        case OP_ACC_I:
+        {
+            DECODE_U8_REG_REG(ins, v1, rd, rr);
+            DEF_SIGNED_UNION_WITH_UNSIGNED(d, REG(rd));
+            DEF_SIGNED_UNION_WITH_UNSIGNED(r, REG(rr));
+            DEF_SIGNED_UNION_WITH_SIGNED(result, d.i + (r.i * v1));
+            REG(rd) = result.u;
+            break;
+        }
         case OP_DIV:
         {
             DECODE_REG_REG_REG(ins, rd, r1, r2);
@@ -533,6 +561,13 @@ static int tick(machine_t *m) {
         {
             DECODE_REG(ins, reg);
             f->ip = REG(reg);
+            break;
+        }
+        case OP_VJMP:
+        {
+            DECODE_REG_U16(ins, r_offset, base_addr);
+            base_addr += REG(r_offset) * 2;
+            f->ip = mem_read_uint16_le(&m->mem[base_addr]);
             break;
         }
         case OP_IN:
@@ -1108,6 +1143,31 @@ static int tick(machine_t *m) {
             if (REG(rl) >= REG(rr)) {
                 JMP_REL(rel);
             }
+            break;
+        }
+
+        case OP_STACK_DUP:
+        {
+            WORD tos = m->stack[m->sp-1];
+            PUSH(tos);
+            break;
+        }
+        case OP_STACK_SWP:
+        {
+            WORD tos, sos;
+            tos = m->stack[m->sp-1];
+            sos = m->stack[m->sp-2];
+            m->stack[m->sp-1] = sos;
+            m->stack[m->sp-2] = tos;
+            break;
+        }
+
+        case OP_SWP:
+        {
+            DECODE_REG_REG(ins, l, r);
+            WORD tmp = REG(l);
+            REG(l) = REG(r);
+            REG(r) = tmp;
             break;
         }
 

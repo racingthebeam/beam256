@@ -57,6 +57,14 @@ export const Instructions = {
         { params: [T.Reg, T.Reg, T.Reg], op: O.OP_MUL_S },
         { params: [T.Reg, T.Reg, T.S10], op: O.OP_MUL_S_I }
     ],
+    "ACC": [
+        { params: [T.Reg, T.Reg, T.Reg], op: O.OP_ACC },
+        {
+            params: [T.Reg, T.Reg, T.U8],
+            op: O.OP_ACC_I,
+            enc: [2, 0, 1]
+        },
+    ],
     "DIV": [
         { params: [T.Reg, T.Reg, T.Reg], op: O.OP_DIV },
         { params: [T.Reg, T.Reg, T.U10], op: O.OP_DIV_I }
@@ -127,6 +135,9 @@ export const Instructions = {
     "JMP": [
         { params: [T.U16], op: O.OP_UJMP_ADDR },
         { params: [T.Reg], op: O.OP_UJMP_REG }
+    ],
+    "VJMP": [
+        { params: [T.U16, T.Reg], op: O.OP_VJMP, enc: [1, 0] }
     ],
 
     "IN": [
@@ -257,6 +268,17 @@ export const Instructions = {
     "JLEU": [{ params: [T.Reg, T.Reg, T.S9], op: O.OP_JLEU }],
     "JGTU": [{ params: [T.Reg, T.Reg, T.S9], op: O.OP_JGTU }],
     "JGEU": [{ params: [T.Reg, T.Reg, T.S9], op: O.OP_JGEU }],
+
+    "DUP": [
+        { params: [], op: O.OP_STACK_DUP }
+    ],
+
+    "SWP": [
+        // not sure how i feel about this, zero operand version
+        // manipulates the stack, 2 reg form manipulates registers
+        { params: [], op: O.OP_STACK_SWP },
+        { params: [T.Reg, T.Reg], op: O.OP_SWP }
+    ],
 
     // "MOVH": [
     //     {
