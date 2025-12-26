@@ -13,6 +13,12 @@ Main goal: get a workflow in place so we assemble the code consumed by day 9.
   - implement the instructions in the CPU core
   - debug it until it's all working
 
+## Offstream
+
+Some more opcode thoughts:
+
+  - maths opcodes should get flag for enabling saturating mode
+
 ## Day 18
 
 ### Plan + Actual
