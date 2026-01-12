@@ -72,6 +72,8 @@ Play tone from memory
   - add/mul/sub/div, not, negate
   - bitwise AND/OR/XOR
 
+## [catnip](https://github.com/ecilasun/catnip/blob/master/INSTRUCTION_SET.md)
+
 ## Other Stuff
 
   - [Cool Palette Generator](http://mycours.es/colorRampCreator/)
