@@ -1,6 +1,7 @@
 # Components
 
   - Microcontroller - RP2350B
+  - DAC - TLV320DAC3100
 
 ## Candidates
 
