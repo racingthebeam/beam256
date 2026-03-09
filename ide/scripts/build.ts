@@ -1,16 +1,14 @@
 import * as esbuild from "esbuild";
 import { readFileSync } from "fs";
 import { resolve } from "path";
+import { config } from "dotenv";
 
 const env = process.env.NODE_ENV ?? "dev";
-const envFile = readFileSync(resolve(`env/${env}.env`), "utf-8");
+const { parsed } = config({ path: `env/${env}.env` });
 
 const define: Record<string, string> = {};
-for (const line of envFile.split("\n")) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith("#")) continue;
-    const [key, ...rest] = trimmed.split("=");
-    define[`process.env.${key}`] = JSON.stringify(rest.join("="));
+for (const [key, value] of Object.entries(parsed ?? {})) {
+    define[`process.env.${key}`] = JSON.stringify(value);
 }
 
 const opts = {

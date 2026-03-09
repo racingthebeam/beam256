@@ -16,5 +16,5 @@
             "@racingthebeam/domutil": ["libs/domutil/index.ts"]
         }
     },
-    "include": ["src", "libs"]
+    "include": ["src", "libs", "env.d.ts"]
 }

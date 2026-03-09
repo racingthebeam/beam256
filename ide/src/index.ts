@@ -4,4 +4,4 @@ import * as domutil from "@racingthebeam/domutil";
 uikit.test();
 domutil.checkItOut();
 
-console.log("here we go...");
+console.log("here we go...", process.env.API_HOST);
