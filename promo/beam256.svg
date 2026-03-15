@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1920"
+   height="1080"
+   viewBox="0 0 1920 1080"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   sodipodi:docname="beam256.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="0.66375299"
+     inkscape:cx="943.12193"
+     inkscape:cy="557.43628"
+     inkscape:window-width="956"
+     inkscape:window-height="1033"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="path-effect58"
+       is_visible="true"
+       lpeversion="1"
+       nodesatellites_param="F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1"
+       radius="0"
+       unit="px"
+       method="auto"
+       mode="F"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Drop Shadow"
+       id="filter45"
+       x="0"
+       y="0"
+       width="1.0199468"
+       height="1.1562499">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         id="feFlood44" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="0.000000"
+         id="feGaussianBlur44" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="6.000000"
+         dy="6.000000"
+         id="feOffset44" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite44" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite45" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Drop Shadow"
+       id="filter47"
+       x="0"
+       y="0"
+       width="1.0199468"
+       height="1.1562499">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         id="feFlood45" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="0.000000"
+         id="feGaussianBlur45" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="6.000000"
+         dy="6.000000"
+         id="feOffset45" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite46" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite47" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Drop Shadow"
+       id="filter49"
+       x="0"
+       y="0"
+       width="1.055147"
+       height="1.1562499">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         id="feFlood47" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="0.000000"
+         id="feGaussianBlur47" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="6.000000"
+         dy="6.000000"
+         id="feOffset47" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite48" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite49" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Drop Shadow"
+       id="filter51"
+       x="0"
+       y="0"
+       width="1.0323276"
+       height="1.1562499">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         id="feFlood49" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="0.000000"
+         id="feGaussianBlur49" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="6.000000"
+         dy="6.000000"
+         id="feOffset49" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite50" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite51" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Drop Shadow"
+       id="filter53"
+       x="0"
+       y="0"
+       width="1.0199468"
+       height="1.1339284">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         id="feFlood51" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="0.000000"
+         id="feGaussianBlur51" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="6.000000"
+         dy="6.000000"
+         id="feOffset51" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite52" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite53" />
+    </filter>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#000000;stroke-width:1.59247"
+       id="rect1"
+       width="1920"
+       height="1080"
+       x="0"
+       y="0"
+       sodipodi:insensitive="true" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:41.9959px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#ffffff;fill-opacity:1;stroke-width:3.49966"
+       x="865.0484"
+       y="1046.606"
+       id="text1-9"><tspan
+         sodipodi:role="line"
+         id="tspan1-4"
+         x="865.0484"
+         y="1046.606"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:41.9959px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:3.49966">https://github.com/racingthebeam/beam256</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:60.7071px;font-family:'Host Grotesk';-inkscape-font-specification:'Host Grotesk, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#ffffff;stroke-width:0.647702"
+       x="646.90045"
+       y="86.05397"
+       id="text2-9"><tspan
+         sodipodi:role="line"
+         x="646.90045"
+         y="86.05397"
+         id="tspan8"
+         style="stroke-width:0.647702">32 bit fantasy console</tspan></text>
+    <path
+       style="fill:#e5298c;fill-opacity:1;stroke-width:0.999996"
+       id="rect9"
+       width="585"
+       height="828.33203"
+       x="1286.5891"
+       y="145.48958"
+       inkscape:path-effect="#path-effect58"
+       sodipodi:type="rect"
+       d="m 1306.5891,145.48958 h 545 c 11.08,0 20,8.92 20,20 v 788.33203 c 0,11.08 -8.92,20 -20,20 h -545 c -11.08,0 -20,-8.92 -20,-20 V 165.48958 c 0,-11.08 8.92,-20 20,-20 z"
+       rx="20"
+       ry="20" />
+    <rect
+       style="fill:#ef541f;fill-opacity:1;stroke-width:0.999996"
+       id="rect9-6"
+       width="585"
+       height="828.33203"
+       x="667.81183"
+       y="145.48958"
+       rx="20"
+       ry="20" />
+    <rect
+       style="fill:#466ff2;fill-opacity:1;stroke-width:0.999996"
+       id="rect9-6-8"
+       width="585"
+       height="828.33203"
+       x="49.0345"
+       y="145.48958"
+       inkscape:transform-center-x="-596.14287"
+       inkscape:transform-center-y="-9.8027664"
+       rx="20"
+       ry="20" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#ffffff;fill-opacity:1;stroke-width:4.52607;filter:url(#filter53)"
+       x="698.70184"
+       y="218.70113"
+       id="text1-1-3"><tspan
+         sodipodi:role="line"
+         id="tspan1-48-3"
+         x="698.70184"
+         y="218.70113"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:4.52607">Graphics</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:4.52607;filter:url(#filter45)"
+       x="77.817184"
+       y="218.70113"
+       id="text1-1-3-4"><tspan
+         sodipodi:role="line"
+         id="tspan1-48-3-8"
+         x="0"
+         y="0"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:4.52607">Overview</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#ffffff;fill-opacity:1;stroke-width:4.52607;filter:url(#filter47)"
+       x="1319.8611"
+       y="218.70113"
+       id="text1-1-3-6"
+       inkscape:transform-center-x="487.99581"
+       inkscape:transform-center-y="-44.833537"><tspan
+         sodipodi:role="line"
+         id="tspan1-48-3-6"
+         x="1319.8611"
+         y="218.70113"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:4.52607">Hardware</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#ffffff;fill-opacity:1;stroke-width:4.52607;filter:url(#filter49)"
+       x="1319.8611"
+       y="649.13641"
+       id="text1-1-3-6-7"
+       inkscape:transform-center-x="487.99581"
+       inkscape:transform-center-y="-44.833537"><tspan
+         sodipodi:role="line"
+         id="tspan1-48-3-6-4"
+         x="1319.8611"
+         y="649.13641"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:4.52607">Web</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#ffffff;fill-opacity:1;stroke-width:4.52607;filter:url(#filter51)"
+       x="698.70184"
+       y="649.13641"
+       id="text1-1-3-3"><tspan
+         sodipodi:role="line"
+         id="tspan1-48-3-2"
+         x="698.70184"
+         y="649.13641"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:4.52607">Audio</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.8411px;font-family:'Host Grotesk';-inkscape-font-specification:'Host Grotesk, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#ffffff;stroke-width:0.403737"
+       x="696.69629"
+       y="290.76926"
+       id="text2-8"><tspan
+         sodipodi:role="line"
+         x="696.69629"
+         y="290.76926"
+         style="stroke-width:0.403737"
+         id="tspan38">320x200 &amp; 160x200</tspan><tspan
+         sodipodi:role="line"
+         x="696.69629"
+         y="338.07062"
+         style="stroke-width:0.403737"
+         id="tspan41">resolutions</tspan><tspan
+         sodipodi:role="line"
+         x="696.69629"
+         y="385.37201"
+         style="stroke-width:0.403737"
+         id="tspan39" /><tspan
+         sodipodi:role="line"
+         x="696.69629"
+         y="432.67337"
+         style="stroke-width:0.403737"
+         id="tspan40">2bpp, 4bpp, 8bpp</tspan><tspan
+         sodipodi:role="line"
+         x="696.69629"
+         y="479.97476"
+         style="stroke-width:0.403737"
+         id="tspan13" /><tspan
+         sodipodi:role="line"
+         x="696.69629"
+         y="527.27612"
+         style="stroke-width:0.403737"
+         id="tspan32">2D GPU</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.8411px;font-family:'Host Grotesk';-inkscape-font-specification:'Host Grotesk, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#ffffff;stroke-width:0.403737"
+       x="76.530571"
+       y="291.07196"
+       id="text2-8-8"><tspan
+         sodipodi:role="line"
+         x="76.530571"
+         y="291.07196"
+         style="stroke-width:0.403737"
+         id="tspan13-25">32 bit vCPU @ ~6MHz</tspan><tspan
+         sodipodi:role="line"
+         x="76.530571"
+         y="338.37332"
+         style="stroke-width:0.403737"
+         id="tspan26" /><tspan
+         sodipodi:role="line"
+         x="76.530571"
+         y="385.67471"
+         style="stroke-width:0.403737"
+         id="tspan22">Custom Lua/Z80 inspired ISA</tspan><tspan
+         sodipodi:role="line"
+         x="76.530571"
+         y="432.97607"
+         style="stroke-width:0.403737"
+         id="tspan23" /><tspan
+         sodipodi:role="line"
+         x="76.530571"
+         y="480.27747"
+         style="stroke-width:0.403737"
+         id="tspan24">256KB RAM</tspan><tspan
+         sodipodi:role="line"
+         x="76.530571"
+         y="527.57886"
+         style="stroke-width:0.403737"
+         id="tspan53" /><tspan
+         sodipodi:role="line"
+         x="76.530571"
+         y="574.88019"
+         style="stroke-width:0.403737"
+         id="tspan25">16 bit address bus</tspan><tspan
+         sodipodi:role="line"
+         x="76.530571"
+         y="622.18158"
+         style="stroke-width:0.403737"
+         id="tspan55">MMU with 32 x 8KB banks</tspan><tspan
+         sodipodi:role="line"
+         x="76.530571"
+         y="669.48297"
+         style="stroke-width:0.403737"
+         id="tspan28" /><tspan
+         sodipodi:role="line"
+         x="76.530571"
+         y="716.7843"
+         style="stroke-width:0.403737"
+         id="tspan29">256 IO ports</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.8411px;font-family:'Host Grotesk';-inkscape-font-specification:'Host Grotesk, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#ffffff;stroke-width:0.403737"
+       x="1318.6501"
+       y="291.07196"
+       id="text2-8-4"><tspan
+         sodipodi:role="line"
+         x="1318.6501"
+         y="291.07196"
+         style="stroke-width:0.403737"
+         id="tspan13-2">Handheld console based</tspan><tspan
+         sodipodi:role="line"
+         x="1318.6501"
+         y="338.37332"
+         style="stroke-width:0.403737"
+         id="tspan19">on Raspberry Pi RP2350</tspan><tspan
+         sodipodi:role="line"
+         x="1318.6501"
+         y="385.67471"
+         style="stroke-width:0.403737"
+         id="tspan34" /><tspan
+         sodipodi:role="line"
+         x="1318.6501"
+         y="432.97607"
+         style="stroke-width:0.403737"
+         id="tspan35">Load games via USB,</tspan><tspan
+         sodipodi:role="line"
+         x="1318.6501"
+         y="480.27747"
+         style="stroke-width:0.403737"
+         id="tspan36">store on SD card</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.8411px;font-family:'Host Grotesk';-inkscape-font-specification:'Host Grotesk, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#ffffff;stroke-width:0.403737"
+       x="1318.6501"
+       y="722.72748"
+       id="text2-8-4-6"><tspan
+         sodipodi:role="line"
+         x="1318.6501"
+         y="722.72748"
+         style="stroke-width:0.403737"
+         id="tspan19-8">Web-based IDE with</tspan><tspan
+         sodipodi:role="line"
+         x="1318.6501"
+         y="770.02887"
+         style="stroke-width:0.403737"
+         id="tspan20">emulator &amp; debugger</tspan><tspan
+         sodipodi:role="line"
+         x="1318.6501"
+         y="817.3302"
+         style="stroke-width:0.403737"
+         id="tspan56" /><tspan
+         sodipodi:role="line"
+         x="1318.6501"
+         y="864.63159"
+         style="stroke-width:0.403737"
+         id="tspan57">Plugin system for custom</tspan><tspan
+         sodipodi:role="line"
+         x="1318.6501"
+         y="911.93298"
+         style="stroke-width:0.403737"
+         id="tspan58">file types and languages</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.8411px;font-family:'Host Grotesk';-inkscape-font-specification:'Host Grotesk, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#ffffff;stroke-width:0.403737"
+       x="697.45306"
+       y="722.72748"
+       id="text2-8-9"><tspan
+         sodipodi:role="line"
+         x="697.45306"
+         y="722.72748"
+         style="stroke-width:0.403737"
+         id="tspan13-3">6 channel audio with</tspan><tspan
+         sodipodi:role="line"
+         x="697.45306"
+         y="770.02887"
+         style="stroke-width:0.403737"
+         id="tspan16">per-channel synth/sample</tspan><tspan
+         sodipodi:role="line"
+         x="697.45306"
+         y="817.3302"
+         style="stroke-width:0.403737"
+         id="tspan44">playback</tspan><tspan
+         sodipodi:role="line"
+         x="697.45306"
+         y="864.63159"
+         style="stroke-width:0.403737"
+         id="tspan17" /><tspan
+         sodipodi:role="line"
+         x="697.45306"
+         y="911.93298"
+         style="stroke-width:0.403737"
+         id="tspan33">Sequencer engine</tspan></text>
+    <circle
+       id="path29"
+       style="fill:#466ff2;stroke:#000000"
+       cx="36.932892"
+       cy="88.349274"
+       r="0.36457068" />
+    <circle
+       id="path30"
+       style="fill:#466ff2;stroke:#000000"
+       cx="57.933952"
+       cy="94.866844"
+       r="0.36457068" />
+    <g
+       id="g31"
+       transform="translate(-16,-6)">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:93.7269px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#ffffff;fill-opacity:1;stroke-width:7.811;stroke-dasharray:none"
+         x="250.64732"
+         y="93.41967"
+         id="text1"><tspan
+           sodipodi:role="line"
+           id="tspan1"
+           x="250.64732"
+           y="93.41967"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:93.7269px;font-family:'Bitcount Grid Single';-inkscape-font-specification:'Bitcount Grid Single, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:7.811;stroke-dasharray:none">BEAM256</tspan></text>
+      <path
+         style="fill:#466ff2;fill-opacity:1;stroke:#466ff2;stroke-width:13;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+         d="M 75.113787,86.004228 H 230.08711"
+         id="path31" />
+      <path
+         style="fill:#e5298c;fill-opacity:1;stroke:#e5298c;stroke-width:13;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+         d="m 152.23471,45.73963 h 77.8524"
+         id="path31-6" />
+      <path
+         style="fill:#466ff2;fill-opacity:1;stroke:#ef541f;stroke-width:13;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+         d="M 113.66492,65.871929 H 230.08711"
+         id="path31-6-7" />
+    </g>
+  </g>
+</svg>
