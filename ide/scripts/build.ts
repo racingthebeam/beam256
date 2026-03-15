@@ -2,6 +2,7 @@ import * as esbuild from "esbuild";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { config } from "dotenv";
+import { createServer } from "http-server";
 
 const env = process.env.NODE_ENV ?? "dev";
 const { parsed } = config({ path: `env/${env}.env` });
@@ -36,10 +37,26 @@ for (const [k, v] of Object.entries(tsc.compilerOptions.paths)) {
 if (env === "dev") {
     const ctx = await esbuild.context({ ...opts, outdir: "public/dist" });
     await ctx.watch();
-    const { hosts, port } = await ctx.serve({
-        servedir: "public"
+
+    const server = createServer({
+        root: "./public",
+        cache: -1,
+        headers: {
+            "Cross-Origin-Opener-Policy": "same-origin",
+            "Cross-Origin-Embedder-Policy": "require-corp",
+        }
     });
-    console.log(`Dev server running at http://${hosts[0]}:${port}`)
+
+    server.listen(8000, "127.0.0.1", () => {
+        console.log("Server started on port 8000...");
+    });
+
+    //
+    //
+    // const { hosts, port } = await ctx.serve({
+    //     servedir: "public"
+    // });
+    // console.log(`Dev server running at http://${hosts[0]}:${port}`)
 } else {
     await esbuild.build({ ...opts, outfile: "dist/bundle.js" });
 }

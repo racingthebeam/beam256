@@ -1,37 +1,12 @@
 const DEFAULT_UNITS = new Map<string, string>(Object.entries({
     fontSize: 'px',
-
-    top: 'px',
-    right: 'px',
-    bottom: 'px',
-    left: 'px',
-
-    width: 'px',
-    minWidth: 'px',
-    maxWidth: 'px',
-
-    height: 'px',
-    minHeight: 'px',
-    maxHeight: 'px',
-
+    top: 'px', right: 'px', bottom: 'px', left: 'px',
+    width: 'px', minWidth: 'px', maxWidth: 'px',
+    height: 'px', minHeight: 'px', maxHeight: 'px',
     outlineWidth: 'px',
-
-    margin: 'px',
-    marginTop: 'px',
-    marginRight: 'px',
-    marginBottom: 'px',
-    marginLeft: 'px',
-
-    padding: 'px',
-    paddingTop: 'px',
-    paddingRight: 'px',
-    paddingBottom: 'px',
-    paddingLeft: 'px',
-
-    borderTopWidth: 'px',
-    borderRightWidth: 'px',
-    borderBottomWidth: 'px',
-    borderLeftWidth: 'px'
+    margin: 'px', marginTop: 'px', marginRight: 'px', marginBottom: 'px', marginLeft: 'px',
+    padding: 'px', paddingTop: 'px', paddingRight: 'px', paddingBottom: 'px', paddingLeft: 'px',
+    borderTopWidth: 'px', borderRightWidth: 'px', borderBottomWidth: 'px', borderLeftWidth: 'px'
 }));
 
 type ExtractTag<S extends string> =
@@ -53,7 +28,7 @@ type Feature =
     | false
     | null
     | Node
-    | { [key: string]: any }
+    | Foo
     | Feature[];
 
 export function build<S extends string>(tag: S, ...features: Feature[]): ElementFromSelector<S> {
@@ -77,6 +52,20 @@ function setAttribute(el: HTMLElement, k: string, v: any) {
 }
 
 type Setter = (el: HTMLElement, v: any) => void;
+
+type StyleProps = string | { [key: string]: string | number };
+type PropProps = { [key: string]: any };
+type InnerHTMLProps = string;
+type DataProps = { [key: string]: any };
+
+type SetterMap = {
+    style?: StyleProps,
+    properties?: PropProps,
+    innerHTML?: InnerHTMLProps,
+    data?: DataProps
+};
+
+type Foo = SetterMap & { [key: string]: any };
 
 const SETTERS = new Map<string, Setter>(Object.entries({
     style(el: HTMLElement, v: any) {
@@ -108,7 +97,7 @@ const SETTERS = new Map<string, Setter>(Object.entries({
     }
 }));
 
-function append(el: HTMLElement, features: any[]) {
+function append(el: HTMLElement, features: Feature[]) {
     for (let f of features) {
         while (typeof f === 'function') {
             f = f();

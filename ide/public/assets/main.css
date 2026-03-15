@@ -1,0 +1,132 @@
+@layer reset, layout, default-theme, theme, utility;
+@import url("reset.css") layer(reset);
+
+/* App Pane */
+
+@layer layout {
+  .ui-app-pane {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+
+    > .ui-app-pane--toolbar {
+    }
+
+    > .ui-app-pane--main {
+      flex: 1 1 auto;
+    }
+  }
+}
+
+@layer default-theme {
+  .ui-app-pane {
+    background: #e0e0e0;
+    gap: 4px;
+    padding: 4px;
+  }
+}
+
+/* Code Editor */
+
+@layer layout {
+  .ui-code-editor {
+    > .cm-editor {
+      height: 100%;
+    }
+  }
+}
+
+@layer default-theme {
+  .ui-code-editor {
+    background: white;
+  }
+}
+
+/* Emulator (not a widget) */
+
+@layer layout {
+  .emulator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 20;
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .emulator--chrome {
+    padding: 20px;
+    background: black;
+  }
+
+  .emulator--display {
+    width: 640px;
+    height: 400px;
+    background: #d0d0d0;
+    margin-bottom: 20px;
+  }
+
+  .emulator--canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+  }
+
+  .emulator--buttons {
+    height: 96px;
+    position: relative;
+    > button {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      background: #a0a0a0;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    > button.is-active {
+      background: blue;
+    }
+    > [name="up"] { left: 64px; top: 0 }
+    > [name="down"] { left: 64px; top: 64px }
+    > [name="left"] { left: 32px; top: 32px }
+    > [name="right"] { left: 96px; top: 32px }
+    > [name="a"] { right: 64px; top: 0 }
+    > [name="b"] { right: 64px; top: 64px }
+    > [name="x"] { right: 32px; top: 32px }
+    > [name="y"] { right: 96px; top: 32px }
+    > [name="start"] {
+      width: 96px;
+      left: 192px;
+      top: 32px;
+    }
+    > [name="select"] {
+      width: 96px;
+      right: 192px;
+      top: 32px;
+    }
+  }
+}
+
+@layer theme {
+  .emulator {
+    background: rgba(0, 0, 0, 0.8);
+  }
+}
+
+
+
+
+
