@@ -65,6 +65,12 @@ Side-quest: set up better debugging workflow (UART output, button-free programmi
   - MicroPython setup
   - Working on DAC bringup
 
+## Offstream
+
+Some more opcode thoughts:
+
+  - maths opcodes should get flag for enabling saturating mode
+
 ## Day 18
 
 ### Plan + Actual
