@@ -1,17 +1,69 @@
-## Upcoming Work
+# NOW
 
-### Assembler stuff
+Main task: RGB interface bringup
+Side-quest: set up better debugging workflow (UART output, button-free programming)
 
-Main goal: get a workflow in place so we assemble the code consumed by day 9.
+  - [x] Set up our own project based on spi-master example
+  - [x] Make sure it builds/flashes
+  - [x] Port display init code from uPython to C
+  - [x] Get display working
+  - [x] Generate 16-bit test image (320x240) and embed into flash/ROM
 
-  - [ ] Rework parser so AST is annotated with line numbers
-  - [ ] Assembler: codegen
-  - [ ] Refactor AST to be concrete types
-  - [ ] Set up proper TypeScript/JavaScript project
-  - write the simplest possible assembly program to update the framebuffer (inc. IO READ/WRITE instructions to trigger FB update)
-  - manually encode this program and put into machine RAM
-  - implement the instructions in the CPU core
-  - debug it until it's all working
+  - [x] Read datasheet for ILI and learn RGB timings + registers for configuration
+  - [x] Blit image over SPI to prove it works, roughly
+  - [x] Read up on PIO peripheral
+  - [x] Write pseudocode for PIO-driven RGB interface
+
+# NEXT
+
+  - [ ] Implement PIO-based RGB interface (i.e. "draw the rest of the fucking owl")
+  - Full dual core "GPU" driver
+  - Input handling
+  - Make it so we can move a sprite around the screen with the controller
+
+--
+
+# History
+
+## Offstream
+
+  - Set up JLink SWD interface
+  - Write flashing script
+  - Set up SEGGER Ozone debugger
+
+## Day 23
+
+  - Read datasheets for ILI RGB, RPi PIO
+  - Generate test image and blit over SPI for rough test
+  - Write pseudocode for PIO implementation
+
+## Offstream
+
+  - Find test image and convert it to a C array
+  - Script setup of i3 workspace for this project
+
+## Day 22
+
+  - Setup Pico SDK
+  - Port MicroPython SPI display bringup code to C
+
+## Offstream
+
+  - Migrate hardware prototype to more robust setup + Olimex board
+  - Hook up parallel interface
+  - Adapt MicroPython code for display init and test with new prototype setup
+
+## Day 21
+
+  - SPI display bringup with MicroPython
+  - Fixing DAC I2C comms
+
+## Day 20
+
+  - Unboxing
+  - Put together a simple prototype with Pico 2 board
+  - MicroPython setup
+  - Working on DAC bringup
 
 ## Day 18
 
