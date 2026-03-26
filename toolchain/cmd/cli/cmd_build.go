@@ -15,10 +15,11 @@ type CmdBuild struct {
 }
 
 func (c *CmdBuild) Run() error {
-	result, err := job.Build(&job.Input{
-		FS:           os.DirFS("."),
-		ASMFiles:     c.Files,
-		LinkerScript: c.LinkerScript,
+	result, err := job.Build(&job.BuildInput{
+		FS:              os.DirFS("."),
+		ASMFiles:        c.Files,
+		LinkerScript:    c.LinkerScript,
+		StringTableSize: 4096,
 	})
 
 	if err != nil {

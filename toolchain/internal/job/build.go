@@ -9,7 +9,7 @@ import (
 	"github.com/racingthebeam/beam256/toolchain/internal/linker"
 )
 
-type Input struct {
+type BuildInput struct {
 	// Filesystem containing:
 	// 1) .asm files, containing code/data
 	// 2) include files
@@ -22,10 +22,12 @@ type Input struct {
 
 	// Filename for linker script
 	LinkerScript string
+
+	StringTableSize int
 }
 
-func Build(input *Input) (*ft.Goblin, error) {
-	dst := asm.NewDebugStringTable(4096)
+func Build(input *BuildInput) (*ft.Goblin, error) {
+	dst := asm.NewDebugStringTable(input.StringTableSize)
 	objs := make([]*ft.Obj, 0)
 
 	files := input.ASMFiles

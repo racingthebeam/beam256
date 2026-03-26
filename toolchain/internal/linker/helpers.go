@@ -8,3 +8,7 @@ func alignVal(n int, align int) int {
 		return n + (align - mod)
 	}
 }
+
+func relCallBits(delta int) uint32 {
+	return uint32((delta - 4) >> 2)
+}

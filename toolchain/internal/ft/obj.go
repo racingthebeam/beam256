@@ -1,22 +1,32 @@
 package ft
 
+type Symbol string
+
+func (s Symbol) IsGlobal() bool { return !s.IsLocal() }
+func (s Symbol) IsLocal() bool  { return s[0] == '_' }
+
 type Obj struct {
-	Name     string
-	Sections map[string]*Section
-	Symbols  map[string]*Symbol
-	Refs     []*Ref
+	Name string
+
+	// Sections defined in the object
+	Sections map[string]*ObjSect
+
+	// Symbols defined by the object, local & global
+	Symbols map[Symbol]*ObjSym
+
+	// References to symbols
+	Refs []*Ref
 }
 
-type Section struct {
+type ObjSect struct {
 	Name string
 	Data []byte
 }
 
-type Symbol struct {
-	Name    string
-	Section string
-	Offset  int
-	Global  bool
+type ObjSym struct {
+	Name    Symbol // Symbol name
+	Section string // Section in which symbol is declared
+	Offset  int    // Symbol byte offset within declaring section
 }
 
 // RefType represents the types of symbol references that
@@ -38,9 +48,9 @@ const (
 
 // Ref denotes a reference to another symbol
 type Ref struct {
-	Type       RefType // Type of reference - absolute, call etc.
-	Section    string
-	Offset     int    // Byte offset of WORD containing the reference
-	BitOffset  int    // Bit offset within the WORD
-	SymbolName string // Referenced symbol name
+	Type             RefType // Type of reference - absolute, call etc.
+	SourceSection    string
+	SourceByteOffset int    // Byte offset of WORD containing the reference
+	SourceBitOffset  int    // Bit offset within the WORD
+	TargetSymbol     Symbol // Referenced symbol name
 }

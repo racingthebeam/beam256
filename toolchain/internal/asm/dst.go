@@ -21,7 +21,7 @@ func NewDebugStringTable(maxSize int) *DebugStringTable {
 
 	// first entry (0) is always an "error" symbol
 	// we sub this in circumstances where the user attempts
-	// to use a string that won't fit in the string table.
+	// to add a string that won't fit in the string table.
 	tbl.Add("!")
 
 	return tbl

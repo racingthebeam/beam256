@@ -13,3 +13,29 @@ func TestAlign(t *testing.T) {
 		assert.Equal(t, output[i], alignVal(input[i], 4))
 	}
 }
+
+func TestRelCallBits(t *testing.T) {
+	input := []int{
+		4,
+		8,
+		20,
+
+		0,
+		-4,
+		-16,
+	}
+
+	output := []uint32{
+		0,
+		1,
+		4,
+
+		0xFF_FF_FF_FF,
+		0xFF_FF_FF_FE,
+		0xFF_FF_FF_FB,
+	}
+
+	for i := range input {
+		assert.Equal(t, output[i], relCallBits(input[i]))
+	}
+}

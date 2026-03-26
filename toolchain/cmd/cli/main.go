@@ -5,7 +5,9 @@ import (
 )
 
 type CLI struct {
-	Build CmdBuild `cmd:"" name:"build" aliases:"b"`
+	Build   CmdBuild   `cmd:"" name:"build" aliases:"b"`
+	Package CmdPackage `cmd:"" name:"package" aliases:"p"`
+	Parse   CmdParse   `cmd:"" name:"parse"`
 }
 
 func main() {

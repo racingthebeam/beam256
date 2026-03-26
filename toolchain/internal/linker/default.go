@@ -6,8 +6,13 @@ import (
 )
 
 const DefaultScript = `
+; This is the default linker script for BEAM256!
+
 @ 0
-p init
+i
+	
+a 4
+p main
 
 a 4
 p code
@@ -15,27 +20,29 @@ p code
 a 4
 p data
 
-@ 0x8000
+j 0x8000
+p framebuffer
 
-d framebuffer_start
-r 32768
-d framebuffer_end
-
-d palette_start
-r 512
-d palette_end
-
-d frame_stack_start
+j 0x10000
+p palette
+	
+d frame_stack_base
 r 1024
 d frame_stack_end
 
-d data_stack_start
+d data_stack_base
 r 8192
 d data_stack_end
 
-d jump_table_start
+d jump_table_base
 r 1024
 d jump_table_end
+
+; i think i prefer this...
+; n => "null section"
+; n frame_stack 1024
+; n data_stack 8192
+; n jump_table 1024
 `
 
 func Default() *Script {
