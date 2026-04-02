@@ -6,7 +6,7 @@ import (
 
 	"github.com/alecthomas/participle/v2"
 	"github.com/alecthomas/participle/v2/lexer"
-	"github.com/racingthebeam/beam256/toolchain/internal/util"
+	"github.com/racingthebeam/beam256/toolchain/internal/alex"
 )
 
 type Script struct {
@@ -116,5 +116,13 @@ var (
 )
 
 func Parse(filename string, r io.Reader) (*Script, error) {
-	return parser.Parse(filename, util.NewNLReader(r))
+	return parser.Parse(filename, alex.NewNLReader(r))
+}
+
+func MustParse(filename string, r io.Reader) *Script {
+	script, err := Parse(filename, r)
+	if err != nil {
+		panic(err)
+	}
+	return script
 }

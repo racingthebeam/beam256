@@ -1,10 +1,10 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
+	"github.com/racingthebeam/beam256/toolchain/internal/asm"
 	"github.com/racingthebeam/beam256/toolchain/internal/linker"
 )
 
@@ -36,5 +36,20 @@ type CmdParseASM struct {
 }
 
 func (c *CmdParseASM) Run() error {
-	return errors.New("not implemented")
+	defer c.File.Close()
+
+	p, err := asm.NewParser(c.File.Name(), c.File)
+	if err != nil {
+		return fmt.Errorf("failed to create parser (%s)", err)
+	}
+
+	prog, err := p.ParseProgram()
+	if err != nil {
+		return err
+	}
+
+	pp := asm.NewPrinter(os.Stdout, true)
+	pp.Print(prog)
+
+	return nil
 }

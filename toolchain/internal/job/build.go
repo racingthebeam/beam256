@@ -44,8 +44,9 @@ func Build(input *BuildInput) (*ft.Goblin, error) {
 
 	for _, filename := range files {
 		obj, err := asm.New(&asm.Opts{
-			FS:      input.FS,
-			Strings: dst,
+			FS:               input.FS,
+			Debug:            true,
+			DebugStringTable: dst,
 		}).Assemble(filename)
 		if err != nil {
 			return nil, fmt.Errorf("assemble %q failed: %s", filename, err)

@@ -86,8 +86,10 @@ func (os *objState) GetSymbolAddress(sym ft.Symbol) (int, bool) {
 func New(opts *Opts) *Linker {
 	objs := make([]*objState, len(opts.Objects))
 	for i := range opts.Objects {
-		objs[i].Object = opts.Objects[i]
-		objs[i].SectionRelocationTable = map[string]int{}
+		objs[i] = &objState{
+			Object:                 opts.Objects[i],
+			SectionRelocationTable: map[string]int{},
+		}
 	}
 
 	return &Linker{
@@ -109,7 +111,7 @@ func New(opts *Opts) *Linker {
 }
 
 func (l *Linker) HasGlobalSymbol(sym ft.Symbol) bool {
-	if sym.IsLocal() {
+	if sym.IsPrivate() {
 		return false
 	}
 
@@ -168,7 +170,7 @@ func (l *Linker) Link() (*Output, error) {
 func (l *Linker) buildGlobalSymbolTable() error {
 	for objIx, os := range l.objs {
 		for sym := range os.Object.Symbols {
-			if !sym.IsGlobal() {
+			if !sym.IsPublic() {
 				continue
 			}
 			if _, exists := l.globalSymbols[sym]; exists {
@@ -194,32 +196,32 @@ func (l *Linker) measureInitCode() {
 func (l *Linker) processScript() error {
 	for _, line := range l.Script.Lines {
 		switch t := line.(type) {
-		case Init:
+		case *Init:
 			if !l.initCodePresent {
 				return l.wrapError(t.Tok, errors.New("requested init code but none present"))
 			}
 			l.initCodeTargets = append(l.initCodeTargets, l.ptr)
 			l.ptr += l.initCodeLength
-		case Org:
+		case *Org:
 			l.ptr = t.Offset.V
-		case Align:
+		case *Align:
 			l.ptr = alignVal(l.ptr, t.Alignment.V)
-		case Place:
+		case *Place:
 			if err := l.placeSection(t.Symbol); err != nil {
 				return l.wrapError(t.Tok, err)
 			}
-		case AbsoluteJumpForward:
+		case *AbsoluteJumpForward:
 			if l.ptr > t.Offset.V {
 				return l.wrapError(t.Tok, fmt.Errorf("jump to %d requested, but pointer is already at %d", t.Offset.V, l.ptr))
 			}
 			l.ptr = t.Offset.V
-		case RelativeJump:
+		case *RelativeJump:
 			l.ptr += t.Offset.V
-		case Define:
+		case *Define:
 			if err := l.addLinkerSymbolAtCurrentPointer(ft.Symbol(t.Symbol)); err != nil {
 				return l.wrapError(t.Tok, err)
 			}
-		case Reserve:
+		case *Reserve:
 			if !l.spans.AddInterval(l.ptr, t.Size.V) {
 				return l.wrapError(t.Tok, fmt.Errorf("reserving %d bytes from %d would overlap with existing data", l.ptr, t.Size.V))
 			}
@@ -235,6 +237,10 @@ func (l *Linker) wrapError(t lexer.Token, err error) error {
 }
 
 func (l *Linker) renderInitCode() error {
+	if l.InitGenerator == nil {
+		return nil
+	}
+
 	initCode, err := l.InitGenerator.GenerateInit(l)
 	if err != nil {
 		return err
@@ -286,7 +292,7 @@ func (l *Linker) fixupObj(os *objState) error {
 			found bool
 		)
 
-		if ref.TargetSymbol.IsLocal() {
+		if ref.TargetSymbol.IsPrivate() {
 			addr, found = os.GetSymbolAddress(ref.TargetSymbol)
 		} else {
 			addr, found = l.GetGlobalSymbolAddress(ref.TargetSymbol)
@@ -301,11 +307,17 @@ func (l *Linker) fixupObj(os *objState) error {
 			return fmt.Errorf("section %q is not placed!", ref.SourceSection)
 		}
 
+		wordOffset := sectionBaseAddr + ref.SourceByteOffset
+
 		switch ref.Type {
 		case ft.Abs:
-			l.fixup(sectionBaseAddr+ref.SourceByteOffset, ref.SourceBitOffset, uint32(addr))
+			l.fixupAbs(wordOffset, ref.SourceBitOffset, uint32(addr))
+		case ft.PCRelJmp:
+			if err := l.fixupRel(wordOffset, ref.SourceBitOffset, ref.SourceWidth, addr); err != nil {
+				return err
+			}
 		case ft.Call:
-			l.fixupCall(sectionBaseAddr+ref.SourceByteOffset, addr)
+			l.fixupCall(wordOffset, addr)
 		default:
 			panic(fmt.Errorf("unknown fixup type %d", ref.Type))
 		}
@@ -314,11 +326,28 @@ func (l *Linker) fixupObj(os *objState) error {
 	return nil
 }
 
-func (l *Linker) fixup(offset int, bitOffset int, addr uint32) {
-	val := binary.LittleEndian.Uint32(l.img[offset:])
-	val &^= (uint32(l.addressMask) << bitOffset)
-	val |= ((addr & l.addressMask) << bitOffset)
-	binary.LittleEndian.PutUint32(l.img[offset:], val)
+func (l *Linker) patch(wordOffset int, bitOffset int, mask uint32, val uint32) {
+	curr := binary.LittleEndian.Uint32(l.img[wordOffset:])
+	curr &^= (mask << bitOffset)
+	curr |= ((val & mask) << bitOffset)
+	binary.LittleEndian.PutUint32(l.img[wordOffset:], curr)
+}
+
+func (l *Linker) fixupAbs(wordOffset int, bitOffset int, addr uint32) {
+	l.patch(wordOffset, bitOffset, l.addressMask, addr)
+}
+
+func (l *Linker) fixupRel(wordOffset int, bitOffset, width int, target int) error {
+	delta := target - (wordOffset + 4)
+
+	bits, err := relJmpBits(width, delta)
+	if err != nil {
+		return err
+	}
+
+	l.patch(wordOffset, bitOffset, bitmask(width), bits)
+
+	return nil
 }
 
 func (l *Linker) fixupCall(offset int, callee int) {

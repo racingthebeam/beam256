@@ -2,8 +2,8 @@ package ft
 
 type Symbol string
 
-func (s Symbol) IsGlobal() bool { return !s.IsLocal() }
-func (s Symbol) IsLocal() bool  { return s[0] == '_' }
+func (s Symbol) IsPublic() bool  { return !s.IsPrivate() }
+func (s Symbol) IsPrivate() bool { return s[0] == '_' }
 
 type Obj struct {
 	Name string
@@ -38,6 +38,10 @@ const (
 	// inserted at the target location
 	Abs = RefType(1)
 
+	// PC Relative jump - relative number of *instructions* to
+	// PC is inserted at the target location.
+	PCRelJmp = RefType(2)
+
 	// Function call - linker generates optimised function
 	// call opcode, either:
 	//   - absolute (first 16KiB)
@@ -48,9 +52,18 @@ const (
 
 // Ref denotes a reference to another symbol
 type Ref struct {
-	Type             RefType // Type of reference - absolute, call etc.
+	Type RefType // Type of reference - absolute, call etc.
+
 	SourceSection    string
-	SourceByteOffset int    // Byte offset of WORD containing the reference
-	SourceBitOffset  int    // Bit offset within the WORD
-	TargetSymbol     Symbol // Referenced symbol name
+	SourceByteOffset int // Byte offset of WORD containing the reference
+	SourceBitOffset  int // Bit offset within the WORD
+
+	// Number of bits available to store the value
+	// This is only used when Type = PCRelJmp, since depending on opcode,
+	// the jump range is 9, 12, or 16 bits
+	//
+	// Abs references are always 18 bits, and Calls are always 12
+	SourceWidth int
+
+	TargetSymbol Symbol // Referenced symbol name
 }

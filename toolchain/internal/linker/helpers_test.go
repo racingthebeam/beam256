@@ -39,3 +39,41 @@ func TestRelCallBits(t *testing.T) {
 		assert.Equal(t, output[i], relCallBits(input[i]))
 	}
 }
+
+func TestRelJmpBits(t *testing.T) {
+	cases := []struct {
+		W   int
+		D   int
+		O   uint32
+		Err bool
+	}{
+		// simple forward jump
+		{8, 4, 0x00000001, false},
+
+		// simple backward jumps
+		{8, -4, 0xFFFFFFFF, false},
+		{8, -16, 0xFFFFFFFC, false},
+
+		// 508 = (127 * 4) => max allowed fwd jump
+		{8, 508, 0x0000007F, false},
+
+		// 512 => out of range, error
+		{8, 512, 0, true},
+
+		// -512 = (-128 * 4) => max allowed backwards jump
+		{8, -512, 0xFFFFFF80, false},
+
+		// -516 => out of range, error
+		{8, -516, 0, true},
+	}
+
+	for _, c := range cases {
+		res, err := relJmpBits(c.W, c.D)
+		if c.Err {
+			assert.Error(t, err)
+		} else {
+			assert.NoError(t, err)
+			assert.Equal(t, c.O, res)
+		}
+	}
+}
