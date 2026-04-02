@@ -3,7 +3,6 @@ package asm
 import (
 	"errors"
 	"fmt"
-	"strconv"
 
 	"github.com/racingthebeam/beam256/toolchain/internal/ft"
 )
@@ -11,7 +10,7 @@ import (
 type Scope interface {
 	Include(file string) error
 	Section(section string) error
-	ResolveNamedReg(r Reg) (Reg, error)
+	ResolveNamedReg(r NamedReg) (NumReg, error)
 	Label(sym ft.Symbol) error
 	FnDef(def *FnDef) error
 }
@@ -46,8 +45,8 @@ func (s *RootScope) Section(section string) error {
 	return nil
 }
 
-func (s *RootScope) ResolveNamedReg(r Reg) (Reg, error) {
-	return "", errors.New("named registers are not supported at the root scope")
+func (s *RootScope) ResolveNamedReg(r NamedReg) (NumReg, error) {
+	return 0, errors.New("named registers are not supported at the root scope")
 }
 
 func (s *RootScope) Label(sym ft.Symbol) error {
@@ -152,12 +151,12 @@ func (s *FnScope) Section(section string) error {
 	return errors.New(".section is not allowed inside function definitions")
 }
 
-func (s *FnScope) ResolveNamedReg(r Reg) (Reg, error) {
+func (s *FnScope) ResolveNamedReg(r NamedReg) (NumReg, error) {
 	idx, found := s.Locals[string(r)]
 	if !found {
-		return "", fmt.Errorf("undefined local register @%s", r)
+		return 0, fmt.Errorf("undefined local register @%s", r)
 	}
-	return Reg(strconv.Itoa(idx)), nil
+	return NumReg(idx), nil
 }
 
 func (s *FnScope) Label(sym ft.Symbol) error {

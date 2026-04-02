@@ -51,13 +51,14 @@ func NewParser(filename string, r io.Reader) (*Parser, error) {
 		TokLParen: &GroupParselet{},
 		TokLBrace: &AutoScratchParselet{},
 
-		TokReg:     &AtomParselet{},
-		TokIdent:   &AtomParselet{},
-		TokAtIdent: &AtomParselet{},
-		TokInt:     &AtomParselet{},
-		TokHex:     &AtomParselet{},
-		TokBin:     &AtomParselet{},
-		TokString:  &AtomParselet{},
+		TokNamedReg: &AtomParselet{},
+		TokNumReg:   &AtomParselet{},
+		TokIdent:    &AtomParselet{},
+		TokAtIdent:  &AtomParselet{},
+		TokInt:      &AtomParselet{},
+		TokHex:      &AtomParselet{},
+		TokBin:      &AtomParselet{},
+		TokString:   &AtomParselet{},
 	}
 
 	p.infix = map[int]InfixParselet{
@@ -366,10 +367,10 @@ func (p *Parser) parseFnDef() (*FnDef, error) {
 	p.fnName = name.Text
 	defer func() { p.fnName = "" }()
 
-	params := []Reg{}
-	if p.At(TokReg) {
+	params := []NamedReg{}
+	if p.At(TokNamedReg) {
 		for {
-			params = append(params, Reg(p.Adv().Text))
+			params = append(params, NamedReg(p.Adv().Text))
 			if p.At(TokComma) {
 				p.Adv()
 			} else {
@@ -384,15 +385,15 @@ func (p *Parser) parseFnDef() (*FnDef, error) {
 		return nil, err
 	}
 
-	locals := []Reg{}
+	locals := []NamedReg{}
 	for p.At(TokLocal) {
 		p.Adv()
-		if !p.At(TokReg) {
+		if !p.At(TokNamedReg) {
 			return nil, fmt.Errorf("expected REG")
 		}
 
-		for p.At(TokReg) {
-			locals = append(locals, Reg(p.Adv().Text))
+		for p.At(TokNamedReg) {
+			locals = append(locals, NamedReg(p.Adv().Text))
 			if p.At(TokComma) {
 				p.Adv()
 			} else {
@@ -567,8 +568,11 @@ func (p *Parser) parseAtomFrom(tok alex.Token) (any, error) {
 		return AtIdent(tok.Text), nil
 	case TokString:
 		return tok.Text, nil
-	case TokReg:
-		return Reg(tok.Text), nil
+	case TokNamedReg:
+		return NamedReg(tok.Text), nil
+	case TokNumReg:
+		idx, _ := strconv.Atoi(tok.Text)
+		return NumReg(idx), nil
 	default:
 		return nil, errors.New("unexpected token")
 	}
@@ -609,7 +613,8 @@ func (p *Parser) isExprAtom(tok alex.Token) bool {
 		tok.Type == TokString ||
 		tok.Type == TokIdent ||
 		tok.Type == TokAtIdent ||
-		tok.Type == TokReg
+		tok.Type == TokNamedReg ||
+		tok.Type == TokNumReg
 }
 
 func (p *Parser) inFunction() bool { return len(p.fnName) > 0 }

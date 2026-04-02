@@ -6,5 +6,7 @@ const (
 
 	OpcodeShift = 24
 
-	SentinelRegister = Reg("63")
+	RegMax = 63
+
+	SentinelRegister = NumReg(RegMax)
 )

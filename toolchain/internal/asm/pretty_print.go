@@ -189,7 +189,7 @@ func (p *Printer) printFnDef(i *FnDef) {
 	p.print(colKeyword("end\n"))
 }
 
-func (p *Printer) printRegList(regs []Reg) {
+func (p *Printer) printRegList(regs []NamedReg) {
 	if len(regs) == 0 {
 		return
 	}
@@ -243,8 +243,10 @@ func (p *Printer) printValue(v any) {
 	switch t := v.(type) {
 	case string:
 		p.print(colStr(encodeString(t)))
-	case Reg:
+	case NamedReg:
 		p.print(colReg("$" + t))
+	case NumReg:
+		p.print(colReg("$" + strconv.Itoa(int(t))))
 	case Ident:
 		p.print(colIdent(t))
 	case AtIdent:

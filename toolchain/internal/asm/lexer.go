@@ -32,7 +32,8 @@ const (
 	TokAtIdent
 	TokDotIdent
 	TokIdent
-	TokReg
+	TokNamedReg
+	TokNumReg
 	TokHex
 	TokBin
 	TokInt
@@ -68,7 +69,8 @@ var tokenNames = map[int]string{
 	TokAtIdent:     "AT_IDENT",
 	TokDotIdent:    "DOT_IDENT",
 	TokIdent:       "IDENT",
-	TokReg:         "REG",
+	TokNamedReg:    "NAMED_REG",
+	TokNumReg:      "NUM_REG",
 	TokHex:         "HEX",
 	TokBin:         "BIN",
 	TokInt:         "INT",
@@ -129,7 +131,8 @@ var Lexer = alex.Define([]alex.Rule{
 		}
 		return TokIdent
 	}),
-	RD(`\$(?:[a-zA-Z_][a-zA-Z0-9_]*|[0-9]+)`, TokReg, alex.Sub(1)),
+	RD(`\$(?:[a-zA-Z_][a-zA-Z0-9_]*)`, TokNamedReg, alex.Sub(1)),
+	RD(`\$(?:[0-9]+)`, TokNumReg, alex.Sub(1)),
 
 	R(`0x[0-9a-fA-F_]+`, TokHex),
 	R(`0b[01_]+`, TokBin),

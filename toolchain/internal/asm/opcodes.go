@@ -1,7 +1,6 @@
 package asm
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/racingthebeam/beam256/toolchain/internal/ft"
@@ -135,26 +134,21 @@ type operandType interface {
 type Register struct{}
 
 func (r *Register) Accepts(expr any) bool {
-	_, ok := expr.(Reg)
+	_, ok := expr.(NumReg)
 	return ok
 }
 
 func (r *Register) Encode(expr any) (uint32, error) {
-	reg, ok := expr.(Reg)
+	reg, ok := expr.(NumReg)
 	if !ok {
 		return 0, fmt.Errorf("operand is not a register")
 	}
 
-	ix, err := reg.Index()
-	if err != nil {
-		return 0, errors.New("named registers are not supported for codegen, this is a bug")
+	if reg > RegMax {
+		return 0, fmt.Errorf("register %d is out of range", reg)
 	}
 
-	if ix > 63 {
-		return 0, fmt.Errorf("register %d is out of range", ix)
-	}
-
-	return uint32(ix), nil
+	return uint32(reg), nil
 }
 
 // CallTarget is an operand type representing the target of a CALL instruction

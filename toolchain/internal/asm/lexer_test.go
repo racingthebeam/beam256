@@ -55,7 +55,7 @@ def local end
 	tok(TokDotIdent, "sx")
 	tok(TokInt, "1")
 	tok(TokComma, IG)
-	tok(TokReg, "foo")
+	tok(TokNamedReg, "foo")
 	tok(TokComma, IG)
 	tok(TokHex, "0xff_12")
 	tok(TokComma, IG)

@@ -260,16 +260,14 @@ func (a *Assembler) writeInstruction(ins *Instruction) error {
 				log.Printf("AUTO SCRATCH VAL: %d", val)
 			}
 			return errors.New("AUTO SCRATCH IS NOT SUPPORTED!")
-		case Reg:
-			if t.IsNamed() {
-				resolved, err := a.Scope.ResolveNamedReg(t)
-				if err != nil {
-					return err
-				}
-				actualOperands[i] = resolved
-			} else {
-				actualOperands[i] = t
+		case NamedReg:
+			resolved, err := a.Scope.ResolveNamedReg(t)
+			if err != nil {
+				return err
 			}
+			actualOperands[i] = resolved
+		case NumReg:
+			actualOperands[i] = t
 		default:
 			// this covers binary expressions, unary expressions, plus literals
 			if val, err := a.eval(op); err != nil {

@@ -1,11 +1,5 @@
 package asm
 
-import (
-	"fmt"
-	"strconv"
-	"unicode"
-)
-
 type Program struct {
 	Statements []any
 }
@@ -43,8 +37,8 @@ type DirPopOpt struct{}
 
 type FnDef struct {
 	Name   string
-	Params []Reg
-	Locals []Reg
+	Params []NamedReg
+	Locals []NamedReg
 	Body   []any
 }
 
@@ -137,18 +131,21 @@ type AutoScratchExp struct {
 //
 //
 
-type Reg string
+type NamedReg string
+type NumReg int
 
-func (r Reg) IsNamed() bool {
-	return !unicode.IsDigit(rune(r[0]))
-}
-
-func (r Reg) Index() (int, error) {
-	if r.IsNamed() {
-		return 0, fmt.Errorf("register $%s is not numeric", r)
-	}
-	return strconv.Atoi(string(r))
-}
+// type Reg string
+//
+// func (r Reg) IsNamed() bool {
+// 	return !unicode.IsDigit(rune(r[0]))
+// }
+//
+// func (r Reg) Index() (int, error) {
+// 	if r.IsNamed() {
+// 		return 0, fmt.Errorf("register $%s is not numeric", r)
+// 	}
+// 	return strconv.Atoi(string(r))
+// }
 
 type Ident string
 type AtIdent string

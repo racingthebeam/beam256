@@ -51,8 +51,10 @@ func Eval(syms *SymbolTable, expr any) (int64, error) {
 		}
 	case Number:
 		return t.NumVal(), nil
-	case Reg:
-		return 0, fmt.Errorf("register reference $%s is not valid in static expression", string(t))
+	case NumReg:
+		return 0, fmt.Errorf("register reference $%d is not valid in static expression", t)
+	case NamedReg:
+		return 0, fmt.Errorf("register reference $%s is not valid in static expression", t)
 	case AtIdent:
 		return 0, fmt.Errorf("built in function reference @%s is not valid in non-call position", string(t))
 	default:
