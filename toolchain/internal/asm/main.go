@@ -175,11 +175,13 @@ func (a *Assembler) AssembleStatements(stmts []any) error {
 			if a.Debug {
 				idx, _ := a.strings.Add(t.String)
 				operands := []any{Int(idx)}
-				a.writeInstruction(&Instruction{
+				if err := a.writeInstruction(&Instruction{
 					Mnemonic: "print",
 					Flags:    "",
 					Operands: append(operands, t.Operands...),
-				})
+				}); err != nil {
+					return err
+				}
 			}
 		default:
 			panic(fmt.Errorf("unknown AST node type %T", t))
@@ -209,6 +211,8 @@ func (a *Assembler) writeData(exprs []any, writer func([]int64) error) error {
 }
 
 func (a *Assembler) writeInstruction(ins *Instruction) error {
+	log.Printf("WRITE: %+v", ins)
+
 	candidates := opcodes[ins.Mnemonic]
 	if candidates == nil {
 		return fmt.Errorf("unknown mnemonic %q", ins.Mnemonic)
@@ -280,7 +284,7 @@ func (a *Assembler) writeInstruction(ins *Instruction) error {
 	// Step 2 - find op compatible with the given operands
 
 	op := a.findOp(candidates, actualOperands)
-	if ins == nil {
+	if op == nil {
 		return fmt.Errorf("no candidate instruction found for mnemonic %s", ins.Mnemonic)
 	}
 
@@ -291,6 +295,8 @@ func (a *Assembler) writeInstruction(ins *Instruction) error {
 	if err != nil {
 		return fmt.Errorf("failed to generate instruction (%s)", err)
 	}
+
+	log.Printf("GEN: %d", gi)
 
 	if fix != nil {
 		fix.SourceSection = a.ActiveSection.Name

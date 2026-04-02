@@ -4,12 +4,12 @@ import "fmt"
 
 type encoder []componentEncoder
 
-func (e encoder) Encode(flags int64, args []int64) uint32 {
-	out := int64(0)
+func (e encoder) Encode(flags uint32, args []uint32) uint32 {
+	out := uint32(0)
 
 	for _, ce := range e {
-		mask := int64((1 << ce.Bits) - 1)
-		var src int64
+		mask := uint32((1 << ce.Bits) - 1)
+		var src uint32
 		if ce.SrcArg < 0 {
 			src = flags
 		} else {
@@ -18,7 +18,7 @@ func (e encoder) Encode(flags int64, args []int64) uint32 {
 		out |= (src & mask) << ce.Shift
 	}
 
-	return uint32(out)
+	return out
 }
 
 func (e encoder) OpMask(operand int) (int, int) {

@@ -12,7 +12,7 @@ func TestEncoders(t *testing.T) {
 		ce(O0, 12, 4),
 	}
 
-	result := enc1.Encode(0b1111_1111_1010_1010, []int64{
+	result := enc1.Encode(0b1111_1111_1010_1010, []uint32{
 		0b1111_0101_0101_0101,
 	})
 

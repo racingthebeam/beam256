@@ -26,8 +26,8 @@ func NewFlagSet(flags string, width int) *FlagSet {
 	}
 }
 
-func (fs *FlagSet) Encode(flags string) (int64, error) {
-	out := int64(0)
+func (fs *FlagSet) Encode(flags string) (uint32, error) {
+	out := uint32(0)
 
 	flags = strings.ToLower(flags)
 	for i := range flags {

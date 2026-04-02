@@ -54,16 +54,23 @@ func Build(input *BuildInput) (*ft.Goblin, error) {
 		objs = append(objs, obj)
 	}
 
-	lh, err := input.FS.Open(input.LinkerScript)
-	if err != nil {
-		return nil, fmt.Errorf("failed to open linker script %q: %s", input.LinkerScript, err)
-	}
+	var linkerScript *linker.Script
+	if input.LinkerScript == "" {
+		linkerScript = linker.Default()
+	} else {
+		lh, err := input.FS.Open(input.LinkerScript)
+		if err != nil {
+			return nil, fmt.Errorf("failed to open linker script %q: %s", input.LinkerScript, err)
+		}
 
-	defer lh.Close()
+		defer lh.Close()
 
-	linkerScript, err := linker.Parse(input.LinkerScript, lh)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse linker script %q: %s", input.LinkerScript, err)
+		ls, err := linker.Parse(input.LinkerScript, lh)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse linker script %q: %s", input.LinkerScript, err)
+		}
+
+		linkerScript = ls
 	}
 
 	img, err := linker.New(&linker.Opts{

@@ -9,7 +9,7 @@ const DefaultScript = `
 ; This is the default linker script for BEAM256!
 
 @ 0
-i
+; i
 	
 a 4
 p main
