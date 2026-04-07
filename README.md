@@ -1,6 +1,6 @@
 # BEAM256
 
-![BEAM256 dev WIP](devpic.jpg)
+<img src="devpic.jpg" width="320" alt="BEAM256 dev WIP">
 
 BEAM256 is a work-in-progress fantasy console that is being [developed live on Twitch](https://www.twitch.tv/racingthebeam). The goal is to create an ISA, embedded hardware implementation, and a suite of browser-based dev tools (including emulator). An FPGA implementation is a distant stretch goal.
 
