@@ -1,63 +1,116 @@
-# PLAN
+## 2026-03-14 (SAT, D31)
 
-This is the high-level development plan; for more detail check the docs folder!
+  - Simple UI skeleton
+    - [x] TS widget system
+    - [x] text editor
+    - [x] local storage
+    - [x] toolbar
+    - [x] Go toolchain skeleton, imported via WASM, with IO interface
+    - [x] Make a webworker Go assembly service thingy
 
-## [ ] ISA, CPU Core + Emulator
+## 2026-03-15 (SUN, D32)
 
-  - design ISA v1
-  - minimum viable assembler to turn text into RAM image
-  - implement all opcodes and test
-  - support basic framebuffer output in browser emulator
+  - Emulator skeleton
+    - [x] emulator trigger workflow (UI)
+    - [x] button input
+    - [x] offscreen canvas
+    - [x] bitmap renderer
+    - [x] some audio tests
 
-## [ ] Hardware Prototype
+## 2026-03-21 (SAT)
 
-  - decide on HW platform; choose & order components
-  - build prototype/devkit
-  - set up project + build workflow
-  - get core running on hardware
-  - get graphics output working
-  - get sound output working
+  - Make it pretty
+    - [x] bring in CSS theme from my previous attempt at building this
+    - [x] improve the widget system architecture
 
-## [ ] Iterate
+## 2026-03-22 (SUN)
 
-  - iterate on ISA design, emulator + HW implementations
-  - focus on machine functionality (not surrounding features like code loading)
-  - examples: timers, button input, accelerated blitting, memory management unit
-  - also in scope: streaming extra data from storage, save-state (e.g. high score, saved games)
-  - audio is out of scope
+  - [x] Quick architecture review
+  - [x] Design linker syntax
+  - [x] Design assembler syntax
+  - [x] Final set of initial opcodes documented in a spreadsheet
 
-## [ ] Real Assembler
+## ~2026-03-29
 
-  - write spec for assembly language
-  - migrate entire dev toolchain to TypeScript, split up into libraries as appropriate
-  - full ASM implementation - labels, constants, includes, maybe expressions
+  - [x] Implement assembler+linker toolchain in Go
+  - [x] JSON interface between IDE and toolchain
 
-## [ ] Audio
+## ~2026-4-04
 
-  - design audio system + implement
+  - [x] Implement final opcodes in vCPU core
+  - [x] Fix up tests
 
-## [ ] Hardware Design
+!STOP
 
-  - PCB design
-  - 3D enclosure design
-  - Send for manufacture
+## 2026-04-11
 
-## [ ] Development Environment
+  - [ ] Emulator integration - toolchain, load, run, debug print in main thread
+  - [ ] Drag and drop image file from local machine (need a basic Goblin file implementation too)
+  - [ ] Fix editor scrolling
+  - [ ] Display finalisation; test all render modes in canvas
+  - [ ] Switch instruction pointer to be instruction-indexed, update jump/call etc. (JMPA will need alignment check)
+  - [ ] Toolchain - image generation, palette generation
+  - [ ] Find a simple tileset
 
-  - Build browser-based development environment
-  - Build CLI tools for asset generation
-  - Consider porting assembler to Go (can it run on WASM?)
-  - Plugin architecture/build system for browser dev
+## 2026-04-18
 
-## [ ] Firmware Supervisor
+  - [ ] Peripheral: counter
+  - [ ] Peripheral: RNG
+  - [ ] Peripheral: time
+  - [ ] Emulator integration - iterate until we can use buttons to move an animated sprite around the screen
 
-  - Game list (from SD card?)
-  - Graphical menu
-  - Reset button
+## Fun opcodes (BLITx, MEMCPY etc, RND)
 
-## [ ] Cloud Dev Env
+## Save data
 
-  - Get the dev env into a state where it can be hosted on the cloud
-  - Build cloud arch (server(less), DB, auth etc)
-  - Deploy automation (Terraform etc)
-  - Proper web design
+## Audio engine
+
+  - Implement multi-channel audio system
+    - define features
+    - IO port map
+  - Implement sequencer engine
+  - WASM build of audio engine for use in emulator, integrate
+
+## IDE - multi-file, help system, docs, debug mode
+
+## IDE - backend, user accounts, save/load projects
+
+## IDE - plugin system
+
+## IDE - publish projects, project gallery, user profiles
+
+## IDE - polish, changelog
+
+## Firmware - supervisor, SD card, serial loading, audio driver, other peripherals
+
+  - USB mass storage mode for loading games
+  - USB serial interface skeleton for debugger (no actual debugger implementation, just lay the groundwork for it while we're doing the USB stuff anyway)
+
+## Home screen - inc. SVC support
+
+  - Add homescreen "app" to device
+  - Read game index from SD card
+  - Exported file contents from IDE should include metadata inc. icon (PICO-8 style PNG approach?)
+  - Launch games from homescreen
+
+## GPU
+
+## Battery board + F/W integration
+
+## PCB design and testing
+
+## Case design / iteration
+
+## Debugger
+
+## Marketing website
+
+# DEFERRED
+
+  - Toolchain needs better error messages (including line/column)
+  - Pointer to registers (&xx syntax), direct memory copy opcodes
+  - Rewrite emulator canvas graphics output to use shaders
+  - Fix RGB565 -> RGB888 colourspace expansion
+  - Write syntax highlighting mode/theme for CodeMirror
+  - Timing parity between emulator and hardware
+
